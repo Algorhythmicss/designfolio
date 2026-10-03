@@ -4,29 +4,29 @@ const projects = {
  'elsewhere': {
   name:'Elsewhere', category:'Festival website · Self-initiated concept', title:'From “I wish I was there” to finding a pass.',
   intro:'A music and arts festival needs to sell a feeling. It also needs to answer the questions that decide whether someone actually goes.',
-  image:'assets/elsewhere-chorus.jpg', alt:'A red and black urban print collage from Elsewhere', art:'festival',
+  image:'assets/elsewhere-chorus.webp', alt:'A red and black urban print collage from Elsewhere', art:'festival',
   question:'How do you create a sense of escape without making the practical information hard to find?',
-  decisions:[['Let the place set the mood.','Full-bleed city collages turn the page into a small unfamiliar world. Short, concrete copy explains what the two-day festival is.'],['Help people find their version of the day.','Programme filters combine day and activity type. Each artist detail leads to the right day pass; travel, access and policies are available when needed.'],['Keep the booking decision clear.','Visitors can compare day and weekend passes, adjust guest numbers and see the total before completing a demo ticket. Draft choices survive trips back to the programme or policy.']],
+  decisions:[['Let the place set the mood.','Full-bleed city collages turn the page into a small unfamiliar world. Short, concrete copy explains what the two-day festival is.'],['Help people find their version of the day.','Programme filters combine day and activity type. Each artist detail leads to the right day pass; travel, access and policies are available when needed.'],['Keep the booking decision clear.','Visitors can compare day and weekend passes, adjust guest numbers and see the total before completing a demo ticket. Selections survive trips back to the programme or the policy.']],
   boundary:'An invented event with generated imagery and working frontend interactions. Checkout creates a demo ticket only; there is no payment, reservation or email. No sales or conversion results are claimed.',
-  url:'elsewhere/', link:'Explore the festival draft', prompt:'I’m interested in a website with an immersive visual direction and a clear booking or enquiry flow.'
+  url:'elsewhere/', link:'Open the festival website', prompt:'I’m interested in a website with an immersive visual direction and a clear booking or enquiry flow.'
  },
  'second-nature': {
   name:'Second Nature', category:'Architecture & interiors · Self-initiated concept', title:'Show the possibility. Make the first conversation easier.',
   intro:'For someone considering an interior project, “we design beautiful spaces” doesn’t explain what could change in their own home.',
-  image:'assets/room-after.jpg', alt:'The proposed room with an oxblood sofa, a blue reading chair and a round coffee table', art:'room',
+  image:'assets/room-after.webp', alt:'The proposed room with an oxblood sofa, a blue reading chair and a round coffee table', art:'room',
   question:'How can a studio make an unfamiliar design process feel tangible before a prospective client gets in touch?',
   decisions:[['Make the change visible.','The website transforms one room as you scroll, keeping its architecture while replacing the furniture. Direct controls and a reduced-motion option make the comparison accessible in different contexts.'],['Explain what was considered.','Two project studies connect the existing space to a proposal. Drawings and collected-object artwork carry the visual language beyond a conventional image grid.'],['Give the conversation a useful starting point.','The enquiry flow asks about the place, desired changes, budget and timing, then creates an editable brief preview.']],
   boundary:'A fictional studio and concept furniture proposal, shown with generated artwork. These are not completed commissions or verified architectural plans. The studio brief is a local preview and is not delivered to a business.',
-  url:'second-nature/', link:'Explore the studio draft', prompt:'I’m interested in a website that explains my work clearly and helps prospective clients enquire.'
+  url:'second-nature/', link:'Open the studio website', prompt:'I’m interested in a website that explains my work clearly and helps prospective clients enquire.'
  },
  'side-note': {
   name:'Side Note', category:'Coffee brand & e-commerce · Self-initiated concept', title:'Find a coffee that fits the morning you already have.',
   intro:'People cannot taste coffee through a screen. The useful question is not just what a bag tastes like, but whether it suits their equipment and everyday habits.',
-  image:'assets/side-note-coffees.png', alt:'Three concept Side Note coffee packs: Daybreak, Slow Morning and Offbeat', art:'coffee',
+  image:'assets/side-note-coffees.webp', alt:'Three concept Side Note coffee packs: Daybreak, Slow Morning and Offbeat', art:'coffee',
   question:'How do you make a specialist product feel approachable without taking away its character?',
   decisions:[['Start with the familiar ritual.','Warm colour, printed-paper artwork and handwritten details build a friendly identity. Product differences are described in everyday terms.'],['Translate preferences into a choice.','A three-question finder uses equipment, milk and taste preferences to explain its recommendation. It passes the suggested grind into product configuration.'],['Make the order understandable.','Size, grind and one-time or repeat purchase are explicit. The bag separates today’s total from any future recurring total before the demo order preview.']],
   boundary:'A fictional shop with a rules-based finder and working cart demo. No payment, real order or subscription is created, and checkout information is not sent to a server. The recommendation has not been validated as a taste-matching system.',
-  url:'side-note/', link:'Explore the coffee draft', prompt:'I’m interested in a distinctive online shop that helps customers find the right product and understand their order.'
+  url:'side-note/', link:'Open the shop', prompt:'I’m interested in a distinctive online shop that helps customers find the right product and understand their order.'
  }
 };
 const caseDialog=document.getElementById('case-dialog');
@@ -35,7 +35,7 @@ let returnFocus=null;
 function openCase(key,trigger){
  const p=projects[key];if(!p)return;
  returnFocus=trigger||document.activeElement;
- const cover=p.art==='room'?`<div class="room-comparison" id="room-comparison"><img src="assets/room-before.jpg" alt="The original room with bulky brown furniture, before the concept redesign" width="1536" height="1024" aria-hidden="true"><img class="room-proposed" id="case-image" src="${p.image}" alt="${p.alt}" width="1536" height="1024"></div><button class="case-room-toggle" id="room-preview-toggle" aria-pressed="false">See the original room</button>`:`<img id="case-image" src="${p.image}" alt="${p.alt}" ${p.art==='coffee'?'width="2170" height="725"':'width="1536" height="1024"'}>`;
+ const cover=p.art==='room'?`<div class="room-comparison" id="room-comparison"><img src="assets/room-before.webp" alt="The original room with bulky brown furniture, before the concept redesign" width="1536" height="1024" aria-hidden="true"><img class="room-proposed" id="case-image" src="${p.image}" alt="${p.alt}" width="1536" height="1024"></div><button class="case-room-toggle" id="room-preview-toggle" aria-pressed="false">See the original room</button>`:`<img id="case-image" src="${p.image}" alt="${p.alt}" ${p.art==='coffee'?'width="2170" height="725"':'width="1536" height="1024"'}>`;
  const decisionMarkup=p.decisions.map(([title,body])=>`<li><h4>${title}</h4><p>${body}</p></li>`).join('');
  document.getElementById('case-body').innerHTML=`<article class="case-content"><header class="case-heading"><p>${p.category}</p><h2 id="case-title">${p.title}</h2><p class="case-intro">${p.intro}</p></header><figure class="case-cover" data-art="${p.art}">${cover}</figure><div class="case-copy"><h3>The question</h3><p>${p.question}</p><h3>How the website responds</h3><ul class="decisions">${decisionMarkup}</ul><p class="case-boundary">${p.boundary}</p><div class="case-actions"><a href="${p.url}" target="_blank" rel="noopener">${p.link}</a><button id="similar-project">Discuss a project like this</button></div></div></article>`;
  caseDialog.showModal();caseDialog.scrollTop=0;

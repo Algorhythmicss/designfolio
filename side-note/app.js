@@ -40,7 +40,7 @@ function openProduct(id, grind = '') {
   $('#detail-taste').textContent = product.taste;
   $('#detail-description').textContent = product.description;
   $('#detail-caption').textContent = product.caption;
-  $('#detail-image').innerHTML = '<svg class="pack-art" viewBox="' + product.cropX + ' 0 540 725" role="img" aria-label="Side Note ' + product.name + ' coffee pouch"><defs><clipPath id="pack-detail" clipPathUnits="userSpaceOnUse"><rect x="' + product.cropX + '" y="0" width="540" height="725"/></clipPath></defs><image href="assets/coffee-bags.png" width="2170" height="725" clip-path="url(#pack-detail)"/></svg>';
+  $('#detail-image').innerHTML = '<svg class="pack-art" viewBox="' + product.cropX + ' 0 540 725" role="img" aria-label="Side Note ' + product.name + ' coffee pouch"><defs><clipPath id="pack-detail" clipPathUnits="userSpaceOnUse"><rect x="' + product.cropX + '" y="0" width="540" height="725"/></clipPath></defs><image href="assets/coffee-bags.webp" width="2170" height="725" clip-path="url(#pack-detail)"/></svg>';
   $('#detail-profile').innerHTML = '<div><dt>How it feels</dt><dd>' + product.body + '</dd></div><div><dt>How it tastes</dt><dd>' + product.brightness + '</dd></div>';
   $('#product-form').reset();
   $('#product-grind').value = grinds[grind] ? grind : '';
