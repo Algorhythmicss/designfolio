@@ -28,6 +28,16 @@ Each site is one folder: `index.html`, `styles.css`, `app.js`, `assets/`.
 Fonts load from Google Fonts; everything else is local and relative, so the
 folders can be moved or hosted independently.
 
+## Site captures on the portfolio
+
+The portfolio shows a laptop and phone capture of each concept site (`assets/shots/`).
+After changing a site's first screen, regenerate them (needs Python Playwright + Pillow):
+
+```sh
+python3 -m http.server 8766 &
+python3 tools/capture.py
+```
+
 ## Deploying
 
 Hosted on GitHub Pages. Every push to `main` runs `.github/workflows/pages.yml`, which
