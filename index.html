@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#f3efdf"><title>Ayush — Independent Design & Development</title><meta name="description" content="Independent design and development for websites with character and a clear purpose. Explore three interactive concept projects."><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%23242320'/%3E%3Cpath d='M19 19h26v26H19z' fill='none' stroke='%23dfef73' stroke-width='5'/%3E%3Cpath d='M19 45L45 19' stroke='%23dfef73' stroke-width='5'/%3E%3C/svg%3E"><link rel="stylesheet" href="styles.css"><script src="app.js" defer></script></head>
+<body><a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="identity" href="#top" aria-label="Ayush, home">Ayush</a><a class="header-contact" href="#contact">Have something in mind?</a></header>
+<main id="main">
+<section class="opening" id="top" aria-labelledby="intro-title">
+ <img class="opening-art" src="assets/opening-world.png" width="1536" height="1024" alt="A handmade world of paper architecture, a cobalt opening, city fragments and a hand arranging an idea" fetchpriority="high">
+ <div class="opening-copy"><h1 id="intro-title">I design websites.<br><em>And build them, too.</em></h1><p>I’m Ayush. I turn an idea into a website people can explore, understand and use.</p></div>
+ <a class="work-invitation hand-link" href="#work">Come have a look</a>
+</section>
+<section class="work-landscape" id="work" aria-labelledby="work-title">
+ <h2 id="work-title">A few things I’ve made.</h2>
+ <img class="worlds-art" src="assets/three-worlds.png" width="1536" height="1024" alt="A connected paper landscape of music, architecture and coffee" loading="lazy">
+ <article class="work-note festival-note" id="elsewhere"><div class="mobile-art festival-fragment" aria-hidden="true"></div><div class="note-words"><h3><button data-case="elsewhere" aria-label="See the Elsewhere case study">Elsewhere</button></h3><p>A festival you can get lost in.<br>A programme and booking flow you won’t.</p><div class="work-actions"><button class="hand-link" data-case="elsewhere">The thinking behind it</button><a class="site-link" href="elsewhere/" target="_blank" rel="noopener">Open website</a></div></div></article>
+ <article class="work-note interiors-note" id="second-nature"><div class="mobile-art interiors-fragment" aria-hidden="true"></div><div class="note-words"><h3><button data-case="second-nature" aria-label="See the Second Nature case study">Second Nature</button></h3><p>See an old space differently.<br>Then start a useful conversation.</p><div class="work-actions"><button class="hand-link" data-case="second-nature">See what changed</button><a class="site-link" href="second-nature/" target="_blank" rel="noopener">Open website</a></div></div></article>
+ <article class="work-note coffee-note" id="side-note"><div class="mobile-art coffee-fragment" aria-hidden="true"></div><div class="note-words"><h3><button data-case="side-note" aria-label="See the Side Note case study">Side Note</button></h3><p>Find a coffee that fits your morning.<br>Choose it, grind it, make it yours.</p><div class="work-actions"><button class="hand-link" data-case="side-note">A closer look</button><a class="site-link" href="side-note/" target="_blank" rel="noopener">Open website</a></div></div></article>
+ <p class="work-disclosure">Self-initiated concepts, with working demo flows.</p>
+</section>
+<section class="making" id="practice" aria-labelledby="practice-title">
+ <img class="making-art" src="assets/making-connections.png" width="1536" height="1024" alt="Hands working with tracing paper, a blue pencil and a curling thread" loading="lazy">
+ <div class="making-copy"><h2 id="practice-title">The idea. The design.<br><em>The bit that makes it work.</em></h2><p>I can take a website from the first sketch to the finished build—visual direction, frontend, accounts, databases and the details in between.</p><details class="scope-note"><summary>And if you need a little more…</summary><p>Posters, campaign graphics and launch materials can carry the same idea beyond the website. We’ll work out the scope together.</p></details></div>
+ <div class="contact-heading" id="contact"><h2 id="contact-title">What are you thinking?</h2><a class="email hand-link" href="mailto:ayushhhudd@gmail.com">ayushhhudd@gmail.com</a><p>Tell me about your business and what you want to make.</p></div>
+ <details class="contact-details" id="contact-details"><summary class="hand-link">Or start with a few details</summary><div class="contact-form-wrap"><form id="enquiry-form">
+  <fieldset><legend>What are you working on?</legend><div class="choices"><label><input type="radio" name="kind" value="A brand website" required><span>A website</span></label><label><input type="radio" name="kind" value="An online shop"><span>An online shop</span></label><label><input type="radio" name="kind" value="A web app"><span>A web app</span></label><label><input type="radio" name="kind" value="Still figuring it out"><span>Still figuring it out</span></label></div></fieldset>
+  <label>Your name<input name="name" autocomplete="name" required maxlength="80" placeholder="What should I call you?"></label>
+  <label>What would you like it to do?<textarea name="idea" required minlength="10" maxlength="1800" rows="3" placeholder="Tell me about your business, your idea or what needs to change."></textarea></label>
+  <div class="form-pair"><label>Budget, if you have one <span>(optional)</span><input name="budget" maxlength="100" placeholder="An estimate is fine"></label><label>Timing <span>(optional)</span><input name="timing" maxlength="100" placeholder="A date, or just exploring"></label></div>
+  <button class="send-button" type="submit">Put it into an email</button><p class="form-note">You’ll review the message before opening your email app. Nothing is sent from this page.</p>
+ </form>
+ <div class="enquiry-result" id="enquiry-result" hidden><h3 tabindex="-1">A good place to start.</h3><p>Here’s your draft to Ayush. You can edit it here or in your email app.</p><label for="email-draft">Your message</label><textarea id="email-draft" rows="10" maxlength="4000"></textarea><div class="draft-actions"><a class="send-button" id="open-email" href="mailto:ayushhhudd@gmail.com">Open email draft</a><button id="copy-brief" type="button">Copy message</button><button id="edit-brief" type="button">Back to details</button></div><p class="form-note" id="draft-status" role="status">Your draft is ready. It has not been sent.</p></div>
+ </div>
+</details>
+</section>
+<footer><a href="#top" class="footer-name">Ayush</a><button id="about-work">About these projects</button></footer>
+</main>
+<dialog id="case-dialog" class="case-dialog" aria-labelledby="case-title"><div class="case-top"><span>Ayush</span><button data-close>Close project</button></div><div id="case-body"></div></dialog>
+<dialog id="about-dialog" class="about-dialog" aria-labelledby="about-title"><button data-close class="about-close">Close</button><h2 id="about-title">About these projects.</h2><p>Elsewhere, Second Nature and Side Note are self-initiated concepts for fictional businesses. They demonstrate design direction and working demo flows, not paid commissions or measured client results.</p><p>The artwork was developed with generative tools from a reference-led art direction. The event bookings, studio enquiry and coffee checkout are demonstrations: no payment, reservation, subscription or customer message is created.</p><p>This portfolio’s contact form helps you prepare an email. It does not submit or store your details on a server.</p></dialog>
+</body></html>

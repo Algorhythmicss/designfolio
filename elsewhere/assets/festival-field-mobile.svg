@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 1500" fill="none" preserveAspectRatio="none">
+<defs><filter id="ink"><feTurbulence baseFrequency=".025" numOctaves="2" seed="17" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.7"/></filter></defs>
+<g filter="url(#ink)">
+<g stroke="#f1a592" stroke-width="1.2" opacity=".8">
+<ellipse cx="410" cy="371" rx="79" ry="95" transform="rotate(-28 410 371)"/>
+<ellipse cx="410" cy="371" rx="62" ry="77" transform="rotate(-28 410 371)"/>
+<ellipse cx="410" cy="371" rx="45" ry="59" transform="rotate(-28 410 371)"/>
+</g>
+<path d="m366 342 35-21 26 135-54-7z" fill="#171c27"/>
+<path d="m-32 644 51-26 20 147-68 99z" fill="#171c27"/>
+<path d="M-16 859Q4 736 31 627" stroke="#f1a592" stroke-width="2"/>
+<path d="M5 746q-42-10-44-56 38 6 44 56Zm10-42q2-32 19-36-1 30-19 36ZM23 665q-25-14-11-47 17 14 11 47Z" fill="#f1a592"/>
+<path d="m334 983 58-16 12 211-82 3z" fill="#171c27"/>
+<path d="m347 1006 35-15 4 154-53 11z" fill="#f1a592"/>
+<path d="m347 1006 20 30-20 120-14 0z" fill="#171c27"/>
+<path d="m333 1156 53-11 32 38-157 40z" stroke="#f1a592" stroke-width="1"/>
+<path d="m-11 1222 43-9m-24 16 49-11" stroke="#f1a592" stroke-width="1.5"/>
+</g></svg>

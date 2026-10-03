@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1500" fill="none">
+<defs>
+  <filter id="ink"><feTurbulence baseFrequency=".015" numOctaves="2" seed="17" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="3"/></filter>
+  <pattern id="lines" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(-25)"><path d="M0 0V8" stroke="#f2a693" stroke-width="2"/></pattern>
+</defs>
+<g filter="url(#ink)">
+  <!-- Cropped sound waves are printed directly into the open blue ground. -->
+  <g stroke="#f1a592" stroke-width="2" opacity=".8">
+    <ellipse cx="1385" cy="350" rx="252" ry="202" transform="rotate(-26 1385 350)"/>
+    <ellipse cx="1385" cy="350" rx="220" ry="176" transform="rotate(-26 1385 350)"/>
+    <ellipse cx="1385" cy="350" rx="188" ry="150" transform="rotate(-26 1385 350)"/>
+    <ellipse cx="1385" cy="350" rx="156" ry="124" transform="rotate(-26 1385 350)"/>
+    <ellipse cx="1385" cy="350" rx="124" ry="98" transform="rotate(-26 1385 350)"/>
+  </g>
+  <path d="M1263 271 1458 202V582l-138-22z" fill="#161b26"/>
+  <ellipse cx="1400" cy="445" rx="53" ry="64" transform="rotate(11 1400 445)" fill="#2446cc"/>
+  <ellipse cx="1394" cy="440" rx="32" ry="40" transform="rotate(11 1394 440)" stroke="#f1a592" stroke-width="2"/>
+  <path d="m1016 276 48-22m-23 64 54-5m-53 44 37 19" stroke="#f4eedb" stroke-width="3"/>
+  <!-- An oversized cut-paper garden, rather than an illustration in a frame. -->
+  <path d="M-40 630 211 572 323 735 248 907 60 998-56 869z" fill="#161b26"/>
+  <path d="M60 969q123-214 189-378M145 797q-81-43-125-128M164 759q83-32 149-16M193 698q-48-79-29-136M99 893q-64-37-118-33" stroke="#f1a592" stroke-width="5"/>
+  <path d="M152 787Q37 800 12 652q93 19 140 135Zm11-20q53-118 177-33-76 39-177 33Zm28-62q-96-64-20-179 41 62 20 179ZM93 890q-105 61-126-56 80-8 126 56Z" fill="#f1a592"/>
+  <path d="M249 591q9-67 53-81-2 48-53 81Z" fill="#f4eedb"/>
+  <path d="m340 573 30-24m-12 42 41-6" stroke="#f4eedb" stroke-width="2"/>
+  <!-- A theatrical doorway and spill of light toward the last dance. -->
+  <path d="m1165 882 235 19 69 354-370-7z" fill="#161b26"/>
+  <path d="m1200 917 162 9 33 278-230 9z" fill="#eea38f"/>
+  <path d="m1200 917 105 77-35 219-105 0z" fill="#101b29"/>
+  <path d="m1165 1213 230-9 167 125-686 72z" fill="url(#lines)" opacity=".65"/>
+  <path d="m1102 983-27-16m31 54-49 4" stroke="#f4eedb" stroke-width="3"/>
+  <path d="M790 1424q47-10 56-54m-20 15 23-24 3 33" stroke="#f4eedb" stroke-width="2"/>
+  <path d="M40 1273q78-16 117-47" stroke="#f1a592" stroke-width="2"/>
+</g>
+</svg>

@@ -147,3 +147,12 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# macOS / editor noise
+.DS_Store
+._*
+Thumbs.db
+
+# Leftovers from the ChatGPT Sites checkouts
+.sites-runtime/
+.openai/
