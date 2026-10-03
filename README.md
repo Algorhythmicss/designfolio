@@ -1,11 +1,12 @@
 # designfolio
 
-Ayush's design & development portfolio, plus the three concept sites it shows.
+Ayush Jain's portfolio: a product case study (Leetify) plus the three concept sites it shows.
 Everything here is plain static HTML/CSS/JS — no build step, no dependencies.
 
 | Path | Site | What it is |
 | --- | --- | --- |
-| `/` | **Portfolio** | Intro, three project case studies, enquiry draft (mailto) |
+| `/` | **Portfolio** | Intro, Leetify first, three concept sites, how we work, enquiry draft (mailto) |
+| `/leetify/` | **Leetify case study** | The real product: problem, principle, decisions, launch and growth |
 | `/elsewhere/` | **Elsewhere** | Fictional two-day music & arts festival · programme, passes, demo checkout |
 | `/second-nature/` | **Second Nature** | Fictional architecture & interiors studio · scroll-driven room transformation, project studies, enquiry brief |
 | `/side-note/` | **Side Note** | Fictional coffee brand · coffee finder, brew guide, bag + demo checkout |

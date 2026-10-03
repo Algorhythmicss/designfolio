@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f3efdf">
+<title>Leetify — a case study by Ayush Jain</title>
+<meta name="description" content="How Leetify turned a Codeforces problem into one LeetCode-style workspace, and grew to 20,000 users. Designed, built and launched solo by Ayush Jain.">
+<meta property="og:title" content="Leetify: redesigning the flow, not the site">
+<meta property="og:description" content="A Codeforces workspace used by 20,000 competitive programmers. The problem, the principle, the decisions, and how it found its users.">
+<meta property="og:image" content="https://algorhythmicss.github.io/designfolio/leetify/assets/leetify-workspace.webp">
+<meta property="og:type" content="article">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%23242320'/%3E%3Cpath d='M19 19h26v26H19z' fill='none' stroke='%23dfef73' stroke-width='5'/%3E%3Cpath d='M19 45L45 19' stroke='%23dfef73' stroke-width='5'/%3E%3C/svg%3E">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../assets/fonts/instrument-serif-latin-400-normal.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../assets/fonts/newsreader-latin-wght-normal.woff2">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header"><a class="identity" href="../" aria-label="Ayush Jain, home">Ayush Jain</a><a class="header-link" href="../#work">All work</a></header>
+
+<main id="main">
+<article class="study">
+ <header class="study-head">
+  <p class="kicker">Case study · Product</p>
+  <h1>Leetify: redesigning the flow, <em>not the site.</em></h1>
+  <p class="standfirst">Leetify turns a Codeforces problem into one LeetCode-style workspace: statement, editor, tests and submit on a single page. I designed, built and launched it on my own, and it grew to 20,000 users.</p>
+  <dl class="facts">
+   <div><dt>Users</dt><dd>20,000 on the Chrome Web Store, rated 4.3 out of 5</dd></div>
+   <div><dt>Growth</dt><dd>About 1,000 users from community posts, then 20,000 after a creator’s unpaid reel</dd></div>
+   <div><dt>My role</dt><dd>Product design, engineering and launch, solo</dd></div>
+   <div><dt>Platform</dt><dd>Chrome extension and landing page. Free, no account needed</dd></div>
+   <div><dt>Links</dt><dd><a href="https://chromewebstore.google.com/detail/efdidgeaehmaiobeldfiomlnhjnneghl" target="_blank" rel="noopener">Install from the Chrome Web Store</a> · <a href="https://leetify-dun.vercel.app/" target="_blank" rel="noopener">leetify-dun.vercel.app</a></dd></div>
+  </dl>
+  <!-- To add when you have them: start month/year, and the stack (e.g. “Timeline: Mar 2026 → now · Built with: TypeScript, Monaco, Vite”). -->
+ </header>
+
+ <figure class="shot">
+  <img src="assets/leetify-workspace.webp" width="800" height="500" alt="A Codeforces problem open in Leetify: the statement on the left, a code editor on the right, test cases below, with Run and Submit in the top bar">
+  <figcaption>One problem, one page: statement, editor, samples and submit together.</figcaption>
+ </figure>
+
+ <section>
+  <h2>The problem: five tabs for one problem</h2>
+  <p>A usual Codeforces solve keeps five tabs open for a single problem. The statement and the submit form sit on separate pages, so you can’t read and code at the same time.</p>
+  <p>The code itself lives in VS Code, notes live in Notion or a notebook, and verdicts land on yet another submissions page. In a timed contest, every switch costs seconds and focus.</p>
+  <p>I compete on Codeforces myself, so I felt this every round. The goal was to fit the whole solve, from reading to <em>accepted</em>, on one page.</p>
+ </section>
+
+ <figure class="shot pair">
+  <div><img src="assets/leetify-original.webp" width="800" height="500" alt="The native Codeforces problem page: the statement alone, with a note that the submit form is on a separate tab"><span>Before: the statement page. The editor is somewhere else.</span></div>
+  <div><img src="assets/leetify-workspace.webp" width="800" height="500" alt="The same problem in Leetify with statement and editor side by side"><span>After: the same problem in Leetify.</span></div>
+ </figure>
+
+ <section>
+  <h2>The principle: redesign the flow, not the site</h2>
+  <p>Codeforces is loved for being open, simple and minimal, so I didn’t redesign it. I reshaped only the part where the friction lived: reading, coding, testing and submitting.</p>
+  <p>Three rules guided every decision:</p>
+  <ol class="rules">
+   <li><strong>Respect the original.</strong> Keep what people already like about Codeforces.</li>
+   <li><strong>One page, one flow.</strong> Merge the steps people juggle into a single workspace.</li>
+   <li><strong>Function over style.</strong> Every change has to remove a step. Style is subjective; friction isn’t.</li>
+  </ol>
+ </section>
+
+ <section>
+  <h2>Key decisions</h2>
+  <h3>Make it familiar on purpose</h3>
+  <p>Most competitive programmers already know LeetCode’s workspace: statement on the left, editor on the right, tests below. So Leetify borrows that layout instead of inventing a new one.</p>
+  <p>The name does the same job. “Leetify” reads as LeetCode-style, for Codeforces. People understood it before installing, had nothing new to learn, and could explain it in one sentence.</p>
+
+  <h3>Put the whole solve on one page</h3>
+  <p>The statement and a VS Code-style editor sit side by side in resizable panes. You run the samples inline, add your own tests, format messy code in one click, see verdicts in the editor and submit without leaving.</p>
+
+  <h3>Help people improve, not just solve</h3>
+  <p>In competitive programming, progress lives in the observations: a trick, a mistake, a DP transition. So notes attach to the problem itself, and My Notes finds them again by text, problem, contest, rating or tag.</p>
+  <p>The analytics follow the same idea. Instead of only counting streaks, the training panel explains the gap to your next rating milestone, from practice level to weak topics to volume, then suggests problems that close it.</p>
+  <figure class="shot">
+   <img src="assets/leetify-analytics.webp" width="800" height="500" alt="Leetify’s analytics panel beside a problem, with a ‘Why not 1650 yet?’ section listing the reasons in plain language">
+   <figcaption>“Why not 1650 yet?” explains the gap instead of just showing a number.</figcaption>
+  </figure>
+
+  <h3>Leave out what adds friction</h3>
+  <p>There’s no account and no sign-up. Install it, open a problem, and it works.</p>
+ </section>
+
+ <section>
+  <h2>Shipping what users asked for</h2>
+  <p>Leetify ships in small versions, shaped by what users ask for. The latest went out in August 2026.</p>
+  <p>Version 0.1.8 shows the kind of detail daily users notice:</p>
+  <ul class="plain">
+   <li>Problem statements render math properly, so constraints read at a glance.</li>
+   <li>Sample inputs and outputs keep their line breaks, so multi-line cases match the original.</li>
+   <li>C, C++, Java and Python open with starter templates.</li>
+   <li>The status bar shows your real cursor line and column, instead of a stuck counter.</li>
+  </ul>
+  <!-- To add: one request in a user’s own words, what you changed, and what happened next. -->
+ </section>
+
+ <section>
+  <h2>Launch and growth: from 1,000 users to 20,000</h2>
+  <p>The first thousand came from showing up where competitive programmers already talk: blog posts on Codeforces, posts on LinkedIn and comments on Instagram coding posts. No ads.</p>
+  <p>Then a coding creator, hannin.dev, made a reel about Leetify on her own because she liked it. This is where the name and the familiar layout paid off: anyone who knew LeetCode got the idea in seconds, which is exactly what a reel needs. That took it from about 1,000 users to 20,000.</p>
+  <!-- To add: the growth chart from the Chrome Web Store dashboard, marked at the first posts, the reel and 20,000 — and what happened when the wave arrived: what broke, what people asked for, what you fixed first. -->
+ </section>
+
+ <section>
+  <h2>Results</h2>
+  <p>Leetify has 20,000 users and a 4.3 out of 5 rating on the Chrome Web Store, about twenty times its user base before the reel.</p>
+  <!-- To add: weekly active users or retention if the dashboard shows it, and two or three short user quotes. -->
+ </section>
+
+ <section>
+  <h2>What I learned</h2>
+  <ul class="plain">
+   <li><strong>Familiar beats novel.</strong> Borrowing a layout people already knew made Leetify easy to adopt and easy to explain.</li>
+   <li><strong>Restraint is a feature.</strong> People didn’t want a new Codeforces, just the one they had without the tab juggling.</li>
+   <li><strong>Distribution is half the product.</strong> The first users came from going where programmers already were. The jump came from an idea simple enough for someone else to share.</li>
+  </ul>
+ </section>
+
+ <footer class="study-foot">
+  <p class="hand">Have something in mind?</p>
+  <a class="email" href="mailto:ayushhhudd@gmail.com">ayushhhudd@gmail.com</a>
+  <p><a href="../#work">Back to all work</a> · <a href="https://leetify-dun.vercel.app/" target="_blank" rel="noopener">Open Leetify</a></p>
+ </footer>
+</article>
+</main>
+</body>
+</html>
