@@ -30,4 +30,5 @@ folders can be moved or hosted independently.
 
 ## Deploying
 
-Hosted on GitHub Pages from the `main` branch root. Pushing to `main` redeploys.
+Hosted on GitHub Pages. Every push to `main` runs `.github/workflows/pages.yml`, which
+uploads the repo as-is and deploys it — no build step.
