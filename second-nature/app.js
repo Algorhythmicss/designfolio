@@ -5,6 +5,8 @@ const projects={
 };
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 const compactScene=matchMedia('(max-height: 620px)');
+const phoneScene=matchMedia('(max-width: 650px)');
+const autoScene=()=>reduced.matches||compactScene.matches;
 const run=document.querySelector('.transformation-run');
 const pin=document.querySelector('.transformation-pin');
 const comparison=document.querySelector('.comparison');
@@ -17,8 +19,8 @@ const roomToggle=document.getElementById('room-toggle');
 const modeButton=document.getElementById('scroll-mode');
 const clamp=value=>Math.max(0,Math.min(1,value));
 const smooth=value=>{const t=clamp(value);return t*t*(3-2*t);};
-let scrollMode=!(reduced.matches||compactScene.matches);
-let reveal=scrollMode?0:100,displayedReveal=reveal,animationFrame=0,scrollFrame=0,lastTime=0,manualTween=null,copyPhase='';
+let scrollMode=!(autoScene()||phoneScene.matches);
+let reveal=(scrollMode||phoneScene.matches)?0:100,displayedReveal=reveal,animationFrame=0,scrollFrame=0,lastTime=0,manualTween=null,copyPhase='';
 function paintRoom(value){
  // Hold the original briefly, reveal it spatially, then leave time with the finished room.
  const progress=clamp((value-10)/74);
@@ -46,7 +48,7 @@ function paintRoom(value){
  roomToggle.textContent=isAfter?'See original':'See reimagined';
  roomToggle.setAttribute('aria-label',isAfter?'See the original room':'See the reimagined room');
  roomInstruction.textContent=scrollMode?(value>84?'Same room. A new possibility.':'Keep scrolling. See what changes.'):'The room stays. The furniture changes.';
- modeButton.hidden=scrollMode||reduced.matches||compactScene.matches;
+ modeButton.hidden=scrollMode||autoScene()||phoneScene.matches;
 }
 function animateRoom(time){
  animationFrame=0;
@@ -78,7 +80,7 @@ function setReveal(value,manual=false,immediate=false){
  if(!animationFrame)animationFrame=requestAnimationFrame(animateRoom);
 }
 function onScroll(){
- scrollFrame=0;if(!scrollMode||reduced.matches||compactScene.matches)return;
+ scrollFrame=0;if(!scrollMode||autoScene()||phoneScene.matches)return;
  const distance=Math.max(1,run.offsetHeight-pin.offsetHeight);
  const raw=clamp(-run.getBoundingClientRect().top/distance)*100;
  setReveal(raw,false,raw===0||raw===100);
@@ -88,18 +90,32 @@ window.addEventListener('resize',onScroll);
 roomToggle.addEventListener('click',()=>setReveal(reveal>=50?0:100,true));
 modeButton.addEventListener('click',()=>{scrollMode=true;manualTween=null;onScroll();});
 function motionPreferenceChanged(){
- scrollMode=!(reduced.matches||compactScene.matches);
- if(!scrollMode)setReveal(100,true,true);else onScroll();
+ scrollMode=!(autoScene()||phoneScene.matches);
+ if(phoneScene.matches&&!reduced.matches){setReveal(revealedOnPhone?100:0,true,true);watchPhoneReveal();}
+ else if(!scrollMode)setReveal(100,true,true);else onScroll();
 }
+// Phones: no scroll-scrubbing. Show the original, then reveal the proposal once the room is in view.
+let revealedOnPhone=false,phoneObserver=null;
+function watchPhoneReveal(){
+ if(phoneObserver||revealedOnPhone||!('IntersectionObserver' in window))return;
+ phoneObserver=new IntersectionObserver(entries=>{
+  if(!entries.some(e=>e.isIntersecting))return;
+  phoneObserver.disconnect();phoneObserver=null;revealedOnPhone=true;
+  setTimeout(()=>{if(phoneScene.matches&&reveal<50)setReveal(100,true);},550);
+ },{threshold:0.6});
+ phoneObserver.observe(comparison);
+}
+roomToggle.addEventListener('click',()=>{revealedOnPhone=true;if(phoneObserver){phoneObserver.disconnect();phoneObserver=null;}});
 reduced.addEventListener('change',motionPreferenceChanged);
 compactScene.addEventListener('change',motionPreferenceChanged);
+phoneScene.addEventListener('change',motionPreferenceChanged);
 document.addEventListener('visibilitychange',()=>{
  if(document.hidden){cancelAnimationFrame(animationFrame);animationFrame=0;lastTime=0;}
  else{setReveal(reveal,false,true);onScroll();}
 });
 // Decode the second view before it is needed, rather than fetching on the first reveal.
 comparison.querySelectorAll('img').forEach(img=>{img.loading='eager';img.decode?.().catch(()=>{});});
-paintRoom(displayedReveal);onScroll();
+paintRoom(displayedReveal);onScroll();if(phoneScene.matches&&!reduced.matches)watchPhoneReveal();
 let activeDialog=null,dialogTrigger=null;
 function openDialog(id){const next=document.getElementById(id);if(!next||next===activeDialog)return;if(activeDialog)activeDialog.close();else dialogTrigger=document.activeElement;activeDialog=next;next.showModal();next.scrollTop=0;}
 function closeDialog(){if(!activeDialog)return;activeDialog.close();activeDialog=null;dialogTrigger?.focus({preventScroll:true});dialogTrigger=null;}
