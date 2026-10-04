@@ -30,6 +30,7 @@ a:focus-visible{outline:2px solid var(--blue);outline-offset:6px}
 .plain{list-style:none;padding:0}
 .plain li,.rules li{padding:8px 0;border-top:1px solid #dcd7c6}
 .plain li:last-child,.rules li:last-child{border-bottom:1px solid #dcd7c6}
+.requests li strong{display:block;font-weight:600;margin-bottom:3px;color:var(--red)}
 .rules li::marker{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--muted)}
 .shot{margin:40px -4vw}
 .shot img{width:100%;background:#0b0f1a;border:1px solid #cfc9b6;box-shadow:0 24px 50px -26px #29282066}
