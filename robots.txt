@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://algorhythmicss.github.io/designfolio/sitemap.xml
