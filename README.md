@@ -39,7 +39,7 @@ rupee sign, so `*-rupee.woff2` are one-glyph subsets declared with
 
 ## Site captures on the portfolio
 
-The portfolio shows a laptop and phone capture of each concept site (`assets/shots/`).
+The portfolio shows a phone capture of each concept site next to its paper-collage world (`assets/shots/`, `assets/world-*.webp`); the case-study pages use the laptop captures.
 After changing a site's first screen, regenerate them (needs Python Playwright + Pillow):
 
 ```sh
