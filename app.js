@@ -17,7 +17,8 @@ function createDraft(){
  document.getElementById('contact-details').open=true;
  const fields=new FormData(form),name=String(fields.get('name')||'').trim(),kind=String(fields.get('kind')||''),idea=String(fields.get('idea')||'').trim(),budget=String(fields.get('budget')||'').trim(),timing=String(fields.get('timing')||'').trim();
  subject=`${kind} — enquiry from ${name}`;
- draft.value=`Hi Ayush,\n\nI’m ${name}. I’m thinking about ${kind.toLowerCase()}.\n\n${idea}${budget?'\n\nBudget: '+budget:''}${timing?'\nTiming: '+timing:''}\n\nI’d love to discuss whether this would be a good fit.\n\n${name}`;
+ const thinking=kind==='Still figuring it out'?'I’m still figuring out exactly what I need.':`I’m thinking about ${kind.toLowerCase()}.`;
+ draft.value=`Hi Ayush,\n\nI’m ${name}. ${thinking}\n\n${idea}${budget?'\n\nBudget: '+budget:''}${timing?'\nTiming: '+timing:''}\n\nI’d love to discuss whether this would be a good fit.\n\n${name}`;
  updateEmailLink();form.hidden=true;result.hidden=false;result.querySelector('h3').focus({preventScroll:true});result.scrollIntoView({behavior:motionPreference.matches?'auto':'smooth',block:'start'});
  return {recipient:emailAddress,subject,message:draft.value,sent:false};
 }
@@ -30,11 +31,13 @@ document.getElementById('copy-brief').addEventListener('click',async()=>{try{awa
 const modelContext=typeof document==='undefined'?undefined:document.modelContext;
 if(modelContext?.registerTool){
  const lifecycle=new AbortController();
- const tool={name:'prepare_project_enquiry',title:'Prepare a project enquiry',description:'Prepare an editable email draft to Ayush in this page. Does not open an email app or send a message.',inputSchema:{type:'object',properties:{kind:{type:'string',enum:['A brand website','An online shop','A web app','Still figuring it out']},name:{type:'string',minLength:1,maxLength:80},idea:{type:'string',minLength:10,maxLength:1800},budget:{type:'string',maxLength:100},timing:{type:'string',maxLength:100}},required:['kind','name','idea'],additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:true},execute(input){
-  const kinds=['A brand website','An online shop','A web app','Still figuring it out'];
+ const budgets=['Under ₹50,000 ($1,500)','₹50,000 to ₹1,50,000 ($1,500 to $4,000)','Above ₹1,50,000 ($4,000)','Not sure yet'];
+ const tool={name:'prepare_project_enquiry',title:'Prepare a project enquiry',description:'Prepare an editable email draft to Ayush in this page. Does not open an email app or send a message.',inputSchema:{type:'object',properties:{kind:{type:'string',enum:['A landing page','A website or shop','A product or app','Still figuring it out']},name:{type:'string',minLength:1,maxLength:80},idea:{type:'string',minLength:10,maxLength:1800},budget:{type:'string',enum:budgets},timing:{type:'string',maxLength:100}},required:['kind','name','idea'],additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:true},execute(input){
+  const kinds=['A landing page','A website or shop','A product or app','Still figuring it out'];
   if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).some(k=>!['kind','name','idea','budget','timing'].includes(k))||!kinds.includes(input.kind))throw new Error('Choose a valid project type.');
-  for(const [key,min,max] of [['name',1,80],['idea',10,1800],['budget',0,100],['timing',0,100]]){const v=input[key];if(v===undefined&&min===0)continue;if(typeof v!=='string'||v.trim().length<min||v.length>max)throw new Error('Invalid '+key+'.');}
-  for(const key of ['kind','name','idea','budget','timing'])form.elements[key].value=input[key]||'';
+  if(input.budget!==undefined&&!budgets.includes(input.budget))throw new Error('Choose a valid budget range.');
+  for(const [key,min,max] of [['name',1,80],['idea',10,1800],['timing',0,100]]){const v=input[key];if(v===undefined&&min===0)continue;if(typeof v!=='string'||v.trim().length<min||v.length>max)throw new Error('Invalid '+key+'.');}
+  for(const key of ['kind','name','idea','budget','timing']){const el=form.elements[key];if(el instanceof RadioNodeList&&!input[key])el.forEach(r=>{r.checked=false;});else el.value=input[key]||'';}
   form.elements.name.setCustomValidity('');form.elements.idea.setCustomValidity('');
   return createDraft();
  }};
