@@ -27,8 +27,15 @@ python3 -m http.server 8000
 ```
 
 Each site is one folder: `index.html`, `styles.css`, `app.js`, `assets/`.
-Fonts load from Google Fonts; everything else is local and relative, so the
-folders can be moved or hosted independently.
+Fonts are self-hosted (woff2 in each site's `assets/fonts/`); everything is local
+and relative, so the folders can be moved or hosted independently.
+
+The portfolio and its case-study pages use two families: Newsreader (variable,
+with optical sizes, so the same file sets both headings and running text) and
+Schibsted Grotesk for interface text — labels, links, form controls. Caveat is
+kept for a single pencil note on the opening collage. The Latin subsets lack the
+rupee sign, so `*-rupee.woff2` are one-glyph subsets declared with
+`unicode-range: U+20B9`.
 
 ## Site captures on the portfolio
 

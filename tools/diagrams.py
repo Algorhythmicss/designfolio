@@ -2,7 +2,7 @@
 """Generate the small inline-SVG diagrams used by the case studies (ink on paper, no fills)."""
 import html
 INK="#292820"; MUTED="#64645b"; BLUE="#214ebe"; RED="#a64431"
-FONT="font-family:'DM Sans',sans-serif"
+FONT="font-family:'Schibsted Grotesk',sans-serif"
 
 def flow_svg(nodes, branch=None, vertical=False):
     """nodes: list of labels; branch: (from_index, label) drawn as a loop back/aside."""
