@@ -10,35 +10,6 @@ for(const dialog of [aboutDialog]){
 }
 document.getElementById('about-work').addEventListener('click',event=>{returnFocus=event.currentTarget;aboutDialog.showModal();});
 const motionPreference=window.matchMedia('(prefers-reduced-motion: reduce)');
-// The thread: a dotted line that wanders from the spool in the opening collage through the four pieces of work.
-const thread=document.querySelector('.thread');
-if(thread&&'ResizeObserver' in window){
- const section=thread.parentElement,path=thread.querySelector('path');
- let frame=0;
- const draw=()=>{
-  frame=0;
-  const W=section.clientWidth,H=section.offsetHeight,r=section.getBoundingClientRect();
-  thread.setAttribute('viewBox',`0 0 ${W} ${H}`);thread.setAttribute('width',W);thread.setAttribute('height',H);
-  const dots=[...section.querySelectorAll('.stop-dot')].map(d=>{const b=d.getBoundingClientRect();return{x:b.left-r.left+b.width/2,y:b.top-r.top+b.height/2};});
-  if(dots.length<2){path.setAttribute('d','');return;}
-  const narrow=W<760,f=n=>n.toFixed(1);
-  const pts=[{x:narrow?dots[0].x:W*0.82,y:0},...dots];
-  let d=`M${f(pts[0].x)} ${f(pts[0].y)}`;
-  // Words sit to the right of every dot, so the thread keeps to the left: it leaves each dot down-left and arrives from the upper-left.
-  const sway=narrow?22:Math.min(120,W*0.08),edge=x=>Math.max(6,Math.min(W-6,x));
-  for(let i=1;i<pts.length;i++){
-   const a=pts[i-1],b=pts[i],dy=b.y-a.y;
-   d+=` C${f(edge(a.x-sway*0.25))} ${f(a.y+dy*0.7)} ${f(edge(b.x-sway))} ${f(b.y-dy*0.4)} ${f(b.x)} ${f(b.y)}`;
-  }
-  path.setAttribute('d',d);
- };
- const schedule=()=>{if(!frame)frame=requestAnimationFrame(draw);};
- new ResizeObserver(schedule).observe(section);
- for(const img of section.querySelectorAll('img'))img.addEventListener('load',schedule,{once:true});
- window.addEventListener('load',schedule);
- if(document.fonts?.ready)document.fonts.ready.then(schedule);
- schedule();
-}
 const form=document.getElementById('enquiry-form'),result=document.getElementById('enquiry-result'),draft=document.getElementById('email-draft'),openEmail=document.getElementById('open-email'),status=document.getElementById('draft-status');
 let subject='A project enquiry for Ayush';
 function updateEmailLink(){openEmail.href=`mailto:${emailAddress}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(draft.value)}`;status.textContent='Your draft is ready. It has not been sent.';}
