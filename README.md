@@ -7,6 +7,7 @@ Everything here is plain static HTML/CSS/JS — no build step, no dependencies.
 | --- | --- | --- |
 | `/` | **Portfolio** | Intro, Leetify first, three concept sites, how we work, enquiry draft (mailto) |
 | `/leetify/` | **Leetify case study** | The real product: problem, principle, decisions, launch and growth |
+| `/work/<site>/` | **Concept case studies** | One per concept site: brief, flow, decisions, dropped directions, what I’d measure |
 | `/elsewhere/` | **Elsewhere** | Fictional two-day music & arts festival · programme, passes, demo checkout |
 | `/second-nature/` | **Second Nature** | Fictional architecture & interiors studio · scroll-driven room transformation, project studies, enquiry brief |
 | `/side-note/` | **Side Note** | Fictional coffee brand · coffee finder, brew guide, bag + demo checkout |
@@ -36,7 +37,8 @@ After changing a site's first screen, regenerate them (needs Python Playwright +
 
 ```sh
 python3 -m http.server 8766 &
-python3 tools/capture.py
+python3 tools/capture.py        # laptop + phone openings for the homepage
+python3 tools/capture_flows.py  # flow screens for the concept case studies
 ```
 
 ## Deploying
