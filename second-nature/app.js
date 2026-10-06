@@ -1,7 +1,7 @@
 'use strict';
 const projects={
  house:{title:'The Collected Home',category:'RESIDENTIAL INTERIORS / CONCEPT STUDY',image:'assets/room-after.webp',alt:'The proposed furniture arrangement in an older living room',intro:'A room with good bones, waiting for a different way of living.',parts:[['The question','The original furniture occupied much of the room and crowded the window side. How could the same room feel easier to move through, without changing its structure?'],['The proposal','Replace the deep, heavy pieces with a lower sofa, a compact round table and a separate reading chair. Keep the windows, plaster, cornice and timber floor as the room’s framework.'],['The intention','Give gathering and reading their own places, and make the route across the room clearer. This is a furniture concept, illustrated with generated before-and-after views.']],target:'transformation',cta:'Explore the before & after'},
- workshop:{title:'The Open Workshop',category:'ADAPTIVE REUSE / CONCEPT STUDY',image:'assets/spatial-study.webp',alt:'Architectural assembly drawing of a courtyard workshop',intro:'A former place of making, imagined as a place to gather.',parts:[['The question','An existing courtyard workshop has generous height, worn timber and a strong connection to its street. What could a public next chapter keep from its working past?'],['The proposal','A neighbourhood cafe and shared workshop around an open courtyard. The drawing explores retained masonry, a repaired roof and a flexible edge between making, sitting and meeting.'],['The intention','Let the building’s useful character lead the proposal. Feasibility, access, structure and servicing would need to be established before a real project could proceed.']],target:'enquiry',cta:'Tell us about a place like this'}
+ workshop:{title:'The Open Workshop',category:'ADAPTIVE REUSE / CONCEPT STUDY',image:'assets/spatial-study-v2.webp',alt:'A courtyard workshop cutaway with one tiled roof lifted above the rear making space',intro:'A former place of making, imagined as a place to gather.',parts:[['The question','An existing courtyard workshop has generous height, worn timber and a strong connection to its street. What could a public next chapter keep from its working past?'],['The proposal','A neighbourhood cafe and shared workshop around an open courtyard. The drawing explores retained masonry, a repaired roof and a flexible edge between making, sitting and meeting.'],['The intention','Let the building’s useful character lead the proposal. Feasibility, access, structure and servicing would need to be established before a real project could proceed.']],target:'enquiry',cta:'Tell us about a place like this'}
 };
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 const compactScene=matchMedia('(max-height: 620px)');
@@ -122,11 +122,6 @@ function closeDialog(){if(!activeDialog)return;activeDialog.close();activeDialog
 function showProject(id){const p=projects[id];if(!p)throw new Error('Unknown project.');document.getElementById('project-detail').innerHTML=`<div class="project-detail-inner" data-study="${id}"><p class="eyebrow">${p.category}</p><h2 id="project-dialog-title">${p.title}</h2><p>${p.intro}</p><img src="${p.image}" alt="${p.alt}"><div class="study-copy">${p.parts.map(([title,body])=>`<div><h3>${title}</h3><p>${body}</p></div>`).join('')}</div><button class="text-link" data-go="${p.target}">${p.cta}</button></div>`;openDialog('project-dialog');}
 document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.project)showProject(b.dataset.project);else if(b.dataset.open)openDialog(b.dataset.open);else if(b.hasAttribute('data-close'))closeDialog();else if(b.dataset.go){closeDialog();document.getElementById(b.dataset.go).scrollIntoView({behavior:'instant'});}});
 document.querySelectorAll('dialog').forEach(d=>{d.addEventListener('cancel',e=>{e.preventDefault();closeDialog();});d.addEventListener('click',e=>{if(e.target!==d)return;const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeDialog();});});
-const menuButton=document.querySelector('.mobile-menu'),menu=document.getElementById('mobile-nav');
-function closeMenu(){menu.hidden=true;menuButton.setAttribute('aria-expanded','false');}
-menuButton.addEventListener('click',()=>{menu.hidden=!menu.hidden;menuButton.setAttribute('aria-expanded',String(!menu.hidden));});
-menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMenu));
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!menu.hidden){closeMenu();menuButton.focus();}});
 const form=document.getElementById('brief-form'),result=document.getElementById('brief-result');
 function showBrief(){
  for(const id of ['brief-name','brief-location','brief-goals']){const field=document.getElementById(id);field.setCustomValidity(field.value.trim()?'':'Please add a little detail here.');}
@@ -136,6 +131,8 @@ function showBrief(){
  form.hidden=true;result.hidden=false;result.querySelector('h3').focus();return true;
 }
 form.addEventListener('submit',e=>{e.preventDefault();showBrief();});
+// Enable the local preview only after its submit handler exists.
+form.querySelector('[type=submit]').disabled=false;
 form.querySelectorAll('input,textarea').forEach(input=>input.addEventListener('input',()=>input.setCustomValidity('')));
 document.getElementById('edit-brief').addEventListener('click',()=>{result.hidden=true;form.hidden=false;document.getElementById('brief-name').focus();});
 document.getElementById('new-brief').addEventListener('click',()=>{form.reset();form.querySelectorAll('input,textarea').forEach(i=>i.setCustomValidity(''));result.hidden=true;form.hidden=false;form.querySelector('input').focus();});

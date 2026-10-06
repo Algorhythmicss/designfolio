@@ -1,19 +1,19 @@
 # Designfolio — decisions, state and what's next
 
 Working notes for whoever picks this up next (Ayush, or an assistant working with him).
-Last updated 7 October 2026.
+Last updated 4 October 2026.
 
 ## What this is
 
 Ayush Jain's portfolio, positioned as **product designer & engineer**: one shipped
 product (Leetify) as the centrepiece, three self-initiated concept websites as
-brand & web work, a "how we'll work together" section linked to a separate pricing page, and a contact
-section with an email-draft form.
+brand & web work, a "how we'll work together" section with prices, and a contact
+section with a form.
 
 - Live: https://algorhythmicss.github.io/designfolio/
 - Repo: github.com/Algorhythmicss/designfolio (`main`, GitHub Pages via Actions)
 - Local clone on the Mac: `~/Desktop/DESIGN/designfolio` (keep in sync with `git pull --ff-only`)
-- Owner: Ayush Jain · GitHub `Algorhythmicss` · X `@algorhythmicass` · Instagram `@ayushhhuh` · ayushhhudd@gmail.com · Physics at IITK; founding software engineer at startups
+- Owner: Ayush Jain · GitHub `Algorhythmicss` · X `@algorhythmicass` · Instagram `@ayushhhuh` · ayushhhudd@gmail.com · Kanpur, India (physics at IIT Kanpur; founding software engineer at startups)
 - Leetify: https://leetify-dun.vercel.app · Chrome Web Store id `efdidgeaehmaiobeldfiomlnhjnneghl`
 
 ## Repo map
@@ -206,12 +206,87 @@ Pricing (item 3 of the original list) is done; LinkedIn was consciously left out
   reference photographs under `work/` are never published.
 
 
-## Approved homepage — 7 October 2026
+## Local work-section review — 6 October 2026, v10
 
-The current approved opening uses Schibsted Grotesk for the heading and Newsreader for the blue promise/body, centered at 70% heading and 120% promise scale. Its handwritten invitation follows the ribbon art. Project overviews use short black summaries and upright Newsreader names over shared paper. Four scenes alternate artwork right / left / right / left with larger inter-project gaps (120px desktop, 74px phone). The latest WebP scenes live in assets/work-scenes/*-v6.webp. Leetify's real screenshot is fitted by scene-fit.js and work-screen-fit.css.
+This folder is the local portfolio study, not the Desktop deployment checkout. The approved hero is unchanged. Work now uses short black copy, upright Newsreader project names, a continuous paper background and varied art scale/placement. Second Nature's art is on the left. New paper-ground assets are `assets/work-scenes/*-v6.webp`; Elsewhere v6 is a new calmer courtyard, while the other three are targeted edits of the accepted collages.
 
-How we'll work together uses four captions around the existing ink workbench, with a sans heading and no decorative numbers. working.css owns this section. What it costs links to pricing/, whose three offers preserve the existing rates, timelines, international prices and payment terms. The homepage location line and structured city address are removed; the physics credential reads IITK.
+`work-scenes.css` is the final override. Leetify's actual UI is mapped into its measured monitor by `scene-fit.js` and `work-screen-fit.css`. Its full width is preserved; cover/top crops about 14% from the bottom. Original screenshots are unchanged. Earlier v9 source is saved in `review-history/2026-10-06-v9/`.
 
-Runtime opening files: opening.css, opening-settings.js and opening.js. Runtime work files: work-scenes.css, work-screen-fit.css and scene-fit.js. The HTML fixes data-work-layout to original. Comparison controls, rejected art and review history are kept in the local study and are not part of this release. Case studies and the three demo websites are unchanged.
+Preview: `index.html?v=10#work`; section study: `index.html?v=10&workStudy=1#work`; controls: `work-options.html?v=10&layout=original&edit=0`. The design journal at `../work/design-insights.md` distinguishes accepted, rejected and pending work. v10 is pending Ayush's review and has not been deployed.
 
-Validated locally at 1440×900 and 390×844: fonts/art load, project placement alternates, pricing navigation works and no horizontal overflow. HTML/CSS references and changed script syntax pass. This release was prepared in an isolated checkout so the older uncommitted Desktop edits could remain intact.
+Validation: 1440×900 and 390×844 visuals, no horizontal overflow, all copy within its project region. Supporting text size 110% changes the preview font from 18px to 19.8px. ArrowRight moves the selected title by 0.5% (5.04px on the 1120px preview); reset restores it. The Leetify case-study link opens its correct page. All images load and changed scripts pass syntax checks.
+
+
+## Local alternation and spacing — 7 October 2026, v11
+
+Ayush noted that the first two projects were still on the same side and requested more space between all projects. Art now runs right / left / right / left, with the text opposite, across Leetify / Elsewhere / Second Nature / Side Note. Only the three concept images are mirrored in CSS; their art contains no readable lettering. Leetify and its screen mapping are unchanged. The movable editor still transforms the parent anchor.
+
+Inter-project margins are 120px on desktop, 90px at the tablet breakpoint and 74px on phone, multiplied by the existing row-spacing control. Phone masks and margins follow the new sides. Copy, typography, art assets and the approved opening are unchanged. v10 source is retained in review-history/2026-10-07-v10/.
+
+Preview: index.html?v=11#work; controls: work-options.html?v=11&layout=original&edit=0. Visually verified at 1440×900 and 390×844: all four alternate, all images load, copy remains inside each region, no horizontal overflow. Screenshots are at ../output/portfolio-work-v11/. Local only; pending review, not deployed.
+
+
+## Process and separate pricing page — 7 October 2026, v12
+
+The pricing table moved off the homepage into pricing/index.html with pricing/pricing.css. A small existing original ink workbench introduces the page. Three open typographic offers alternate their positions on desktop, with large blue rates; phone offers stack. All rates, timeframes and half-up-front/half-at-launch terms remain. International prices are explicitly labelled. The new page uses the same self-hosted Newsreader and Schibsted fonts, including the existing matching rupee subsets. The sitemap includes /pricing/.
+
+The homepage's working-together section now has four larger serif captions, two above and two below one shared ink workbench, with a matching sans section heading. No decorative numbers or pricing table remain. On phone it uses a small ink heading illustration and a clear single-column sequence. working.css is scoped to this section. What it costs links to the new page; #costs is retained at this link for older anchors. Contact opens the existing email-draft flow; nothing new is submitted or sent.
+
+The location line and JSON-LD city address were removed. The academic credential reads IITK in the hero. Other hero settings, the alternating work composition and contact are unchanged. v11 source is preserved in review-history/2026-10-07-v11/.
+
+Preview: index.html?v=12#how; pricing/?v=12; work-options.html?v=12&layout=original&edit=0. Verified at 1440×900 and 390×844, with loaded artwork/fonts and no horizontal overflow. Pricing and enquiry navigation checked. Local references and fragments resolve, no duplicate IDs, scripts parse. Screenshots are in ../output/portfolio-v12/. Local only, pending review; not deployed.
+
+
+## Approved release pushed — 7 October 2026
+
+Ayush approved v12 and requested a push. Commit 08ef8dad063c4a395187654e3fa3aa0f5fbe8e7a was pushed to main from the clean release checkout at ../portfolio-release-2026-10-07. GitHub Pages run: https://github.com/Algorhythmicss/designfolio/actions/runs/37516210737. At 19:10 UTC on 6 October (00:40 IST on 7 October), the workflow was still waiting before any runner or steps started. No required reviewers, wait timer or custom protection rules were configured; main is allowed. The public homepage still served the previous af0dba3 version. Push is verified; deployment and live validation remain pending GitHub scheduling.
+
+The runtime release preserves the approved default visuals but removes comparison-only CSS/scripts, hidden rejected illustrations and retired Instrument font declarations. Study controls remain available locally at :8772. The original Desktop clone is intentionally untouched: main is still af0dba3 and index.html/styles.css have older uncommitted edits. Preserve or archive them before trying to sync that checkout. Continue visual iterations in this local study.
+
+
+## Deployment completed — 7 October 2026
+
+The push-triggered run 37516210737 stayed waiting without a runner/steps. A fresh workflow_dispatch on the same approved main commit 08ef8dad063c4a395187654e3fa3aa0f5fbe8e7a superseded it and succeeded: https://github.com/Algorhythmicss/designfolio/actions/runs/37518317713. Deployment completed at 19:21:35 UTC on 6 October (00:51:35 IST on 7 October). No source or protection-setting changes were needed. The precise reason the first run stalled remains unknown.
+
+Public homepage and /pricing/ were verified in the browser. Hero defaults, IITK wording, v6 artwork, new process and separate pricing are live. All four work images load, fonts and workbench load, desktop widths 1280 and 1624 and phone width 390 have no horizontal overflow. Phone pricing-to-contact navigation resolves. Exact local release was already tested at 1440×900 and 390×844. Evidence screenshots are in ../output/portfolio-release-2026-10-07/. Git release checkout remains clean; Desktop edits remain untouched.
+
+
+## Local refinement — 7 October 2026, v13
+
+Ayush rejected the empty Elsewhere courtyard as generated-looking and semantically empty, requested each website hero back alongside the project art, different art/composition for the process, bold hero credentials, a better invitation position, and closing art a little higher.
+
+Elsewhere now uses assets/work-scenes/festival-v7.webp (1898×829): a visitor discovers musicians and a small gathering behind parted rust curtains. Native image subject is at right; existing CSS mirrors it into the alternating left artwork position. Actual concept phone hero captures are visible again via work-previews.css. Leetify retains the real workspace in its monitor and adds a separate actual landing-hero capture at assets/shots/leetify-hero.webp (1280×720), captured from the live site on 7 October. Retain these visible .stop-phone/.project-preview images during future production cleanup; only .world and .screen-second are still hidden rejected exploration.
+
+Process art is assets/process-v13/idea-to-product.webp, a transparent 1024×1536 paper sculpture progressing from rough sketch scraps through folds/prototypes to a resolved screen. Four unchanged captions read downward and alternate around it on desktop. Phone uses a smaller full illustration and clear left-aligned captions. working.css replaces the desk/2×2 composition.
+
+The hero bolds 20,000, physics and founding software engineer at weight650. Invitation follows art-normalized x.50,y.83 with a minimum gap below the biography, preserving the approved type settings and expansion behavior. Closing artwork is translated upward42px on desktop and28px on phone, without shifting form controls.
+
+Preview: http://127.0.0.1:8772/index.html?v=13. Source is local only; production is still approved/deployed08ef8da(v12). User review pending. Local v12 source preserved in review-history/2026-10-07-v12/. Checked at1440×900 and390×844: all nine visible work/process images loaded, no horizontal overflow, bold credentials correct, scope expansion keeps invitation inside hero and separated from copy, contact expansion renders without sending anything. New scripts parse, HTML references/IDs valid. Full-page and section screenshots: ../output/portfolio-v13/. New artwork/prompts listed in ../work/portfolio-v13-art-direction.md.
+
+## Local concept refinements — 7 October 2026, v14
+
+All three concept sites are refined and browser-tested locally. Production remains v12, commit 08ef8da; v13 and v14 await review/publication.
+
+- **Second Nature:** `spatial-study-v2` depicts one courtyard/workshop with an aligned lifted roof. Enquiry choices use a 2 × 2 arrangement, bounded fields and a fitted action; navigation has one enquiry CTA. The complete phone illustration fits with an 8 px inset. Submit stays disabled until the JavaScript preview handler is registered, preventing the native GET fallback observed with a cached older script.
+- **Side Note:** Original bags align at a shared scale and baseline in three open columns. A continuous gesture strip sits above aligned recipe captions; phones pair each gesture with its step. Hero description uses Caveat 500. Finder, product selection, bag and demo checkout hooks are preserved.
+- **Elsewhere:** `city-chorus-blue-v14` selectively colours the central field and scraps cobalt; `event-courtyard-blue-v14` adds local blue while retaining warm dusk. Ticket names use DM Sans at 32 px / 28 px on phone, details 17 px / 16 px, prices 32 px and actions at least 48 px high. Original artwork remains.
+
+New Side Note and Second Nature hero WebPs in `assets/shots/` are wired into the overview and case pages; Elsewhere’s original hero capture remains. A clipped Elsewhere diagram note and pass wording were corrected. Leetify user-request summaries are labelled as paraphrases; sitemap dates are updated. CSS/JS versions v14 and v14.1 prevent stale assets.
+
+QA: 1440 × 900 and 390 × 844; Elsewhere also has no horizontal overflow at 320 px. Second Nature preview/edit/reset, Side Note finder recommendation/product/cart quantity/order preview, and Elsewhere programme filter/pass changes/quantity/ticket preview were checked. These remain truthful local demos, with no real submission or payment. Evidence: `../output/concepts-v14/`; baseline: `review-history/2026-10-07-concepts-before-v14/`. Design lessons are recorded in `../work/design-insights.md` as hypotheses, without conversion claims.
+
+
+## Preview placement correction — 7 October 2026, v14.2
+
+Leetify's extra .project-preview landing screenshot was removed on Ayush's request. Keep its real .screen inside the illustrated monitor. The three concept .stop-phone elements now carry desktop 1280×800 hero captures; their historical class name is retained. work-previews.css uses 20% row width on desktop and 33% on phone. Lower edges follow scene scale; concepts retain alternating artwork/copy positions. Keep these three visible proofs in production cleanup.
+
+New capture paths are assets/shots/second-nature-desktop-v14.webp and side-note-desktop-v14.webp; Elsewhere's accepted original desktop capture is unchanged. Additional v14 phone captures remain available as assets, but are no longer used in the homepage work scenes. Cache query work-previews.css?v=14.2.
+
+Verified at 1280×800,1440×900,768×900 and390×844: proofs load, text remains clear, no horizontal overflow. Current local preview: http://127.0.0.1:8772/index.html?v=14#work. Public release is still v12/08ef8da. Publication has not occurred in this refinement turn. Full pending audit: ../work/portfolio-readiness-v14.md. Artwork prompts and paths: ../output/concepts-v14/artwork-prompts.json.
+
+
+## 7 October 2026 — release first, further design pending
+
+Ayush requested publishing all current v13/v14/v14.2 changes before more design work. This checkout contains the production candidate: study imports, rejected hidden images and retired font options excluded; visible concept landscape proofs retained, extra Leetify landing screen removed. Existing Desktop changes remain untouched. Deployment result will be recorded separately after Actions and live checks.
+
+Next design feedback: the architecture illustration still does not look refined; Side Note feels too simple to be a strong work reference, with only its hero artwork accepted. Do not call these art/composition choices final. Preserve Side Note's hero while developing the rest after this release.

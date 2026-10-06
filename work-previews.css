@@ -1,0 +1,60 @@
+/* Small landscape hero proofs rest on each artwork's foreground. */
+html[data-work-layout="original"] .work-landscape :is(#elsewhere,#second-nature,#side-note){
+ --proof-row-width:min(90vw,calc(1600px - 10vw));
+}
+html[data-work-layout="original"] .work-landscape :is(#elsewhere,#second-nature,#side-note) .stop-phone{
+ position:absolute;
+ display:block;
+ width:20%;
+ height:auto;
+ aspect-ratio:8/5;
+ max-width:none;
+ margin:0;
+ padding:0;
+ object-fit:contain;
+ background:transparent;
+ border:0;
+ border-radius:0;
+ box-shadow:0 12px 22px -17px #29282066;
+ z-index:1;
+ pointer-events:none;
+ transform-origin:center bottom;
+}
+/* Each lower edge follows its printed floor/table as the scene scales. */
+html[data-work-layout="original"] .work-landscape #elsewhere .stop-phone{
+ left:34%;right:auto;
+ bottom:calc(50% - var(--proof-row-width) * .155);
+ transform:rotate(.8deg) scale(var(--work-festival-phone-scale,1));
+}
+html[data-work-layout="original"] .work-landscape #second-nature .stop-phone{
+ left:47%;right:auto;
+ bottom:calc(50% - var(--proof-row-width) * .15);
+ transform:rotate(-.9deg) scale(var(--work-room-phone-scale,1));
+}
+html[data-work-layout="original"] .work-landscape #side-note .stop-phone{
+ left:33%;right:auto;
+ bottom:calc(50% - var(--proof-row-width) * .135);
+ transform:rotate(.7deg) scale(var(--work-coffee-phone-scale,1));
+}
+@media(max-width:760px){
+ html[data-work-layout="original"] .work-landscape :is(#elsewhere,#second-nature,#side-note){
+  --proof-row-width:calc(100vw - 48px);
+ }
+ /* Stay inside the art half, clear of the existing mask's fading seam. */
+ html[data-work-layout="original"] .work-landscape :is(#elsewhere,#second-nature,#side-note) .stop-phone{
+  width:33%;
+  box-shadow:0 7px 13px -10px #29282066;
+ }
+ html[data-work-layout="original"] .work-landscape #elsewhere .stop-phone{
+  left:4%;right:auto;
+  bottom:calc(50% - var(--proof-row-width) * .22);
+ }
+ html[data-work-layout="original"] .work-landscape #second-nature .stop-phone{
+  left:auto;right:4%;
+  bottom:calc(50% - var(--proof-row-width) * .21);
+ }
+ html[data-work-layout="original"] .work-landscape #side-note .stop-phone{
+  left:4%;right:auto;
+  bottom:calc(50% - var(--proof-row-width) * .215);
+ }
+}

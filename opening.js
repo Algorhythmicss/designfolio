@@ -27,10 +27,11 @@
     const artGrowth=Math.max(0,art.getBoundingClientRect().height-baseArtHeight)*.35+Math.max(0,-values.artY);
     hero.style.minHeight=`${Math.ceil(baseHeight+copyGrowth+artGrowth)}px`;
    }
-   // The note belongs to the ribbon, so it follows the image through every adjustment.
+   // Center the invitation on the paper ribbon and leave a clear gap below the biography.
    const imageRect=art.getBoundingClientRect(),heroRect=hero.getBoundingClientRect();
-   hero.style.setProperty('--invitation-x',`${imageRect.left-heroRect.left+imageRect.width*.56}px`);
-   hero.style.setProperty('--invitation-y',`${imageRect.top-heroRect.top+imageRect.height*.76}px`);
+   hero.style.setProperty('--invitation-x',`${imageRect.left-heroRect.left+imageRect.width*.50}px`);
+   const invitationY=Math.max(imageRect.top-heroRect.top+imageRect.height*.83,copyBottom()+44);
+   hero.style.setProperty('--invitation-y',`${invitationY}px`);
    publish();updateLinks();
   }
   function calibrate(){
