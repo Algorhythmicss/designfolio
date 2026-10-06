@@ -1,0 +1,24 @@
+/* Only the original scene mode uses the measured monitor aperture.
+   The screenshot file and the other three composition studies are unchanged. */
+html[data-work-layout="original"] .work-landscape #leetify .stop-art img.screen{
+ position:absolute;
+ left:var(--scene-screen-left,51.68%);
+ top:var(--scene-screen-top,20.45%);
+ width:var(--scene-screen-width,33.82%);
+ max-width:none;
+ height:var(--scene-screen-height,43.25%);
+ object-fit:cover;
+ object-position:center top;
+ clip-path:var(--scene-screen-clip,none);
+ border:0;
+ border-radius:0;
+ box-shadow:none;
+ margin:0;
+ padding:0;
+ transform:none;
+ visibility:hidden;
+}
+html[data-work-layout="original"] .work-landscape #leetify[data-screen-fit="ready"] .stop-art img.screen{visibility:visible}
+@media(max-width:1100px){
+ html[data-work-layout="original"] .work-landscape #leetify .work-scene{object-position:var(--monitor-scene-position,74%) center}
+}

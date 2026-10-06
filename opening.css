@@ -1,0 +1,55 @@
+/* Opening study. All rules are scoped to the first section. */
+.making{width:100%;padding:calc(clamp(112px,8.8vw,141px) + var(--opening-top-offset,0px)) 24px 0;aspect-ratio:3/2;min-height:780px}
+.making-art{top:auto;bottom:0;transform:translate(var(--opening-art-x,0%),var(--opening-art-y,-30px)) scale(var(--opening-art-scale,1.03));transform-origin:50% 100%}
+.making-copy{width:min(var(--opening-heading-width,660px),100%);max-width:none;margin-inline:auto;position:relative}
+.making-copy h1{margin:0 0 var(--opening-bio-gap,21px);line-height:1;letter-spacing:-.035em}
+.making-title{display:block;font-size:calc(clamp(60px,5.85vw,86px) * var(--opening-title-scale,1));font-weight:var(--opening-heading-weight,400);line-height:var(--opening-heading-leading,1);letter-spacing:var(--opening-heading-tracking,-.035em);white-space:nowrap;font-optical-sizing:auto}
+.making-copy .making-promise{display:block;font-size:calc(clamp(38px,3.55vw,52px) * var(--opening-promise-scale,1));line-height:var(--opening-blue-leading,1.12);letter-spacing:-.018em;margin-top:var(--opening-line-gap,1px)}
+.making-bio{max-width:var(--opening-bio-width,430px);margin:0 auto;text-align:left}
+.making-bio>p{font-family:var(--serif);font-optical-sizing:auto;font-size:var(--opening-bio-size,19px);line-height:var(--opening-bio-leading,1.34);text-wrap:pretty;margin:0 0 var(--opening-paragraph-gap,11px)}
+.making-bio>p:last-of-type{margin-bottom:0}
+.making-bio a{color:var(--red);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+.making-bio .scope-note{margin:var(--opening-summary-gap,13px) 0 0}
+.making-bio .scope-note>summary{display:block;width:max-content;max-width:100%;margin-inline:auto;text-align:center;font-family:var(--hand);font-size:var(--opening-summary-size,25px);font-weight:400;font-style:normal;color:var(--ink);line-height:1.3;padding:4px 0 5px;text-decoration-thickness:1px;text-underline-offset:6px}
+.making-bio .scope-note>p{font-family:var(--serif);font-size:var(--opening-bio-size,19px);line-height:var(--opening-bio-leading,1.34);max-width:none;margin:14px 0 0;text-wrap:pretty}
+.making:has(.scope-note[open]){padding-bottom:200px;aspect-ratio:auto;min-height:max(930px,calc(min(100vw,1600px)*.666667 + 150px))}
+.making:has(.scope-note[open]) .making-art{top:auto;bottom:0}
+.work-invitation{top:var(--invitation-y,76%);left:var(--invitation-x,56%);bottom:auto;font-size:25px;margin:0;transform:translate(-50%,-50%) rotate(-5deg)}
+html[data-opening-type='modern'] .making-title{font-family:var(--sans);font-size:calc(clamp(48px,4.85vw,70px) * var(--opening-title-scale,1));font-weight:var(--opening-heading-weight,600);letter-spacing:var(--opening-heading-tracking,-.06em);line-height:var(--opening-heading-leading,1.1)}
+html[data-opening-type='modern'] .making-promise{margin-top:var(--opening-line-gap,1px)}
+html[data-opening-align='center'] .making-bio{text-align:center}
+html[data-opening-align='center'] .making-bio>p{text-wrap:balance}
+html[data-opening-align='center'] .making-bio>p:nth-of-type(2){max-width:460px;margin-inline:auto}
+html[data-opening-align='justify'] .making-bio>p,
+html[data-opening-align='justify'] .making-bio .scope-note>p{text-align:justify;text-align-last:left;text-justify:inter-word;text-wrap:wrap;hyphens:auto;hyphenate-limit-chars:7 3 3}
+html[data-opening-study] .work-landscape,html[data-opening-study] .working,html[data-opening-study] .closing,html[data-opening-study] footer{display:none}
+@media(min-width:1600px){.making:has(.scope-note[open]){min-height:1217px}}
+@media(max-width:1000px){
+ .making{padding:calc(115px + var(--opening-top-offset,0px)) 24px 0;aspect-ratio:auto;min-height:860px}
+ .making-art{position:absolute;top:auto;bottom:0;left:-10%;width:120%;margin:0;z-index:-1}
+ .making-copy{width:min(var(--opening-heading-width,620px),100%);margin-inline:auto}
+ .making-title{font-size:calc(clamp(48px,7.4vw,74px) * var(--opening-title-scale,1))}
+ .making-copy .making-promise{font-size:calc(clamp(35px,4.8vw,48px) * var(--opening-promise-scale,1))}
+ .making-bio{max-width:var(--opening-bio-width,430px)}
+ .work-invitation{position:absolute;top:var(--invitation-y,76%);bottom:auto;left:var(--invitation-x,56%);margin:0;transform:translate(-50%,-50%) rotate(-5deg)}
+ .making:has(.scope-note[open]){padding-bottom:190px;min-height:1000px}
+ html[data-opening-type='modern'] .making-title{font-size:calc(clamp(40px,6.15vw,62px) * var(--opening-title-scale,1))}
+}
+@media(max-width:600px){
+ .making{padding:calc(110px + var(--opening-top-offset,0px)) 24px 210px;min-height:0;aspect-ratio:auto}
+ .making-copy{width:100%;margin:0}
+ .making-copy h1{margin-bottom:var(--opening-bio-gap,21px);letter-spacing:-.025em}
+ .making-title{font-size:calc(clamp(35px,9.4vw,56px) * var(--opening-title-scale,1));white-space:normal;line-height:var(--opening-heading-leading,1.07)}
+ .making-copy .making-promise{font-size:calc(clamp(30px,8.15vw,42px) * var(--opening-promise-scale,1));line-height:var(--opening-blue-leading,1.1);margin-top:var(--opening-line-gap,1px);white-space:nowrap}
+ .making-bio{width:100%;max-width:var(--opening-bio-width,430px)}
+ .making-bio>p,.making-bio .scope-note>p{font-size:var(--opening-bio-size,19px);line-height:var(--opening-bio-leading,1.34);margin-bottom:var(--opening-paragraph-gap,11px)}
+ .making-bio .scope-note{margin-top:var(--opening-summary-gap,13px)}
+ .making-bio .scope-note>summary{font-size:var(--opening-summary-size,25px)}
+ .making-art{position:absolute;bottom:-25px;top:auto;left:-34%;width:168%;margin:0;opacity:1}
+ .work-invitation{bottom:auto;font-size:24px}
+ .making:has(.scope-note[open]){padding-bottom:225px;min-height:0}
+ html[data-opening-type='modern'] .making-title{font-size:calc(clamp(29px,7.85vw,44px) * var(--opening-title-scale,1));line-height:var(--opening-heading-leading,1.1);letter-spacing:var(--opening-heading-tracking,-.055em)}
+ html[data-opening-type='modern'] .making-promise{margin-top:var(--opening-line-gap,1px)}
+}
+@media(max-width:360px){.header{gap:12px}.header .identity{font-size:20px;white-space:nowrap}.header .header-contact{font-size:12px}}
+html[data-opening-scaled] .making-title,html[data-opening-scaled] .making-promise{white-space:normal;text-wrap:balance}

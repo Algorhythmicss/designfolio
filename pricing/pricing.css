@@ -1,0 +1,131 @@
+/* The shared stylesheet supplies the self-hosted Newsreader and Schibsted faces.
+   Its rupee subsets use the same normal styles and variable weight descriptors. */
+.pricing-page{background:var(--paper);color:var(--ink)}
+.pricing-header,.pricing-footer{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:24px;
+ max-width:1440px;
+ margin:auto;
+ padding:28px 5vw;
+ font-family:var(--sans);
+ font-size:13px;
+ font-weight:500;
+ line-height:1.4;
+}
+.pricing-header a,.pricing-footer a{padding:7px 0;text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px}
+.pricing-header a:first-child{color:var(--muted)}
+.pricing-main{max-width:1280px;margin:auto;padding:0 5vw;overflow:visible}
+.pricing-opening{text-align:center;padding:64px 0 70px}
+.pricing-spot{width:320px;max-width:75%;height:auto;margin:0 auto 25px}
+.pricing-opening h1{
+ font-family:var(--serif);
+ font-optical-sizing:auto;
+ font-size:clamp(68px,7.2vw,104px);
+ font-weight:400;
+ line-height:1.04;
+ letter-spacing:-.045em;
+ margin:0 0 26px;
+ text-wrap:balance;
+}
+.pricing-opening>p{font-family:var(--serif);font-size:23px;line-height:1.42;color:var(--muted);margin:auto;max-width:460px}
+.pricing-offers{max-width:1090px;margin:auto}
+.pricing-offer{
+ display:grid;
+ grid-template-columns:repeat(12,minmax(0,1fr));
+ column-gap:20px;
+ align-items:center;
+ padding:64px 0 104px;
+ min-height:350px;
+}
+.offer-story{grid-column:2/7;grid-row:1;text-align:center;max-width:355px;justify-self:center}
+.offer-rate{grid-column:7/13;grid-row:1;text-align:center;justify-self:center;width:100%}
+.offer-website{padding-top:90px;padding-bottom:116px}
+.offer-website .offer-story{grid-column:7/12}
+.offer-website .offer-rate{grid-column:1/7}
+.offer-product{padding-top:94px;padding-bottom:130px}
+.offer-product .offer-story{grid-column:1/6}
+.offer-product .offer-rate{grid-column:6/12}
+.offer-time{font-family:var(--sans);font-size:12px;font-weight:500;line-height:1.4;letter-spacing:.035em;color:var(--red);margin:0 0 18px}
+.offer-story h2{
+ font-family:var(--serif);
+ font-optical-sizing:auto;
+ font-size:clamp(44px,4.2vw,60px);
+ font-weight:400;
+ line-height:1.06;
+ letter-spacing:-.03em;
+ margin:0 0 21px;
+ text-wrap:balance;
+}
+.offer-copy{font-family:var(--serif);font-size:21px;line-height:1.42;text-wrap:balance;margin:0;color:var(--muted)}
+.rate-from{font-family:var(--sans);font-size:13px;line-height:1.4;color:var(--muted);margin:0 0 10px}
+.rate-amount{
+ font-family:var(--serif);
+ font-optical-sizing:auto;
+ font-size:clamp(56px,6.4vw,88px);
+ font-weight:400;
+ line-height:1.08;
+ letter-spacing:-.05em;
+ color:var(--blue);
+ margin:0;
+ white-space:nowrap;
+ font-variant-numeric:lining-nums;
+}
+.rate-other{font-family:var(--sans);font-size:13px;line-height:1.4;color:var(--muted);margin:13px 0 0}
+.rate-other span{font-family:var(--serif);font-size:29px;line-height:1.1;color:var(--ink);margin-left:5px;letter-spacing:-.02em}
+.pricing-terms{max-width:800px;margin:0 auto;text-align:center;border-top:1px solid var(--line);padding:72px 0 55px}
+.pricing-terms h2{font-family:var(--serif);font-size:clamp(38px,3.9vw,54px);line-height:1.1;letter-spacing:-.025em;font-weight:400;margin:0 0 24px;text-wrap:balance}
+.pricing-terms h2 em{color:var(--blue)}
+.pricing-terms>p{font-family:var(--serif);font-size:21px;line-height:1.5;color:var(--muted);margin:auto;max-width:570px;text-wrap:balance}
+.pricing-terms .day-rate{margin-top:10px}
+.day-rate span{color:var(--ink);white-space:nowrap}
+.day-rate small{display:block;font-family:var(--sans);font-size:13px;line-height:1.5;margin-top:8px}
+.pricing-contact{text-align:center;padding:55px 0 108px}
+.pricing-contact h2{font-family:var(--serif);font-size:clamp(34px,3vw,42px);line-height:1.2;font-weight:400;letter-spacing:-.02em;margin:0 0 19px}
+.pricing-contact h2 a{color:var(--red);text-decoration:underline;text-underline-offset:8px;text-decoration-thickness:1px}
+.pricing-contact p{font-family:var(--serif);font-size:21px;line-height:1.5;color:var(--muted);margin:0 0 20px;text-wrap:balance}
+.pricing-email{font-family:var(--sans);font-size:14px;line-height:1.5;text-decoration:underline;text-underline-offset:5px}
+.pricing-footer{border-top:1px solid var(--line);max-width:1280px;font-size:13px;padding-top:25px;padding-bottom:35px}
+.pricing-footer a:first-child{font-family:var(--serif);font-size:23px;font-weight:500;letter-spacing:-.02em;text-decoration:none}
+@media(max-width:1000px){
+ .pricing-offer{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:40px;padding:65px 0 85px}
+ .pricing-offer .offer-story{grid-column:1;max-width:340px}
+ .pricing-offer .offer-rate{grid-column:2}
+ .offer-website .offer-story{grid-column:2}
+ .offer-website .offer-rate{grid-column:1}
+ .offer-story h2{font-size:47px}
+ .offer-copy{font-size:20px}
+ .rate-amount{font-size:clamp(52px,7vw,70px)}
+}
+@media(max-width:650px){
+ .pricing-header,.pricing-footer{padding:22px 24px;font-size:11px;gap:20px}
+ .pricing-header a{max-width:48%;line-height:1.5}
+ .pricing-header a:last-child{text-align:right}
+ .pricing-main{padding:0 24px}
+ .pricing-opening{padding:48px 0 58px}
+ .pricing-spot{width:300px;max-width:100%;margin-bottom:24px}
+ .pricing-opening h1{font-size:clamp(52px,13vw,70px);margin-bottom:21px}
+ .pricing-opening>p{font-size:20px;max-width:310px}
+ .pricing-offer{display:flex;flex-direction:column;gap:32px;min-height:0;padding:42px 0 78px}
+ .pricing-offer .offer-story{width:100%;max-width:330px}
+ .offer-time{font-size:11px;margin-bottom:15px}
+ .offer-story h2{font-size:42px;line-height:1.08;margin-bottom:18px}
+ .offer-copy{font-size:20px;line-height:1.43}
+ .offer-landing h2 br{display:none}
+ .rate-from{font-size:12px;margin-bottom:7px}
+ .rate-amount{font-size:clamp(52px,14.5vw,67px)}
+ .rate-other{margin-top:10px;font-size:12px}
+ .rate-other span{font-size:26px}
+ .pricing-terms{padding:52px 0 34px}
+ .pricing-terms h2{font-size:37px;margin-bottom:22px}
+ .pricing-terms>p{font-size:20px;line-height:1.45}
+ .pricing-terms .day-rate{margin-top:13px}
+ .pricing-contact{padding:45px 0 72px}
+ .pricing-contact h2{font-size:33px}
+ .pricing-contact p{font-size:20px}
+ .pricing-email{font-size:13px}
+ .pricing-footer{align-items:flex-start}
+ .pricing-footer a:first-child{font-size:20px;white-space:nowrap}
+ .pricing-footer a:last-child{font-size:11px;text-align:right;max-width:145px}
+}

@@ -1,19 +1,19 @@
 # Designfolio — decisions, state and what's next
 
 Working notes for whoever picks this up next (Ayush, or an assistant working with him).
-Last updated 4 October 2026.
+Last updated 7 October 2026.
 
 ## What this is
 
 Ayush Jain's portfolio, positioned as **product designer & engineer**: one shipped
 product (Leetify) as the centrepiece, three self-initiated concept websites as
-brand & web work, a "how we'll work together" section with prices, and a contact
-section with a form.
+brand & web work, a "how we'll work together" section linked to a separate pricing page, and a contact
+section with an email-draft form.
 
 - Live: https://algorhythmicss.github.io/designfolio/
 - Repo: github.com/Algorhythmicss/designfolio (`main`, GitHub Pages via Actions)
 - Local clone on the Mac: `~/Desktop/DESIGN/designfolio` (keep in sync with `git pull --ff-only`)
-- Owner: Ayush Jain · GitHub `Algorhythmicss` · X `@algorhythmicass` · Instagram `@ayushhhuh` · ayushhhudd@gmail.com · Kanpur, India (physics at IIT Kanpur; founding software engineer at startups)
+- Owner: Ayush Jain · GitHub `Algorhythmicss` · X `@algorhythmicass` · Instagram `@ayushhhuh` · ayushhhudd@gmail.com · Physics at IITK; founding software engineer at startups
 - Leetify: https://leetify-dun.vercel.app · Chrome Web Store id `efdidgeaehmaiobeldfiomlnhjnneghl`
 
 ## Repo map
@@ -204,3 +204,14 @@ Pricing (item 3 of the original list) is done; LinkedIn was consciously left out
   face and any `unicode-range` subset (see Design system).
 - Keep the honesty boundaries: fictional businesses, demo flows, no invented metrics,
   reference photographs under `work/` are never published.
+
+
+## Approved homepage — 7 October 2026
+
+The current approved opening uses Schibsted Grotesk for the heading and Newsreader for the blue promise/body, centered at 70% heading and 120% promise scale. Its handwritten invitation follows the ribbon art. Project overviews use short black summaries and upright Newsreader names over shared paper. Four scenes alternate artwork right / left / right / left with larger inter-project gaps (120px desktop, 74px phone). The latest WebP scenes live in assets/work-scenes/*-v6.webp. Leetify's real screenshot is fitted by scene-fit.js and work-screen-fit.css.
+
+How we'll work together uses four captions around the existing ink workbench, with a sans heading and no decorative numbers. working.css owns this section. What it costs links to pricing/, whose three offers preserve the existing rates, timelines, international prices and payment terms. The homepage location line and structured city address are removed; the physics credential reads IITK.
+
+Runtime opening files: opening.css, opening-settings.js and opening.js. Runtime work files: work-scenes.css, work-screen-fit.css and scene-fit.js. The HTML fixes data-work-layout to original. Comparison controls, rejected art and review history are kept in the local study and are not part of this release. Case studies and the three demo websites are unchanged.
+
+Validated locally at 1440×900 and 390×844: fonts/art load, project placement alternates, pricing navigation works and no horizontal overflow. HTML/CSS references and changed script syntax pass. This release was prepared in an isolated checkout so the older uncommitted Desktop edits could remain intact.
