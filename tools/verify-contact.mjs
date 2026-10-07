@@ -26,23 +26,24 @@ class Fields{
  append(name,value){this.values.set(name,value);}
 }
 function harness(config={},handler=async()=>({ok:true,status:200}),pageURL=''){
- const ids=['contact-options','contact-whatsapp','contact-booking','about-dialog','about-work','enquiry-form','enquiry-result','email-draft','open-email','draft-status','contact-details','edit-brief','copy-brief','direct-enquiry','reply-email','send-enquiry','send-status','prepare-note','contact-disclosure','first-product-choice'];
+ const ids=['contact-options','contact-whatsapp','contact-booking','about-dialog','about-work','enquiry-form','enquiry-result','email-draft','open-email','draft-status','contact-details','edit-brief','copy-brief','direct-enquiry','reply-email','send-enquiry','send-status','prepare-note','contact-disclosure','first-product-choice','choice-launch-grow','choice-lockdown-week','choice-look-week','choice-quarterly-checkin','enquiry-audience'];
  const elements=Object.fromEntries(ids.map(id=>[id,new Element()]));
- elements['first-product-choice'].hidden=true;elements['contact-whatsapp'].hidden=true;elements['direct-enquiry'].hidden=true;elements['send-enquiry'].disabled=true;elements['enquiry-result'].hidden=true;
+ for(const id of ['first-product-choice','choice-launch-grow','choice-lockdown-week','choice-look-week','choice-quarterly-checkin','enquiry-audience'])elements[id].hidden=true;elements['contact-whatsapp'].hidden=true;elements['direct-enquiry'].hidden=true;elements['send-enquiry'].disabled=true;elements['enquiry-result'].hidden=true;
  elements['about-dialog'].children={'[data-close]':new Element()};
  elements['enquiry-result'].children={'h3':new Element()};
  const prepareButton=new Element();prepareButton.disabled=true;
  const form=elements['enquiry-form'];form.children={'[type="submit"]':prepareButton};
- form.elements=Object.fromEntries(Object.entries({name:'Sample Visitor',kind:'Website in a Week',idea:'A clear website for my small business.',budget:'Not sure yet',timing:'Just exploring'}).map(([name,value])=>[name,new Element(value)]));
+ form.elements=Object.fromEntries(Object.entries({name:'Sample Visitor',kind:'Website in a Week',idea:'A clear website for my small business.',budget:'Not sure yet',timing:'Just exploring',users:'',revenue:'',funding:'',audience:''}).map(([name,value])=>[name,new Element(value)]));
  form.reportValidity=()=>Object.values(form.elements).every(input=>input.reportValidity());
  elements['reply-email'].value='visitor@example.com';elements['reply-email'].emailField=true;
  elements['direct-enquiry'].reportValidity=()=>elements['reply-email'].reportValidity();
  const calls=[],copied=[],timers=new Map();let nextTimer=0;
- const document={getElementById:id=>elements[id],readyState:'interactive'},windowListeners={};
+ const registeredTools=[];
+ const document={getElementById:id=>elements[id],readyState:'interactive',modelContext:{registerTool:tool=>{registeredTools.push(tool);}}},windowListeners={};
  const window={location:pageURL?{href:pageURL}:undefined,AYUSH_CONTACT:config,matchMedia:()=>({matches:false}),addEventListener:(name,handler)=>{(windowListeners[name]??=[]).push(handler);},setTimeout:callback=>{const id=++nextTimer;timers.set(id,callback);return id;},clearTimeout:id=>timers.delete(id)};
  const context=vm.createContext({document,window,URL,FormData:Fields,AbortController,RadioNodeList:class{},navigator:{clipboard:{writeText:async message=>copied.push(message)}},fetch:async(url,options)=>{calls.push({url,options});return handler(url,options);}});
  vm.runInContext(source,context);
- return {elements,prepareButton,calls,copied,timers,load:()=>{for(const handler of windowListeners.load||[])handler();},prepare:()=>form.dispatch('submit'),send:()=>elements['direct-enquiry'].dispatch('submit')};
+ return {elements,prepareButton,calls,copied,timers,registeredTools,load:()=>{for(const handler of windowListeners.load||[])handler();},prepare:()=>form.dispatch('submit'),send:()=>elements['direct-enquiry'].dispatch('submit')};
 }
 
 check(html.indexOf('contact-config.js')<html.indexOf('app.js'),'Config loads before the application.');
@@ -133,7 +134,7 @@ for(const httpStatus of [400,429,500]){
 }
 
 // Offer links must select only known offers and cannot send or replace an enquiry.
-for(const [id,label] of Object.entries({'product-review':'Product Review','product-upgrade':'Product Upgrade Sprint','monthly-partner':'Monthly Product Partner','first-product':'First Product Build','website-week':'Website in a Week'})){
+for(const [id,label] of Object.entries({'product-review':'Product Review','product-upgrade':'Product Upgrade Sprint','monthly-partner':'Monthly Product Partner','first-product':'Idea to Launch in 6 Weeks','website-week':'Website in a Week','launch-grow':'Launch & Grow','lockdown-week':'Lockdown Week','look-week':'Look Week','quarterly-checkin':'Quarterly Check-in'})){
  const h=harness({},undefined,`https://algorhythmicss.github.io/designfolio/?offer=${id}#contact`);
  check(h.elements['enquiry-form'].elements.kind.value===label&&h.elements['contact-details'].open,'Known pricing link selects its offer and opens the enquiry.');
  h.load();check(h.elements['enquiry-form'].lastScroll?.behavior==='instant'&&h.elements['enquiry-form'].lastScroll?.block==='start','After initial hash navigation, the selected enquiry is brought into view without a long page animation.');
@@ -145,6 +146,43 @@ for(const [id,label] of Object.entries({'product-review':'Product Review','produ
 for(const id of ['unknown','constructor','__proto__','<script>alert(1)</script>']){
  const h=harness({},undefined,`https://algorhythmicss.github.io/designfolio/?offer=${encodeURIComponent(id)}#contact`);
  check(h.elements['enquiry-form'].elements.kind.value==='Website in a Week'&&h.calls.length===0&&h.elements['first-product-choice'].hidden,'Unknown or untrusted offer parameters do not select or expose an offer.');
+}
+// Qualification stays optional; only explicit choices reach a reviewed draft.
+{
+ const h=harness();await h.prepare();
+ check(!/\n(?:Users|Revenue|Funding):/.test(h.elements['email-draft'].value),'Blank business fields add no invented status.');
+ await h.elements['edit-brief'].dispatch('click');
+ const fields=h.elements['enquiry-form'].elements;
+ fields.users.value='Has users';fields.revenue.value='Revenue-generating';fields.funding.value='Funded';
+ await h.prepare();
+ check(h.elements['email-draft'].value.includes('Users: Has users')&&h.elements['email-draft'].value.includes('Revenue: Revenue-generating')&&h.elements['email-draft'].value.includes('Funding: Funded'),'Users, revenue and funding are independent and preserved.');
+ check(h.calls.length===0,'Qualification answers are not submitted when preparing a message.');
+}
+for(const [id,label] of Object.entries({clinic:'7-Day Clinic Website',studio:'7-Day Studio Website',cafe:'7-Day Café Website'})){
+ const h=harness({},undefined,`https://algorhythmicss.github.io/designfolio/?offer=website-week&audience=${id}#contact`);
+ check(h.elements['enquiry-form'].elements.audience.value===id&&!h.elements['enquiry-audience'].hidden&&h.elements['enquiry-audience'].textContent===label,'Audience links carry a whitelisted package context.');
+ await h.prepare();check(h.elements['email-draft'].value.includes('Website package: '+label),'The reviewed website draft includes its audience package.');
+ h.elements['enquiry-form'].elements.kind.value='Product Review';await h.prepare();
+ check(!h.elements['email-draft'].value.includes('Website package:'),'Changing to another offer omits irrelevant website context.');
+}
+for(const id of ['constructor','<script>','unknown']){
+ const h=harness({},undefined,`https://algorhythmicss.github.io/designfolio/?offer=website-week&audience=${encodeURIComponent(id)}#contact`);
+ check(!h.elements['enquiry-form'].elements.audience.value&&h.elements['enquiry-audience'].hidden,'Unknown audience query values are not copied into the form.');
+}
+{
+ const h=harness(),tool=h.registeredTools[0];
+ const base={kind:'Product Review',name:'Demo Founder',idea:'Improve onboarding in our live app.'};
+ const result=tool.execute({...base,users:'Has users',revenue:'Pre-revenue',funding:'Bootstrapped'});
+ check(result.sent===false&&result.message.includes('Funding: Bootstrapped')&&h.calls.length===0,'The browser tool preserves qualification without sending.');
+ for(const field of ['users','revenue','funding']){
+  let failed=false;try{tool.execute({...base,[field]:'invented status'});}catch{failed=true;}
+  check(failed,'The browser tool rejects unsupported business status: '+field);
+ }
+ let failed=false;try{tool.execute({...base,audience:'clinic'});}catch{failed=true;}
+ check(failed,'Audience context cannot be assigned to an unrelated offer.');
+ const build=tool.execute({...base,kind:'Idea to Launch in 6 Weeks'});
+ check(!h.elements['first-product-choice'].hidden&&build.message.includes('Idea to Launch in 6 Weeks'),'The first-build browser tool reveals the renamed form choice.');
+ check(tool.inputSchema.properties.kind.enum.length===10,'All nine offers and the unsure choice are available in the browser tool.');
 }
 check(!html.includes('Under ₹50,000'),'The retired low-budget option is absent.');
 console.log(`${checks} contact boundary checks passed. All requests were stubbed; no email, WhatsApp message, or appointment was sent.`);

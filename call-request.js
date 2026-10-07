@@ -56,7 +56,9 @@ function meetTodayIST(now=Date.now()){
   const displayDate=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kolkata',day:'numeric',month:'long',year:'numeric'}).format(new Date(slot.instant));
   const displayTime=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kolkata',hour:'numeric',minute:'2-digit',hour12:true}).format(new Date(slot.instant));
   subject=`Google Meet request — ${displayDate}, ${displayTime} IST`;
-  draft.value=`Hi Ayush,\n\nI’m ${name.value.trim()}. I’d like to request a Google Meet on ${displayDate} at ${displayTime} IST (UTC+5:30).\n\nMy reply email: ${email.value.trim()}${context.value.trim()?'\n\n'+context.value.trim():''}\n\nPlease confirm whether this works and share the Meet link. I understand this time is a request, not a reserved slot.\n\n${name.value.trim()}`;
+  const options={users:['No users yet','Has users','Prefer to discuss'],revenue:['Pre-revenue','Revenue-generating','Prefer to discuss'],funding:['Bootstrapped','Funded','Prefer to discuss']},labels={users:'Users',revenue:'Revenue',funding:'Funding'};
+  const business=Object.entries(options).map(([key,values])=>{const value=document.getElementById('call-'+key)?.value;return values.includes(value)?`${labels[key]}: ${value}`:'';}).filter(Boolean).join('\n');
+  draft.value=`Hi Ayush,\n\nI’m ${name.value.trim()}. I’d like to request a Google Meet on ${displayDate} at ${displayTime} IST (UTC+5:30).\n\nMy reply email: ${email.value.trim()}${context.value.trim()?'\n\n'+context.value.trim():''}${business?'\n\n'+business:''}\n\nPlease confirm whether this works and share the Meet link. I understand this time is a request, not a reserved slot.\n\n${name.value.trim()}`;
   updateEmail();form.hidden=true;result.hidden=false;status.textContent='Your draft is ready. Nothing has been sent or reserved.';result.querySelector('h3').focus({preventScroll:true});result.scrollIntoView({block:'start'});
  });
  document.getElementById('call-prepare').disabled=false;

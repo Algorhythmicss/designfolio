@@ -23,7 +23,7 @@ class Element{
 function harness({booking='mailto:ayushhhudd@gmail.com?subject=A%20Google%20Meet',now='2026-10-07T10:00:00Z',clipboardFails=false}={}){
  let clock=Date.parse(now),networkCalls=0,storageCalls=0;
  class ClockDate extends Date{constructor(...args){super(...(args.length?args:[clock]));}static now(){return clock;}}
- const ids=['call-dialog','contact-booking','call-form','call-result','call-name','call-email','call-date','call-hour','call-minute','call-context','call-draft','call-open-email','call-status','call-close','call-prepare','call-copy','call-edit','email-draft','enquiry-form'];
+ const ids=['call-dialog','contact-booking','call-form','call-result','call-name','call-email','call-date','call-hour','call-minute','call-context','call-users','call-revenue','call-funding','call-draft','call-open-email','call-status','call-close','call-prepare','call-copy','call-edit','email-draft','enquiry-form'];
  const elements=Object.fromEntries(ids.map(id=>[id,new Element()]));
  elements['contact-booking'].href=booking;elements['contact-booking'].textContent='Arrange a Google Meet';elements['call-result'].hidden=true;elements['call-prepare'].disabled=true;
  for(const [id,value] of Object.entries({'call-name':'Sample Visitor','call-email':'visitor@example.com','call-date':'2026-10-08','call-hour':'17','call-minute':'00','call-context':'A website for my business.'})){elements[id].value=value;elements[id].required=id!=='call-context';}
@@ -130,5 +130,18 @@ for(const [hour,minute] of [['16','30'],['21',''],['21','60'],['21','3'],['21','
  const h=harness({booking:'https://calendar.app.google/owner-booking'});
  const event=await h.elements['contact-booking'].dispatch('click');
  check(!event.prevented&&!h.elements['call-dialog'].open,'A configured real booking schedule is not intercepted.');
+}
+{
+ const h=harness();await h.prepare();
+ check(!/\n(?:Users|Revenue|Funding):/.test(h.elements['call-draft'].value),'Blank call qualification does not invent a business stage.');
+ await h.elements['call-edit'].dispatch('click');
+ h.elements['call-users'].value='Has users';h.elements['call-revenue'].value='Revenue-generating';h.elements['call-funding'].value='Funded';
+ await h.prepare();const draft=h.elements['call-draft'].value;
+ check(draft.includes('Users: Has users')&&draft.includes('Revenue: Revenue-generating')&&draft.includes('Funding: Funded'),'Call qualification preserves independent users, revenue and funding answers.');
+ check(h.networkCalls===0&&h.storageCalls===0,'Qualified call requests still make no transmission or reservation.');
+ await h.elements['call-edit'].dispatch('click');
+ check(h.elements['call-funding'].value==='Funded','Returning to call details preserves the qualification answers.');
+ h.elements['call-funding'].value='arbitrary status';await h.prepare();
+ check(!h.elements['call-draft'].value.includes('arbitrary status'),'Unsupported call choice values are ignored.');
 }
 console.log(`${checks} call-request boundary checks passed. No message, appointment, network request or storage write was created.`);
