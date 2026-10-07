@@ -290,3 +290,16 @@ Verified at 1280×800,1440×900,768×900 and390×844: proofs load, text remains 
 Ayush requested publishing all current v13/v14/v14.2 changes before more design work. This checkout contains the production candidate: study imports, rejected hidden images and retired font options excluded; visible concept landscape proofs retained, extra Leetify landing screen removed. Existing Desktop changes remain untouched. Deployment result will be recorded separately after Actions and live checks.
 
 Next design feedback: the architecture illustration still does not look refined; Side Note feels too simple to be a strong work reference, with only its hero artwork accepted. Do not call these art/composition choices final. Preserve Side Note's hero while developing the rest after this release.
+
+
+## Client-readiness refinements — 7 October 2026
+
+This dated note supersedes older stack, account, metric and contact statements above. The release checkout is `/Users/mac/Documents/Codex/2026-09-22/sp/portfolio-release-2026-10-07`; the Desktop clone is deliberately dirty and must not be pulled/reset without preserving it.
+
+Leetify now documents Ayush’s supplied Manifest V3/TypeScript/Vite extension, Next.js/Vercel API, Supabase Auth/Postgres and owned extension-JWT/user-sync flow. Repository history starts 27 May 2026; these dates do not identify Chrome Web Store publish dates. Store users/rating are defined and dated; reported growth is distinguished from design hypotheses. Supabase admin queries bypass RLS and require application identity/ownership checks. Billing is not implemented.
+
+Root mobile/tablet links and choices have 44px targets; invisible full-row artwork anchors were removed in favour of explicit project links. Responsive WebP derivatives preserve the original desktop artwork and monitor coordinate mapping. Narrow-phone, phone, tablet and desktop layouts, normal email draft/edit flow, runtime references and contact boundary checks were verified locally; Pages/live verification is a separate release checkpoint.
+
+The editable email draft remains the default. `contact-config.js` contains blank public destinations. A Formspree send action stays hidden until an endpoint is configured; WhatsApp stays hidden until a number exists. “Arrange a Google Meet” opens an email until a real appointment-schedule URL replaces it. Setup details are in `tools/contact-setup.md`; `node tools/verify-contact.mjs` runs network-free boundary checks. Provider acceptance is not proof of inbox delivery. Owner endpoint, number and booking URL still need configuration and deliberate live verification.
+
+Side Note’s v15 redesign is held in `portfolio-opening-study`; no Side Note site code or case-study body changes belong to this release. Its case-page sharing metadata alone was corrected. Client-offer and commercial handover/support decisions are deferred at Ayush’s request.

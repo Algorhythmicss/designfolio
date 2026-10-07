@@ -1,0 +1,11 @@
+.contact-options{position:relative;z-index:3;display:flex;justify-content:center;flex-wrap:wrap;gap:12px 30px;margin:22px auto 0;font:500 15px/1.5 var(--sans);}
+.contact-options[hidden],.contact-options a[hidden],.direct-enquiry[hidden]{display:none;}
+.contact-options a{display:inline-flex;align-items:center;gap:10px;min-height:44px;text-decoration:underline;text-underline-offset:6px;}
+.direct-enquiry{margin:28px 0 24px;padding:24px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.direct-enquiry label{display:block;max-width:480px;}
+.direct-enquiry input{display:block;width:100%;min-height:48px;padding:10px 0;background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0;color:var(--ink);font:inherit;}
+.direct-enquiry .send-button{margin-top:14px;min-height:48px;}
+.direct-enquiry .form-note{max-width:650px;}
+.direct-enquiry button:disabled{cursor:default;opacity:.65;}
+.direct-enquiry[aria-busy="true"] button:disabled{cursor:wait;}
+@media(max-width:600px){.contact-options{gap:8px 22px;font-size:14px;margin-top:16px;}.direct-enquiry{margin:24px 0;padding:20px 0;}.direct-enquiry .send-button{width:100%;}}

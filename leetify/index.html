@@ -5,15 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#f3efdf">
 <title>Leetify — a case study by Ayush Jain</title>
-<meta name="description" content="How Leetify turned a Codeforces problem into one LeetCode-style workspace, and grew to 20,000 users. Designed, built and launched solo by Ayush Jain.">
+<meta name="description" content="How Leetify turned a Codeforces problem into one LeetCode-style workspace, and reached 20,000 listed Chrome Web Store users. Designed, built and launched solo by Ayush Jain.">
 <meta property="og:title" content="Leetify: redesigning the flow, not the site">
-<meta property="og:description" content="A Codeforces workspace used by 20,000 competitive programmers. The problem, the principle, the decisions, and how it found its users.">
+<meta property="og:description" content="A Codeforces workspace listed at 20,000 users on the Chrome Web Store. The problem, the principle, the decisions, and how it found its users.">
 <meta property="og:image" content="https://algorhythmicss.github.io/designfolio/leetify/assets/leetify-workspace.webp">
 <meta property="og:type" content="article">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%23242320'/%3E%3Cpath d='M19 19h26v26H19z' fill='none' stroke='%23dfef73' stroke-width='5'/%3E%3Cpath d='M19 45L45 19' stroke='%23dfef73' stroke-width='5'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../assets/fonts/newsreader-latin-opsz-normal.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../assets/fonts/schibsted-grotesk-latin-wght-normal.woff2">
 <link rel="stylesheet" href="../work/case.css">
+<link rel="canonical" href="https://algorhythmicss.github.io/designfolio/leetify/">
+<meta property="og:url" content="https://algorhythmicss.github.io/designfolio/leetify/">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -24,15 +27,15 @@
  <header class="study-head">
   <p class="kicker">Case study · Product</p>
   <h1>Leetify: redesigning the flow, <em>not the site.</em></h1>
-  <p class="standfirst">Leetify turns a Codeforces problem into one LeetCode-style workspace: statement, editor, tests and submit on a single page. I designed, built and launched it on my own, and it grew to 20,000 users.</p>
+  <p class="standfirst">Leetify turns a Codeforces problem into one LeetCode-style workspace: statement, editor, tests and submit on a single page, with notes, analytics and account sync. I designed and built the extension, web app and backend end to end. The Chrome Web Store lists it at 20,000 users.</p>
   <dl class="facts">
-   <div><dt>Users</dt><dd>20,000 on the Chrome Web Store, rated 4.3 out of 5</dd></div>
-   <div><dt>Growth</dt><dd>Launch to 20,000 users in about three months: the first thousand from community posts, then the jump after a creator’s unpaid reel on 3 July 2026 (800,000+ views, 20,100 shares)</dd></div>
+   <div><dt>Store listing</dt><dd>20,000 users · 4.3 out of 5 on the <a href="https://chromewebstore.google.com/detail/leetify-for-codeforces/efdidgeaehmaiobeldfiomlnhjnneghl" target="_blank" rel="noopener">Chrome Web Store</a> (checked 7 October 2026)</dd></div>
+   <div><dt>Growth</dt><dd>My reported figures: about 1,000 listed users from community posts, then about 20,000 over roughly three months, with growth following an unpaid creator reel</dd></div>
    <div><dt>My role</dt><dd>Product design, engineering and launch, solo</dd></div>
-   <div><dt>Platform</dt><dd>Chrome extension and landing page. Free, no account needed</dd></div>
+   <div><dt>Platform</dt><dd>Manifest V3 Chrome extension, Next.js web app and API on Vercel; optional sign-in for account sync</dd></div>
+   <div><dt>Started</dt><dd>27 May 2026, the first repository commit; development continued through October</dd></div>
    <div><dt>Links</dt><dd><a href="https://chromewebstore.google.com/detail/efdidgeaehmaiobeldfiomlnhjnneghl" target="_blank" rel="noopener">Install from the Chrome Web Store</a> · <a href="https://leetify-dun.vercel.app/" target="_blank" rel="noopener">leetify-dun.vercel.app</a></dd></div>
   </dl>
-  <!-- To add when you have them: start month/year, and the stack (e.g. “Timeline: Mar 2026 → now · Built with: TypeScript, Monaco, Vite”). -->
  </header>
 
  <figure class="shot">
@@ -82,12 +85,47 @@
   </figure>
 
   <h3>Leave out what adds friction</h3>
-  <p>There’s no account and no sign-up. Install it, open a problem, and it works.</p>
+  <p>The workspace is available without signing in. Account sign-in is there when you want solves, notes and profile data to sync.</p>
+ </section>
+
+ <section id="engineering">
+  <h2>The engineering behind account sync</h2>
+  <p>A Codeforces content script needs an identity of its own to sync solves and notes; it cannot rely on the Vercel app’s browser cookie. I built the sign-in, extension token, database migrations and user APIs as one connected system.</p>
+  <dl class="facts" aria-label="Leetify implementation stack">
+   <div><dt>Extension</dt><dd>TypeScript, Vite 8 and Manifest V3; separate builds for the content script, theme bootstrap, auth bridge, background worker and popup. LightningCSS, KaTeX and highlight.js handle styles, maths and code.</dd></div>
+   <div><dt>Web &amp; API</dt><dd>Next.js 14 App Router, React 18, TypeScript, Tailwind 3 and Zod, hosted on Vercel.</dd></div>
+   <div><dt>Auth &amp; data</dt><dd>Supabase Auth with Google OAuth and email/password; Supabase Postgres for users, solves, streaks and problem notebooks. Extension JWTs use jose and HS256.</dd></div>
+   <div><dt>Monitoring</dt><dd>Vercel Analytics and Speed Insights.</dd></div>
+  </dl>
+
+  <h3>From sign-in to a synced solve</h3>
+  <ol class="rules">
+   <li><strong>Sign in on the web app.</strong> Supabase handles Google OAuth or email/password; the OAuth callback exchanges the PKCE code. The API syncs the user record, then issues a 30-day extension JWT.</li>
+   <li><strong>Hand the identity to the extension.</strong> The auth bridge passes the token to the background service worker, which keeps it in Chrome local storage. Content scripts and the popup ask that worker to make authenticated user API requests.</li>
+   <li><strong>Verify and sync on the server.</strong> Each user API verifies the Bearer token and uses its verified user identity for solves, streaks, notebooks, handles and calibration. The worker requests a refresh when fewer than 24 hours remain before expiry; sign-out clears the extension identity.</li>
+  </ol>
+
+  <h3>Decisions that made the pieces fit</h3>
+  <ul class="plain">
+   <li><strong>Separate web and extension auth.</strong> An application JWT carries the user IDs and plan, rather than passing the Supabase cookie session into Codeforces pages. The background worker centralises token handling and API traffic.</li>
+   <li><strong>Keep the permission boundaries explicit.</strong> Browser database clients can read their own rows under row-level security. Server APIs use the Supabase admin client, which bypasses RLS, so those routes enforce ownership through the verified application identity. The extension’s API host permissions target the Vercel origin, with localhost for development. The server enables extension CORS only on extension API paths.</li>
+   <li><strong>Migrate accounts without losing their data.</strong> I moved from Clerk to Supabase Auth, renamed the stored auth identity and used email linking for legacy user rows.</li>
+  </ul>
+  <p>What shipped: sign-in from extension to web and back, authenticated user sync, token refresh and sign-out, plus production Manifest V3 packaging. A free/pro plan field exists in the data model; paid billing has not been implemented.</p>
+
+  <h3>Built in increments</h3>
+  <ul class="plain">
+   <li><strong>27–28 May 2026.</strong> First repository commit, landing page and auth, and the first extension packages.</li>
+   <li><strong>3–4 June.</strong> Analytics, notebooks and extension JWTs; the Supabase Auth migration, tighter browser RLS policies and extension API CORS.</li>
+   <li><strong>2 July.</strong> Calibration onboarding and its database migration.</li>
+   <li><strong>August–October.</strong> Extension release work and landing-page refinements.</li>
+  </ul>
+  <p class="boundary">Dates above come from repository history, manifests and migrations, rather than Chrome Web Store publication records.</p>
  </section>
 
  <section>
   <h2>Shipping what users asked for</h2>
-  <p>Leetify ships in small versions, shaped by what users ask for. The latest went out in August 2026.</p>
+  <p>Leetify ships in small versions, shaped by what users ask for. The extension and listing show version 0.2.2; the landing page’s release notes still stop at 0.1.8.</p>
   <p>The biggest features weren’t in the first release. They came from requests, paraphrased below in roughly this order:</p>
   <ul class="plain requests">
    <li><strong>“Make the coding panel behave like a real editor.”</strong> The panel became a VS Code-style editor: syntax highlighting, the shortcuts people already use, resizable panes and one-click formatting for messy code.</li>
@@ -95,7 +133,7 @@
    <li><strong>“I want to keep notes on problems.”</strong> My Notes: notes attach to the problem, can be pinned, and are searchable by text, problem, contest, rating or tag.</li>
    <li><strong>“Show me how I’m doing.”</strong> The analytics panel: solve streaks, an activity heatmap, difficulty distribution and the suggested next difficulty, with the reasons spelled out.</li>
   </ul>
-  <p>Version 0.1.8 shows the kind of detail daily users notice:</p>
+  <p>The 0.1.8 release notes show the kind of detail daily users notice:</p>
   <ul class="plain">
    <li>Problem statements render math properly, so constraints read at a glance.</li>
    <li>Sample inputs and outputs keep their line breaks, so multi-line cases match the original.</li>
@@ -107,23 +145,22 @@
  <section>
   <h2>Launch and growth: from 1,000 users to 20,000</h2>
   <p>The first thousand came from showing up where competitive programmers already talk: blog posts on Codeforces, posts on LinkedIn and comments on Instagram coding posts. No ads.</p>
-  <p>Then, on 3 July 2026, a coding creator, hannin.dev, <a href="https://www.instagram.com/reel/DaU_8UaT0FU/" target="_blank" rel="noopener">made a reel about Leetify</a> on her own because she liked it. This is where the name and the familiar layout paid off: anyone who knew LeetCode got the idea in seconds, which is exactly what a reel needs. That took it from about 1,000 users to 20,000. From the first post to 20,000 users took about three months.</p>
-  <dl class="stats" aria-label="The reel"><div><dt>Views</dt><dd>800,000+</dd></div><div><dt>Likes</dt><dd>24.1k</dd></div><div><dt>Shares</dt><dd>20.1k</dd></div><div><dt>Saves</dt><dd>27.7k</dd></div></dl>
-  <p>Shares and saves are the numbers I care about: twenty thousand people sent it to someone, and twenty-seven thousand kept it for later. Nobody was paid to do either.</p>
+  <p>Then, on 3 July 2026, a coding creator, hannin.dev, <a href="https://www.instagram.com/reel/DaU_8UaT0FU/" target="_blank" rel="noopener">made an unpaid reel about Leetify</a>. Around that period, the listing grew from about 1,000 users to 20,000. From my first post to that point took about three months. My hypothesis is that the familiar name and layout made the idea easier to explain and share.</p>
+  <dl class="stats" aria-label="Reported figures for the creator reel"><div><dt>Views</dt><dd>800,000+</dd></div><div><dt>Likes</dt><dd>24.1k</dd></div><div><dt>Shares</dt><dd>20.1k</dd></div><div><dt>Saves</dt><dd>27.7k</dd></div></dl>
+  <p>These are the reel figures I recorded, rather than a measurement of how many viewers installed Leetify. They show why sharing matters; they do not isolate the effect of a design decision.</p>
  </section>
 
  <section>
   <h2>Results</h2>
-  <p>Leetify has 20,000 users and a 4.3 out of 5 rating on the Chrome Web Store, about twenty times its user base before the reel, three months after launch.</p>
-  <!-- To add: weekly active users or retention if the dashboard shows it, and two or three short user quotes. -->
+  <p>The <a href="https://chromewebstore.google.com/detail/leetify-for-codeforces/efdidgeaehmaiobeldfiomlnhjnneghl" target="_blank" rel="noopener">Chrome Web Store listing</a> showed 20,000 users and a 4.3 out of 5 rating when checked on 7 October 2026. My launch figures put that at about twenty times the listing count before the reel, reached over roughly three months.</p>
  </section>
 
  <section>
   <h2>What I learned</h2>
   <ul class="plain">
-   <li><strong>Familiar beats novel.</strong> Borrowing a layout people already knew made Leetify easy to adopt and easy to explain.</li>
+   <li><strong>Start from what people know.</strong> The familiar layout gives me a useful hypothesis about adoption and sharing; I have not isolated its effect in a controlled test.</li>
    <li><strong>Restraint is a feature.</strong> People didn’t want a new Codeforces, just the one they had without the tab juggling.</li>
-   <li><strong>Distribution is half the product.</strong> The first users came from going where programmers already were. The jump came from an idea simple enough for someone else to share.</li>
+   <li><strong>Distribution is part of the work.</strong> Community posts reached the first users; the larger rise followed a creator sharing the product.</li>
   </ul>
  </section>
 

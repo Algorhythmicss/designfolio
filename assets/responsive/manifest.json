@@ -1,0 +1,190 @@
+{
+  "leetify-v6": {
+    "source": "assets/work-scenes/leetify-v6.webp",
+    "sourceWidth": 1895,
+    "sourceHeight": 830,
+    "sourceBytes": 288300,
+    "variants": [
+      {
+        "path": "assets/responsive/leetify-v6-960.webp",
+        "width": 960,
+        "height": 420,
+        "bytes": 57462
+      },
+      {
+        "path": "assets/responsive/leetify-v6-1440.webp",
+        "width": 1440,
+        "height": 631,
+        "bytes": 114490
+      }
+    ]
+  },
+  "festival-v7": {
+    "source": "assets/work-scenes/festival-v7.webp",
+    "sourceWidth": 1898,
+    "sourceHeight": 829,
+    "sourceBytes": 166386,
+    "variants": [
+      {
+        "path": "assets/responsive/festival-v7-960.webp",
+        "width": 960,
+        "height": 419,
+        "bytes": 46500
+      },
+      {
+        "path": "assets/responsive/festival-v7-1440.webp",
+        "width": 1440,
+        "height": 629,
+        "bytes": 97766
+      }
+    ]
+  },
+  "room-v6": {
+    "source": "assets/work-scenes/room-v6.webp",
+    "sourceWidth": 1898,
+    "sourceHeight": 829,
+    "sourceBytes": 224074,
+    "variants": [
+      {
+        "path": "assets/responsive/room-v6-960.webp",
+        "width": 960,
+        "height": 419,
+        "bytes": 46992
+      },
+      {
+        "path": "assets/responsive/room-v6-1440.webp",
+        "width": 1440,
+        "height": 629,
+        "bytes": 106380
+      }
+    ]
+  },
+  "coffee-v6": {
+    "source": "assets/work-scenes/coffee-v6.webp",
+    "sourceWidth": 1891,
+    "sourceHeight": 831,
+    "sourceBytes": 263384,
+    "variants": [
+      {
+        "path": "assets/responsive/coffee-v6-960.webp",
+        "width": 960,
+        "height": 422,
+        "bytes": 58300
+      },
+      {
+        "path": "assets/responsive/coffee-v6-1440.webp",
+        "width": 1440,
+        "height": 633,
+        "bytes": 130604
+      }
+    ]
+  },
+  "elsewhere-desktop": {
+    "source": "assets/shots/elsewhere-desktop.webp",
+    "sourceWidth": 1280,
+    "sourceHeight": 800,
+    "sourceBytes": 143538,
+    "variants": [
+      {
+        "path": "assets/responsive/elsewhere-desktop-480.webp",
+        "width": 480,
+        "height": 300,
+        "bytes": 40808
+      },
+      {
+        "path": "assets/responsive/elsewhere-desktop-800.webp",
+        "width": 800,
+        "height": 500,
+        "bytes": 93244
+      }
+    ]
+  },
+  "second-nature-desktop-v14": {
+    "source": "assets/shots/second-nature-desktop-v14.webp",
+    "sourceWidth": 1280,
+    "sourceHeight": 800,
+    "sourceBytes": 55134,
+    "variants": [
+      {
+        "path": "assets/responsive/second-nature-desktop-v14-480.webp",
+        "width": 480,
+        "height": 300,
+        "bytes": 12838
+      },
+      {
+        "path": "assets/responsive/second-nature-desktop-v14-800.webp",
+        "width": 800,
+        "height": 500,
+        "bytes": 26358
+      }
+    ]
+  },
+  "side-note-desktop-v14": {
+    "source": "assets/shots/side-note-desktop-v14.webp",
+    "sourceWidth": 1280,
+    "sourceHeight": 800,
+    "sourceBytes": 73246,
+    "variants": [
+      {
+        "path": "assets/responsive/side-note-desktop-v14-480.webp",
+        "width": 480,
+        "height": 300,
+        "bytes": 16070
+      },
+      {
+        "path": "assets/responsive/side-note-desktop-v14-800.webp",
+        "width": 800,
+        "height": 500,
+        "bytes": 33484
+      }
+    ]
+  },
+  "idea-to-product": {
+    "source": "assets/process-v13/idea-to-product.webp",
+    "sourceWidth": 1024,
+    "sourceHeight": 1536,
+    "sourceBytes": 139502,
+    "variants": [
+      {
+        "path": "assets/responsive/idea-to-product-420.webp",
+        "width": 420,
+        "height": 630,
+        "bytes": 40324
+      },
+      {
+        "path": "assets/responsive/idea-to-product-768.webp",
+        "width": 768,
+        "height": 1152,
+        "bytes": 105458
+      }
+    ]
+  },
+  "making-connections": {
+    "source": "assets/making-connections.webp",
+    "sourceWidth": 1536,
+    "sourceHeight": 1024,
+    "sourceBytes": 229034,
+    "variants": [
+      {
+        "path": "assets/responsive/making-connections-1024.webp",
+        "width": 1024,
+        "height": 683,
+        "bytes": 135352
+      }
+    ]
+  },
+  "opening-world": {
+    "source": "assets/opening-world.webp",
+    "sourceWidth": 1536,
+    "sourceHeight": 1024,
+    "sourceBytes": 298686,
+    "variants": [
+      {
+        "path": "assets/responsive/opening-world-1024.webp",
+        "width": 1024,
+        "height": 683,
+        "bytes": 171546
+      }
+    ]
+  }
+}

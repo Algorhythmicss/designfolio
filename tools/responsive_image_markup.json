@@ -1,0 +1,42 @@
+{
+  "assets/work-scenes/leetify-v6.webp": {
+    "srcset": "assets/responsive/leetify-v6-960.webp 960w, assets/responsive/leetify-v6-1440.webp 1440w, assets/work-scenes/leetify-v6.webp 1895w",
+    "sizes": "(max-width: 760px) calc(125vw - 60px), 1895px"
+  },
+  "assets/work-scenes/festival-v7.webp": {
+    "srcset": "assets/responsive/festival-v7-960.webp 960w, assets/responsive/festival-v7-1440.webp 1440w, assets/work-scenes/festival-v7.webp 1898w",
+    "sizes": "(max-width: 760px) calc(125vw - 60px), 1898px"
+  },
+  "assets/work-scenes/room-v6.webp": {
+    "srcset": "assets/responsive/room-v6-960.webp 960w, assets/responsive/room-v6-1440.webp 1440w, assets/work-scenes/room-v6.webp 1898w",
+    "sizes": "(max-width: 760px) calc(125vw - 60px), 1898px"
+  },
+  "assets/work-scenes/coffee-v6.webp": {
+    "srcset": "assets/responsive/coffee-v6-960.webp 960w, assets/responsive/coffee-v6-1440.webp 1440w, assets/work-scenes/coffee-v6.webp 1891w",
+    "sizes": "(max-width: 760px) calc(125vw - 60px), 1891px"
+  },
+  "assets/shots/elsewhere-desktop.webp": {
+    "srcset": "assets/responsive/elsewhere-desktop-480.webp 480w, assets/responsive/elsewhere-desktop-800.webp 800w, assets/shots/elsewhere-desktop.webp 1280w",
+    "sizes": "(max-width: 760px) calc(33vw - 15.84px), 1280px"
+  },
+  "assets/shots/second-nature-desktop-v14.webp": {
+    "srcset": "assets/responsive/second-nature-desktop-v14-480.webp 480w, assets/responsive/second-nature-desktop-v14-800.webp 800w, assets/shots/second-nature-desktop-v14.webp 1280w",
+    "sizes": "(max-width: 760px) calc(33vw - 15.84px), 1280px"
+  },
+  "assets/shots/side-note-desktop-v14.webp": {
+    "srcset": "assets/responsive/side-note-desktop-v14-480.webp 480w, assets/responsive/side-note-desktop-v14-800.webp 800w, assets/shots/side-note-desktop-v14.webp 1280w",
+    "sizes": "(max-width: 760px) calc(33vw - 15.84px), 1280px"
+  },
+  "assets/process-v13/idea-to-product.webp": {
+    "srcset": "assets/responsive/idea-to-product-420.webp 420w, assets/responsive/idea-to-product-768.webp 768w, assets/process-v13/idea-to-product.webp 1024w",
+    "sizes": "(max-width: 700px) min(210px, calc((100vw - 50px) * .6)), 1024px"
+  },
+  "assets/making-connections.webp": {
+    "srcset": "assets/responsive/making-connections-1024.webp 1024w, assets/making-connections.webp 1536w",
+    "sizes": "(max-width: 600px) 173.04vw, (max-width: 1000px) 123.6vw, 1536px"
+  },
+  "assets/opening-world.webp": {
+    "srcset": "assets/responsive/opening-world-1024.webp 1024w, assets/opening-world.webp 1536w",
+    "sizes": "(max-width: 760px) 172vw, (max-width: 1000px) 140vw, 1536px"
+  }
+}
