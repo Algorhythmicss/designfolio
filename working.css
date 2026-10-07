@@ -103,3 +103,11 @@
  .working .steps p{font-size:18px;line-height:1.48}
  .working-links{margin-top:36px;gap:15px 25px;font-size:13px}
 }
+
+/* Offers live on their own page; this introduction keeps the existing art-led process. */
+.working h2{margin-bottom:22px;}
+.working-intro{max-width:700px;margin:0 auto 58px;font:400 21px/1.5 var(--serif);text-wrap:pretty;}
+.working-intro a,.working-side a{color:var(--ink);text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px;}
+.working-side{max-width:650px;margin:32px auto 0;text-align:center;font:400 19px/1.5 var(--serif);}
+.choices [hidden]{display:none;}
+@media(max-width:700px){.working-intro{font-size:19px;margin-bottom:32px;}.working-side{font-size:18px;text-align:left;margin:20px 0 0;}.working-intro a,.working-side a{display:inline-block;min-height:44px;align-content:center;}}

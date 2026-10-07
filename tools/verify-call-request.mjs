@@ -37,7 +37,9 @@ function harness({booking='mailto:ayushhhudd@gmail.com?subject=A%20Google%20Meet
  return {elements,context,copied,get networkCalls(){return networkCalls;},get storageCalls(){return storageCalls;},setClock:value=>{clock=Date.parse(value);},validate:(date,time,now=clock)=>context.validateMeetRequest(date,time,now),prepare:()=>elements['call-form'].dispatch('submit')};
 }
 
-check(html.indexOf('app.js?v=16.2')<html.indexOf('call-request.js?v=16.3'),'Call handler runs after the existing contact configuration handler.');
+const contactScript=html.search(/<script\b[^>]*\bsrc="app\.js(?:\?[^"\s]*)?"/);
+const callScript=html.search(/<script\b[^>]*\bsrc="call-request\.js(?:\?[^"\s]*)?"/);
+check(contactScript>=0&&callScript>contactScript,'Call handler runs after the existing contact configuration handler.');
 check(/id="call-prepare"[^>]*type="submit" disabled/.test(html),'Call preparation stays disabled until its interception exists.');
 check(!/<input[^>]*type="time"/.test(html),'Ambiguous native time segments are absent from the request form.');
 for(const id of ['call-hour','call-minute'])check(new RegExp(`<select[^>]*id="${id}"[^>]*required><option value="">`).test(html),`Explicit required ${id} selection starts empty.`);

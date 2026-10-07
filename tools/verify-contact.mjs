@@ -16,7 +16,7 @@ class Element{
  removeAttribute(name){delete this.attributes[name];if(name==='target')this.target='';}
  setCustomValidity(message){this.validity=message;}
  reportValidity(){return !this.validity&&(!this.emailField||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.value));}
- focus(){} select(){} scrollIntoView(){} close(){} showModal(){}
+ focus(){} select(){} scrollIntoView(options){this.lastScroll=options;} close(){} showModal(){}
  getBoundingClientRect(){return {left:0,right:100,top:0,bottom:100};}
  querySelector(selector){return this.children[selector];}
 }
@@ -25,24 +25,24 @@ class Fields{
  get(name){return this.values.get(name);}
  append(name,value){this.values.set(name,value);}
 }
-function harness(config={},handler=async()=>({ok:true,status:200})){
- const ids=['contact-options','contact-whatsapp','contact-booking','about-dialog','about-work','enquiry-form','enquiry-result','email-draft','open-email','draft-status','contact-details','edit-brief','copy-brief','direct-enquiry','reply-email','send-enquiry','send-status','prepare-note','contact-disclosure'];
+function harness(config={},handler=async()=>({ok:true,status:200}),pageURL=''){
+ const ids=['contact-options','contact-whatsapp','contact-booking','about-dialog','about-work','enquiry-form','enquiry-result','email-draft','open-email','draft-status','contact-details','edit-brief','copy-brief','direct-enquiry','reply-email','send-enquiry','send-status','prepare-note','contact-disclosure','first-product-choice'];
  const elements=Object.fromEntries(ids.map(id=>[id,new Element()]));
- elements['contact-whatsapp'].hidden=true;elements['direct-enquiry'].hidden=true;elements['send-enquiry'].disabled=true;elements['enquiry-result'].hidden=true;
+ elements['first-product-choice'].hidden=true;elements['contact-whatsapp'].hidden=true;elements['direct-enquiry'].hidden=true;elements['send-enquiry'].disabled=true;elements['enquiry-result'].hidden=true;
  elements['about-dialog'].children={'[data-close]':new Element()};
  elements['enquiry-result'].children={'h3':new Element()};
  const prepareButton=new Element();prepareButton.disabled=true;
  const form=elements['enquiry-form'];form.children={'[type="submit"]':prepareButton};
- form.elements=Object.fromEntries(Object.entries({name:'Sample Visitor',kind:'A website or shop',idea:'A clear website for my small business.',budget:'Not sure yet',timing:'Just exploring'}).map(([name,value])=>[name,new Element(value)]));
+ form.elements=Object.fromEntries(Object.entries({name:'Sample Visitor',kind:'Website in a Week',idea:'A clear website for my small business.',budget:'Not sure yet',timing:'Just exploring'}).map(([name,value])=>[name,new Element(value)]));
  form.reportValidity=()=>Object.values(form.elements).every(input=>input.reportValidity());
  elements['reply-email'].value='visitor@example.com';elements['reply-email'].emailField=true;
  elements['direct-enquiry'].reportValidity=()=>elements['reply-email'].reportValidity();
  const calls=[],copied=[],timers=new Map();let nextTimer=0;
- const document={getElementById:id=>elements[id]};
- const window={AYUSH_CONTACT:config,matchMedia:()=>({matches:false}),addEventListener(){},setTimeout:callback=>{const id=++nextTimer;timers.set(id,callback);return id;},clearTimeout:id=>timers.delete(id)};
+ const document={getElementById:id=>elements[id],readyState:'interactive'},windowListeners={};
+ const window={location:pageURL?{href:pageURL}:undefined,AYUSH_CONTACT:config,matchMedia:()=>({matches:false}),addEventListener:(name,handler)=>{(windowListeners[name]??=[]).push(handler);},setTimeout:callback=>{const id=++nextTimer;timers.set(id,callback);return id;},clearTimeout:id=>timers.delete(id)};
  const context=vm.createContext({document,window,URL,FormData:Fields,AbortController,RadioNodeList:class{},navigator:{clipboard:{writeText:async message=>copied.push(message)}},fetch:async(url,options)=>{calls.push({url,options});return handler(url,options);}});
  vm.runInContext(source,context);
- return {elements,prepareButton,calls,copied,timers,prepare:()=>form.dispatch('submit'),send:()=>elements['direct-enquiry'].dispatch('submit')};
+ return {elements,prepareButton,calls,copied,timers,load:()=>{for(const handler of windowListeners.load||[])handler();},prepare:()=>form.dispatch('submit'),send:()=>elements['direct-enquiry'].dispatch('submit')};
 }
 
 check(html.indexOf('contact-config.js')<html.indexOf('app.js'),'Config loads before the application.');
@@ -131,4 +131,20 @@ for(const httpStatus of [400,429,500]){
  h.elements['reply-email'].value='visitor@example.com';h.elements['email-draft'].value='Hi';await h.send();
  check(h.calls.length===0,'An empty or too-short reviewed message never reaches the network.');
 }
+
+// Offer links must select only known offers and cannot send or replace an enquiry.
+for(const [id,label] of Object.entries({'product-review':'Product Review','product-upgrade':'Product Upgrade Sprint','monthly-partner':'Monthly Product Partner','first-product':'First Product Build','website-week':'Website in a Week'})){
+ const h=harness({},undefined,`https://algorhythmicss.github.io/designfolio/?offer=${id}#contact`);
+ check(h.elements['enquiry-form'].elements.kind.value===label&&h.elements['contact-details'].open,'Known pricing link selects its offer and opens the enquiry.');
+ h.load();check(h.elements['enquiry-form'].lastScroll?.behavior==='instant'&&h.elements['enquiry-form'].lastScroll?.block==='start','After initial hash navigation, the selected enquiry is brought into view without a long page animation.');
+ check(h.calls.length===0&&h.elements['enquiry-result'].hidden&&h.elements['email-draft'].value==='','Pricing navigation neither prepares a draft nor sends an enquiry.');
+ check(h.elements['first-product-choice'].hidden===(id!=='first-product'),'First Product Build stays outside the homepage offer choices until requested.');
+ await h.prepare();
+ check(h.elements['email-draft'].value.includes(`I’m interested in your ${label}.`),'Reviewed email preserves the selected offer name.');
+}
+for(const id of ['unknown','constructor','__proto__','<script>alert(1)</script>']){
+ const h=harness({},undefined,`https://algorhythmicss.github.io/designfolio/?offer=${encodeURIComponent(id)}#contact`);
+ check(h.elements['enquiry-form'].elements.kind.value==='Website in a Week'&&h.calls.length===0&&h.elements['first-product-choice'].hidden,'Unknown or untrusted offer parameters do not select or expose an offer.');
+}
+check(!html.includes('Under ₹50,000'),'The retired low-budget option is absent.');
 console.log(`${checks} contact boundary checks passed. All requests were stubbed; no email, WhatsApp message, or appointment was sent.`);

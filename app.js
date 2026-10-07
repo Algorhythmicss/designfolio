@@ -1,5 +1,14 @@
 'use strict';
 const emailAddress = 'ayushhhudd@gmail.com';
+const offerNames=Object.freeze({
+ 'product-review':'Product Review',
+ 'product-upgrade':'Product Upgrade Sprint',
+ 'monthly-partner':'Monthly Product Partner',
+ 'first-product':'First Product Build',
+ 'website-week':'Website in a Week'
+});
+const enquiryKinds=[...Object.values(offerNames),'Still figuring it out'];
+const enquiryBudgets=['₹20,000–₹60,000 / $500–$2,500','₹60,000–₹3,00,000 / $2,500–$6,000','₹3,00,000+ / $6,000+','Not sure yet'];
 const contactConfig=window.AYUSH_CONTACT||{};
 function formspreeUrl(value){try{const url=new URL(String(value||''));return url.protocol==='https:'&&url.hostname==='formspree.io'&&!url.port&&!url.username&&!url.password&&!url.search&&!url.hash&&/^\/f\/[a-z0-9]+\/?$/i.test(url.pathname)?url.href:'';}catch{return '';}}
 function bookingUrl(value){try{const url=new URL(String(value||''));const googleBooking=url.hostname==='calendar.app.google'&&url.pathname.length>1||url.hostname==='calendar.google.com'&&/^\/calendar\/(?:u\/\d+\/)?appointments\/schedules\/.+/.test(url.pathname);return url.protocol==='https:'&&!url.port&&!url.username&&!url.password&&googleBooking?url.href:'';}catch{return '';}}
@@ -35,7 +44,8 @@ function createDraft(){
  document.getElementById('contact-details').open=true;
  const fields=new FormData(form),name=String(fields.get('name')||'').trim(),kind=String(fields.get('kind')||''),idea=String(fields.get('idea')||'').trim(),budget=String(fields.get('budget')||'').trim(),timing=String(fields.get('timing')||'').trim();
  subject=`${kind} — enquiry from ${name}`;
- const thinking=kind==='Still figuring it out'?'I’m still figuring out exactly what I need.':`I’m thinking about ${kind.toLowerCase()}.`;
+ const thinking=kind==='Still figuring it out'?'I’m still figuring out exactly what I need.':`I’m interested in your ${kind}.`;
+ if(kind==='First Product Build'){const choice=document.getElementById('first-product-choice');if(choice)choice.hidden=false;}
  draft.value=`Hi Ayush,\n\nI’m ${name}. ${thinking}\n\n${idea}${budget?'\n\nBudget: '+budget:''}${timing?'\nTiming: '+timing:''}\n\nI’d love to discuss whether this would be a good fit.\n\n${name}`;
  updateEmailLink();form.hidden=true;result.hidden=false;result.querySelector('h3').focus({preventScroll:true});result.scrollIntoView({behavior:motionPreference.matches?'auto':'smooth',block:'start'});
  return {recipient:emailAddress,subject,message:draft.value,sent:false};
@@ -43,6 +53,17 @@ function createDraft(){
 form.addEventListener('submit',event=>{event.preventDefault();form.elements.name.setCustomValidity(form.elements.name.value.trim()?'':'Please enter your name.');form.elements.idea.setCustomValidity(form.elements.idea.value.trim().length>=10?'':'Please tell me a little more about the project.');if(form.reportValidity())createDraft();});
 // The HTML button stays disabled until the submit interception above is registered.
 form.querySelector('[type="submit"]').disabled=false;
+// A pricing-page choice opens the enquiry, never prepares or sends it automatically.
+const requestedOffer=window.location?new URL(window.location.href).searchParams.get('offer'):null;
+if(Object.hasOwn(offerNames,requestedOffer)){
+ const kind=offerNames[requestedOffer];
+ if(kind==='First Product Build'){const choice=document.getElementById('first-product-choice');if(choice)choice.hidden=false;}
+ form.elements.kind.value=kind;document.getElementById('contact-details').open=true;
+ // Initial #contact scrolling otherwise wins after deferred scripts and leaves the form below the artwork.
+ const focusOffer=()=>{form.scrollIntoView({behavior:'instant',block:'start'});form.elements.name.focus({preventScroll:true});};
+ if(document.readyState==='complete')focusOffer();else window.addEventListener('load',focusOffer,{once:true});
+}
+
 for(const field of [form.elements.name,form.elements.idea])field.addEventListener('input',()=>field.setCustomValidity(''));
 draft.addEventListener('input',()=>{if(lastAcceptedDraft&&lastAcceptedDraft===draft.value){sendState='accepted';sendEnquiry.disabled=true;sendEnquiry.textContent='Enquiry accepted';sendStatus.textContent='This draft was already accepted. A copy is kept here.';}else if(sendState==='accepted'){sendState='idle';sendEnquiry.disabled=false;sendEnquiry.textContent='Send enquiry';sendStatus.textContent='You changed the draft. This version has not been sent.';}updateEmailLink();});
 openEmail.addEventListener('click',()=>{status.textContent='Your email app can open this draft. Review it and press Send there; this page cannot confirm delivery.';});
@@ -77,9 +98,9 @@ if(directForm&&replyEmail&&sendEnquiry&&sendStatus&&formspreeEndpoint){
 const modelContext=typeof document==='undefined'?undefined:document.modelContext;
 if(modelContext?.registerTool){
  const lifecycle=new AbortController();
- const budgets=['Under ₹50,000 ($1,500)','₹50,000 to ₹1,50,000 ($1,500 to $4,000)','Above ₹1,50,000 ($4,000)','Not sure yet'];
- const tool={name:'prepare_project_enquiry',title:'Prepare a project enquiry',description:'Prepare an editable email draft to Ayush in this page. Does not open an email app or send a message.',inputSchema:{type:'object',properties:{kind:{type:'string',enum:['A landing page','A website or shop','A product or app','Still figuring it out']},name:{type:'string',minLength:1,maxLength:80},idea:{type:'string',minLength:10,maxLength:1800},budget:{type:'string',enum:budgets},timing:{type:'string',maxLength:100}},required:['kind','name','idea'],additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:true},execute(input){
-  const kinds=['A landing page','A website or shop','A product or app','Still figuring it out'];
+ const budgets=enquiryBudgets;
+ const tool={name:'prepare_project_enquiry',title:'Prepare a project enquiry',description:'Prepare an editable email draft to Ayush in this page. Does not open an email app or send a message.',inputSchema:{type:'object',properties:{kind:{type:'string',enum:enquiryKinds},name:{type:'string',minLength:1,maxLength:80},idea:{type:'string',minLength:10,maxLength:1800},budget:{type:'string',enum:budgets},timing:{type:'string',maxLength:100}},required:['kind','name','idea'],additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:true},execute(input){
+  const kinds=enquiryKinds;
   if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).some(k=>!['kind','name','idea','budget','timing'].includes(k))||!kinds.includes(input.kind))throw new Error('Choose a valid project type.');
   if(input.budget!==undefined&&!budgets.includes(input.budget))throw new Error('Choose a valid budget range.');
   for(const [key,min,max] of [['name',1,80],['idea',10,1800],['timing',0,100]]){const v=input[key];if(v===undefined&&min===0)continue;if(typeof v!=='string'||v.trim().length<min||v.length>max)throw new Error('Invalid '+key+'.');}
