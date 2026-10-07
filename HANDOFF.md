@@ -336,3 +336,7 @@ Review → Upgrade → monthly partnership is the main path, but each offer stan
 Founding discount: first three clients get 30% in exchange for an agreed case study, honest testimonial and before/after permission. Ayush explicitly confirmed monthly partnerships are discounted **only in the first month**; later months use list price. No positive-feedback requirement. Builds/Sprints remain half upfront, half at launch. Applicable taxes and third-party costs are confirmed in the quote; no unverified GST/export rules are published.
 
 Verification: 92 contact boundary checks and 88 call-request checks pass, without sending, booking or network delivery. Browser review covers desktop, tablet and narrow phones; selected-offer draft and first-build reveal retain the email-review flow. Publishing and visual acceptance are distinct; release evidence is recorded separately in the workspace design journal.
+
+## Startup roles in the hero — 7 October 2026
+
+Ayush supplied additional experience as a product manager and design lead at startups. The hero now names these alongside founding software engineer, with the same emphasis as physics. The benefit is phrased as deciding what to build, designing how people use it and turning it into working code. No companies, dates or unprovided outcomes are inferred. Art, type settings and other sections are retained.
