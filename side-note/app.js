@@ -13,9 +13,15 @@ let returnFocus = null;
 let activeDialog = null;
 let statusTimer;
 function announce(message) {
-  clearTimeout(statusTimer); $('#shop-status').textContent = message;
+  clearTimeout(statusTimer);
+  if(activeDialog?.id==='product-dialog'){
+    const status=$('#product-status');status.textContent=message;status.hidden=false;
+    $('#add-to-bag').setAttribute('aria-describedby','product-status');status.focus();return;
+  }
+  $('#shop-status').textContent = message;
   statusTimer = setTimeout(() => { $('#shop-status').textContent = ''; }, 4000);
 }
+function clearProductStatus(){const status=$('#product-status');status.textContent='';status.hidden=true;$('#add-to-bag').removeAttribute('aria-describedby');}
 function openDialog(id) {
   const dialog = document.getElementById(id);
   if (activeDialog === dialog) return;
@@ -43,6 +49,7 @@ function openProduct(id, grind = '') {
   $('#detail-image').innerHTML = '<svg class="pack-art" viewBox="' + product.cropX + ' 0 540 725" role="img" aria-label="Side Note ' + product.name + ' coffee pouch"><defs><clipPath id="pack-detail" clipPathUnits="userSpaceOnUse"><rect x="' + product.cropX + '" y="0" width="540" height="725"/></clipPath></defs><image href="assets/coffee-bags.webp" width="2170" height="725" clip-path="url(#pack-detail)"/></svg>';
   $('#detail-profile').innerHTML = '<div><dt>How it feels</dt><dd>' + product.body + '</dd></div><div><dt>How it tastes</dt><dd>' + product.brightness + '</dd></div>';
   $('#product-form').reset();
+  clearProductStatus();
   $('#product-grind').value = grinds[grind] ? grind : '';
   updateConfiguration(); openDialog('product-dialog');
 }
@@ -56,7 +63,7 @@ function updateConfiguration() {
   $('#add-to-bag').textContent = 'Add to bag · ' + money(price);
   $('#grind-help').textContent = choice.grind === 'whole' ? 'You’ll need a grinder and a coffee brewer.' : choice.grind === 'espresso' ? 'A starting grind for espresso. Your machine may need a finer adjustment.' : choice.grind ? 'Ground to suit your ' + ({french:'French press',pour:'pour-over',moka:'moka pot'}[choice.grind] || 'brewer') + '.' : 'Ground coffee needs a brewer. This isn’t instant coffee.';
 }
-$('#product-form').addEventListener('change', updateConfiguration);
+$('#product-form').addEventListener('change',()=>{clearProductStatus();updateConfiguration();});
 function validateItem(item) {
   if (!item || typeof item !== 'object' || !Object.hasOwn(products,item.id) || ![250,500].includes(item.size) || !Object.hasOwn(grinds,item.grind) || !['once','repeat'].includes(item.frequency) || !Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > 8) throw new Error('Choose a listed coffee, size, grind, delivery option and 1–8 bags.');
 }
@@ -111,6 +118,10 @@ $('#checkout-start').addEventListener('click',()=>{
 $('#back-to-bag').addEventListener('click',()=>{cartView('bag-view');$('#checkout-start').focus({preventScroll:true});});
 $('#checkout-form').addEventListener('submit',event=>{
   event.preventDefault(); if (!cart.length) return;
+  for(const id of ['customer-name','customer-address','customer-city']){
+    const field=document.getElementById(id);field.setCustomValidity(field.value.trim()?'':'Please enter this detail, rather than spaces.');
+  }
+  if(!event.currentTarget.reportValidity())return;
   const target = $('#preview-details'); target.replaceChildren();
   const address = document.createElement('p'); address.className='preview-line';
   address.textContent = $('#customer-name').value.trim()+' · '+$('#customer-email').value.trim()+' · '+$('#customer-address').value.trim()+', '+$('#customer-city').value.trim()+' '+$('#customer-pin').value;
@@ -124,8 +135,9 @@ $('#checkout-form').addEventListener('submit',event=>{
   const price = document.createElement('div');price.innerHTML=totalsMarkup();target.append(price);
   cartView('order-preview');$('#preview-title').focus({preventScroll:true});
 });
+$('#checkout-form').querySelectorAll('input').forEach(input=>input.addEventListener('input',()=>input.setCustomValidity('')));
 $('#edit-order').addEventListener('click',()=>{cartView('checkout-view');$('#checkout-title').focus({preventScroll:true});});
-$('#reset-bag').addEventListener('click',()=>{cart.length=0;$('#checkout-form').reset();renderCart();cartView('bag-view');});
+$('#reset-bag').addEventListener('click',()=>{cart.length=0;$('#checkout-form').reset();$('#checkout-form').querySelectorAll('input').forEach(input=>input.setCustomValidity(''));$('#preview-details').replaceChildren();$('#checkout-summary').replaceChildren();renderCart();cartView('bag-view');$('#cart-title').focus({preventScroll:true});});
 document.addEventListener('click',event=>{
   const button = event.target.closest('button'); if (!button) return;
   if (button.hasAttribute('data-close')) closeDialog();

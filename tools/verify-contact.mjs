@@ -70,7 +70,7 @@ function harness(config={},handler=async()=>({ok:true,status:200}),pageURL='',op
  const window={location:pageURL?{href:pageURL,replace:url=>redirects.push(String(url))}:undefined,AYUSH_CONTACT:config,matchMedia:()=>({matches:false}),addEventListener:(name,handler)=>{(windowListeners[name]??=[]).push(handler);},setTimeout:callback=>{const id=++nextTimer;timers.set(id,callback);return id;},clearTimeout:id=>timers.delete(id)};
  const context=vm.createContext({document,window,URL,URLSearchParams,FormData:Fields,AbortController,RadioNodeList:class{},navigator:{clipboard:{writeText:async message=>copied.push(message)}},fetch:async(url,options)=>{calls.push({url,options});return handler(url,options);}});
  vm.runInContext(callSource,context);
- vm.runInContext(source,context);
+ vm.runInContext(options.appSource||source,context);
  return {elements,kindRadios,prepareButton,calls,copied,redirects,timers,registeredTools,load:()=>{for(const handler of windowListeners.load||[])handler();},prepare:()=>form.dispatch('submit'),send:()=>elements['direct-enquiry'].dispatch('submit')};
 }
 
@@ -328,6 +328,12 @@ for(const bookingUrl of ['https://meet.google.com/room-example','javascript:aler
  const pending=h.send();await Promise.resolve();
  check(h.calls.length===1&&h.elements['send-enquiry'].disabled,'One explicit submit starts one request and disables duplicate submission.');
  await h.send();check(h.calls.length===1,'Repeated submission while busy does not create another request.');
+ const fields=h.elements['enquiry-form'].elements;
+ const savedForm=JSON.stringify(Object.fromEntries(Object.entries(fields).map(([key,field])=>[key,{value:field.value,checked:field.checked,disabled:field.disabled}])));
+ const savedMessage=h.elements['email-draft'].value,savedSubject=h.elements['open-email'].href;
+ assert.throws(()=>h.registeredTools[0].execute({kind:'3-Day Launch-Ready Check',name:'Another visitor',idea:'A different product with a different scope.',callbackRequested:true,callbackPhone:'+91 98765 43210',callbackDate:'2999-01-01',callbackTime:'17:15'}),/wait for the current enquiry submission/);checks++;
+ check(savedForm===JSON.stringify(Object.fromEntries(Object.entries(fields).map(([key,field])=>[key,{value:field.value,checked:field.checked,disabled:field.disabled}]))),'A browser-tool request rejected during sending preserves every saved field and callback opt-in.');
+ check(h.elements['email-draft'].value===savedMessage&&h.elements['open-email'].href===savedSubject&&h.calls.length===1,'A busy browser-tool rejection preserves the reviewed draft and delivery link without another request.');
  check(h.elements['email-draft'].disabled&&h.elements['reply-email'].disabled&&h.elements['edit-brief'].disabled,'Submitted snapshot cannot be changed while the request is pending.');
  check(h.calls[0].options.method==='POST'&&h.calls[0].options.headers.Accept==='application/json'&&h.calls[0].options.credentials==='omit','Request uses the public POST endpoint and asks for an AJAX response without account cookies.');
  check(h.calls[0].options.body.get('message')===message&&h.calls[0].options.body.get('email')==='visitor@example.com','Only the reviewed message and intended reply address are submitted.');
@@ -341,6 +347,19 @@ for(const bookingUrl of ['https://meet.google.com/room-example','javascript:aler
  check(h.elements['send-enquiry'].disabled&&h.calls.length===1,'Restoring the accepted message does not accidentally resend the same draft.');
  h.elements['email-draft'].value='';await h.elements['email-draft'].dispatch('input');
  check(!h.elements['draft-status'].textContent.includes('accepted'),'Clearing the draft never falsely reports it as accepted.');
+}
+{
+ // A mutation of the exact early guard reproduces the original failure: the
+ // later createDraft guard still rejects, but only after altering saved input.
+ const guard="  // Reject before touching the saved form while its reviewed snapshot is sending.\n  if(sendState==='sending')throw new Error('Please wait for the current enquiry submission before preparing another draft.');\n";
+ check(source.includes(guard),'The busy-tool mutation targets the early, pre-mutation guard.');
+ let finish;
+ const h=harness({formspreeEndpoint:'https://formspree.io/f/testform'},()=>new Promise(resolve=>finish=resolve),'',{appSource:source.replace(guard,'')});
+ await h.prepare();const beforeName=h.elements['enquiry-form'].elements.name.value,message=h.elements['email-draft'].value;
+ const pending=h.send();await Promise.resolve();
+ assert.throws(()=>h.registeredTools[0].execute({kind:'3-Day Launch-Ready Check',name:'Another visitor',idea:'A different product with a different scope.'}),/wait for the current enquiry submission/);checks++;
+ check(h.elements['enquiry-form'].elements.name.value!==beforeName&&h.elements['email-draft'].value===message&&h.calls.length===1,'Removing the early guard is caught by the saved-form preservation regression.');
+ finish({ok:true,status:200});await pending;
 }
 for(const httpStatus of [400,429,500]){
  const h=harness({formspreeEndpoint:'https://formspree.io/f/testform'},async()=>({ok:false,status:httpStatus}));

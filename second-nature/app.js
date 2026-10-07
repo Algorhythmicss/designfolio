@@ -20,7 +20,10 @@ const modeButton=document.getElementById('scroll-mode');
 const clamp=value=>Math.max(0,Math.min(1,value));
 const smooth=value=>{const t=clamp(value);return t*t*(3-2*t);};
 let scrollMode=!(autoScene()||phoneScene.matches);
-let reveal=(scrollMode||phoneScene.matches)?0:100,displayedReveal=reveal,animationFrame=0,scrollFrame=0,lastTime=0,manualTween=null,copyPhase='';
+let reveal=(scrollMode||(phoneScene.matches&&!reduced.matches))?0:100,displayedReveal=reveal,animationFrame=0,scrollFrame=0,lastTime=0,manualTween=null,copyPhase='';
+let revealedOnPhone=false,phoneObserver=null,phoneRevealTimer=0,phoneRevealVersion=0;
+function cancelPhoneReveal(){clearTimeout(phoneRevealTimer);phoneRevealTimer=0;phoneRevealVersion++;}
+function takeRoomControl(){cancelPhoneReveal();revealedOnPhone=true;if(phoneObserver){phoneObserver.disconnect();phoneObserver=null;}}
 function paintRoom(value){
  // Hold the original briefly, reveal it spatially, then leave time with the finished room.
  const progress=clamp((value-10)/74);
@@ -71,7 +74,7 @@ function animateRoom(time){
 }
 function setReveal(value,manual=false,immediate=false){
  if(typeof value!=='number'||!Number.isFinite(value)||value<0||value>100)throw new Error('Reveal must be a number from 0 to 100.');
- reveal=value;if(manual)scrollMode=false;
+ reveal=value;if(manual){cancelPhoneReveal();scrollMode=false;}
  manualTween=manual&&!reduced.matches&&!immediate?{from:displayedReveal,started:null}:null;
  if(reduced.matches||immediate){
   cancelAnimationFrame(animationFrame);animationFrame=0;lastTime=0;
@@ -87,25 +90,25 @@ function onScroll(){
 }
 window.addEventListener('scroll',()=>{if(!scrollFrame)scrollFrame=requestAnimationFrame(onScroll);},{passive:true});
 window.addEventListener('resize',onScroll);
-roomToggle.addEventListener('click',()=>setReveal(reveal>=50?0:100,true));
+roomToggle.addEventListener('click',()=>{takeRoomControl();setReveal(reveal>=50?0:100,true);});
 modeButton.addEventListener('click',()=>{scrollMode=true;manualTween=null;onScroll();});
 function motionPreferenceChanged(){
+ cancelPhoneReveal();if(phoneObserver){phoneObserver.disconnect();phoneObserver=null;}
  scrollMode=!(autoScene()||phoneScene.matches);
  if(phoneScene.matches&&!reduced.matches){setReveal(revealedOnPhone?100:0,true,true);watchPhoneReveal();}
  else if(!scrollMode)setReveal(100,true,true);else onScroll();
 }
 // Phones: no scroll-scrubbing. Show the original, then reveal the proposal once the room is in view.
-let revealedOnPhone=false,phoneObserver=null;
 function watchPhoneReveal(){
  if(phoneObserver||revealedOnPhone||!('IntersectionObserver' in window))return;
+ const version=phoneRevealVersion;
  phoneObserver=new IntersectionObserver(entries=>{
-  if(!entries.some(e=>e.isIntersecting))return;
+  if(version!==phoneRevealVersion||!phoneScene.matches||reduced.matches||!entries.some(e=>e.isIntersecting))return;
   phoneObserver.disconnect();phoneObserver=null;revealedOnPhone=true;
-  setTimeout(()=>{if(phoneScene.matches&&reveal<50)setReveal(100,true);},550);
+  phoneRevealTimer=setTimeout(()=>{if(version!==phoneRevealVersion)return;phoneRevealTimer=0;if(phoneScene.matches&&!reduced.matches&&reveal<50)setReveal(100,true);},550);
  },{threshold:0.6});
  phoneObserver.observe(comparison);
 }
-roomToggle.addEventListener('click',()=>{revealedOnPhone=true;if(phoneObserver){phoneObserver.disconnect();phoneObserver=null;}});
 reduced.addEventListener('change',motionPreferenceChanged);
 compactScene.addEventListener('change',motionPreferenceChanged);
 phoneScene.addEventListener('change',motionPreferenceChanged);
@@ -118,9 +121,9 @@ comparison.querySelectorAll('img').forEach(img=>{img.loading='eager';img.decode?
 paintRoom(displayedReveal);onScroll();if(phoneScene.matches&&!reduced.matches)watchPhoneReveal();
 let activeDialog=null,dialogTrigger=null;
 function openDialog(id){const next=document.getElementById(id);if(!next||next===activeDialog)return;if(activeDialog)activeDialog.close();else dialogTrigger=document.activeElement;activeDialog=next;next.showModal();next.scrollTop=0;}
-function closeDialog(){if(!activeDialog)return;activeDialog.close();activeDialog=null;dialogTrigger?.focus({preventScroll:true});dialogTrigger=null;}
+function closeDialog(restoreFocus=true){if(!activeDialog)return;activeDialog.close();activeDialog=null;if(restoreFocus)dialogTrigger?.focus({preventScroll:true});dialogTrigger=null;}
 function showProject(id){const p=projects[id];if(!p)throw new Error('Unknown project.');document.getElementById('project-detail').innerHTML=`<div class="project-detail-inner" data-study="${id}"><p class="eyebrow">${p.category}</p><h2 id="project-dialog-title">${p.title}</h2><p>${p.intro}</p><img src="${p.image}" alt="${p.alt}"><div class="study-copy">${p.parts.map(([title,body])=>`<div><h3>${title}</h3><p>${body}</p></div>`).join('')}</div><button class="text-link" data-go="${p.target}">${p.cta}</button></div>`;openDialog('project-dialog');}
-document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.project)showProject(b.dataset.project);else if(b.dataset.open)openDialog(b.dataset.open);else if(b.hasAttribute('data-close'))closeDialog();else if(b.dataset.go){closeDialog();document.getElementById(b.dataset.go).scrollIntoView({behavior:'instant'});}});
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.project)showProject(b.dataset.project);else if(b.dataset.open)openDialog(b.dataset.open);else if(b.hasAttribute('data-close'))closeDialog();else if(b.dataset.go){const destination=document.getElementById(b.dataset.go);if(!destination)return;closeDialog(false);destination.scrollIntoView({behavior:'instant'});const focusTarget=destination.querySelector('h1,h2,h3')||destination;focusTarget.setAttribute('tabindex','-1');focusTarget.focus({preventScroll:true});}});
 document.querySelectorAll('dialog').forEach(d=>{d.addEventListener('cancel',e=>{e.preventDefault();closeDialog();});d.addEventListener('click',e=>{if(e.target!==d)return;const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeDialog();});});
 const form=document.getElementById('brief-form'),result=document.getElementById('brief-result');
 function showBrief(){
@@ -140,6 +143,6 @@ const context=document.modelContext;
 if(context?.registerTool){
  const lifecycle=new AbortController();const register=t=>{try{Promise.resolve(context.registerTool(t,{signal:lifecycle.signal})).catch(()=>{});}catch{}};
  register({name:'read_studio_projects',title:'Read studio project studies',description:'Read the fictional studio’s two concept projects and service scope. No enquiry is sent.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true,untrustedContentHint:false},execute:input=>{if(input&&Object.keys(input).length)throw new Error('No input fields are accepted.');return{fictional:true,services:['Architecture','Interiors','Adaptive reuse'],projects:Object.entries(projects).map(([id,p])=>({id,title:p.title,category:p.category,intro:p.intro,story:p.parts}))};}});
- register({name:'set_room_comparison',title:'Set room comparison',description:'Set the room transformation progress. A soft spatial reveal moves across the room from original to reimagined; no percentage control is displayed. Switches to manual viewing. No data is saved.',inputSchema:{type:'object',properties:{revealPercent:{type:'number',minimum:0,maximum:100}},required:['revealPercent'],additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:false},execute:input=>{if(!input||Object.keys(input).some(k=>k!=='revealPercent'))throw new Error('Use revealPercent only.');setReveal(input.revealPercent,true);document.querySelector('.transformation-run').scrollIntoView({behavior:'instant'});return{revealPercent:reveal,view:reveal>=50?'reimagined':'original',mode:'manual',conceptVisualisations:true};}});
+ register({name:'set_room_comparison',title:'Set room comparison',description:'Set the room transformation progress. A soft spatial reveal moves across the room from original to reimagined; no percentage control is displayed. Switches to manual viewing. No data is saved.',inputSchema:{type:'object',properties:{revealPercent:{type:'number',minimum:0,maximum:100}},required:['revealPercent'],additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:false},execute:input=>{if(!input||Object.keys(input).some(k=>k!=='revealPercent'))throw new Error('Use revealPercent only.');setReveal(input.revealPercent,true);takeRoomControl();document.querySelector('.transformation-run').scrollIntoView({behavior:'instant'});return{revealPercent:reveal,view:reveal>=50?'reimagined':'original',mode:'manual',conceptVisualisations:true};}});
  window.addEventListener('pagehide',()=>lifecycle.abort(),{once:true});
 }

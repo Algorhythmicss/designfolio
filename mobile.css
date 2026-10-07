@@ -1,0 +1,93 @@
+/* Phone composition only. The approved tablet and desktop remain untouched. */
+@media (max-width:600px) {
+ .making {
+  display:grid;grid-template-columns:minmax(0,1fr);padding:106px 24px 44px;
+  min-height:0!important;aspect-ratio:auto;overflow:hidden;
+ }
+ .making-copy {display:contents}
+ .making-copy h1 {order:0;margin:0;text-align:center}
+ .making-title {font-size:29px!important;line-height:1.15!important;letter-spacing:-.055em!important}
+ .making-promise {font-size:clamp(35px,10.7vw,48px)!important;line-height:1.08!important;margin-top:6px!important}
+ .making-art {
+  position:relative;order:1;inset:auto;width:calc(100% + 48px);height:clamp(190px,61vw,310px);
+  max-width:none;object-fit:cover;object-position:50% 100%;margin:-4px -24px 22px;
+  transform:none;z-index:0;
+ }
+ .making-bio {order:2;max-width:420px;width:100%;margin:0 auto;text-align:left!important;font-size:19px;line-height:1.4}
+ .making-bio p {text-align:left!important;text-wrap:pretty;margin-bottom:18px}
+ .making-bio .making-free {margin-top:24px;text-align:center!important}
+ .making-free a {min-height:44px;display:inline-flex;align-items:center;font-size:13px}
+ .making-bio .scope-note {margin-top:12px;text-align:center}
+ .making-bio .scope-note>summary {font-size:26px;line-height:1.2;min-height:44px}
+ .making-bio .scope-note>p {margin-top:18px}
+ .making:has(.scope-note[open]) {padding-bottom:44px}
+ .work-invitation {
+  position:relative!important;order:3;inset:auto!important;width:max-content;
+  margin:28px auto 0;transform:rotate(-4deg);font-size:26px;min-height:44px;
+ }
+
+ html[data-work-layout="original"] body main .work-landscape {padding:20px 24px 10px}
+ .work-landscape>h2 {font-size:27px;line-height:1.2;padding-bottom:18px}
+ html[data-work-layout="original"] body main .work-landscape .stop {
+  display:flex;flex-direction:column;min-height:0!important;padding:0!important;
+  margin:76px 0 0!important;overflow:visible;
+ }
+ html[data-work-layout="original"] body main .work-landscape #leetify {margin-top:28px!important}
+ html[data-work-layout="original"] body main .work-landscape :is(#leetify,#elsewhere,#second-nature,#side-note) .stop-art {
+  position:relative;order:0;inset:auto;width:100%!important;max-width:none!important;
+  margin:0!important;padding:0!important;aspect-ratio:1.12;display:flex;align-items:center;
+  justify-content:flex-end;overflow:hidden;mask-image:none;-webkit-mask-image:none;
+ }
+ html[data-work-layout="original"] body main .work-landscape :is(#leetify,#elsewhere,#second-nature,#side-note) .work-scene {
+  display:block;position:relative;flex:0 0 190%!important;width:190%!important;
+  max-width:none;height:auto;object-fit:contain;object-position:center;
+  margin:0!important;transform:none;mask-image:none;
+ }
+ html[data-work-layout="original"] body main .work-landscape #second-nature .stop-art {justify-content:flex-start}
+ html[data-work-layout="original"] body main .work-landscape :is(#leetify,#elsewhere,#second-nature,#side-note) .stop-words {
+  position:relative;order:1;inset:auto;transform:none;width:100%;max-width:420px;
+  margin:18px 0 0!important;padding:0!important;text-align:left;
+ }
+ html[data-work-layout="original"] body main .work-landscape .stop h3 {font-size:38px;line-height:1.08;margin-bottom:12px;text-align:left}
+ html[data-work-layout="original"] body main .work-landscape .stop h3 a {justify-content:flex-start}
+ html[data-work-layout="original"] body main .work-landscape .stop-line {margin:0 0 14px;text-align:left}
+ html[data-work-layout="original"] body main .work-landscape .stop-line .stop-detail {font-size:19px;line-height:1.42;text-wrap:pretty}
+ html[data-work-layout="original"] body main .work-landscape .stop-links {display:flex;flex-wrap:wrap;gap:8px 26px;justify-content:flex-start}
+ html[data-work-layout="original"] body main .work-landscape :is(.stop-primary,.stop-secondary) {font-size:14px;justify-content:flex-start;min-height:44px;padding:8px 0}
+ html[data-work-layout="original"] body main .work-landscape :is(#elsewhere,#second-nature,#side-note) .stop-phone {
+  width:43%;height:auto;left:3%;right:auto;top:auto;bottom:6%;transform:rotate(-3deg);
+ }
+ html[data-work-layout="original"] body main .work-landscape #second-nature .stop-phone {left:54%;bottom:4%;transform:rotate(3deg)}
+ html[data-work-layout="original"] body main .work-landscape #side-note .stop-phone {left:2%;bottom:3%;transform:rotate(-3deg)}
+ html[data-work-layout="original"] body main .work-landscape .work-disclosure {font-size:13px;line-height:1.5;margin-top:52px}
+
+ .working {padding:40px 24px 42px;margin-top:42px}
+ .working h2 {text-align:left;font-size:28px;margin-bottom:18px}
+ .working-intro {font-size:19px;line-height:1.45;margin-bottom:28px}
+ .working-composition {display:block}
+ .working-illustration {display:none}
+ .working .steps {display:grid;gap:24px;grid-template-columns:minmax(0,1fr)}
+ .working .steps li {width:100%;margin:0!important;padding:0!important}
+ .working .steps li::before {
+  content:"";display:block;position:relative;inset:auto;width:100%;height:158px;margin:0 0 18px;
+  background:url("assets/process-v13/idea-to-product.webp") no-repeat 12% 0;
+  background-size:260px 390px;mix-blend-mode:multiply;
+  mask-image:linear-gradient(180deg,transparent,#000 8%,#000 85%,transparent);
+ }
+ .working .steps li:nth-child(2)::before {background-position:85% -113px;height:140px}
+ .working .steps li:nth-child(3)::before {background-position:12% -197px;height:132px}
+ .working .steps li:nth-child(4)::before {background-position:85% -274px;height:120px}
+ .working .steps h3 {font-size:29px;margin-bottom:10px;text-wrap:balance}
+ .working .steps p {font-size:19px;line-height:1.45}
+ .working-side {margin-top:32px;font-size:18px;line-height:1.45}
+ .working-links {justify-content:flex-start;gap:12px 24px;margin-top:22px;font-size:14px}
+
+ .closing {padding:32px 0 28px;overflow:hidden}
+ .contact-heading {margin:0 24px;text-align:left}
+ .email {font-size:clamp(29px,8.6vw,42px)}
+ .contact-options {margin:24px 24px 0;justify-content:flex-start;gap:10px 24px;text-align:left}
+ .contact-call-note {text-align:left;font-size:13px;line-height:1.5}
+ .closing-art {position:relative;inset:auto;width:120%;height:auto;max-width:none;margin:12px 0 8px -10%;transform:none;z-index:0}
+ .contact-enquiry {position:relative;margin:0 24px;text-align:left}
+ .contact-enquiry .hand-link {font-size:28px;min-height:44px;display:inline-flex;align-items:center}
+}
