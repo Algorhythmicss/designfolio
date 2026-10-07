@@ -2,6 +2,8 @@
 
 The existing email draft stays available. Preparing or editing a brief makes no network request. The email link opens a draft in the visitor’s own app; Copy message is the fallback. **Request a Google Meet** lets visitors suggest a future date and time from 5 pm onwards in India time, then review an email to `ayushhhudd@gmail.com`. Ayush confirms availability and shares the Meet link by email. This is a request, not a reservation. Opening the call panel preserves any project brief already written.
 
+The time is chosen through separate Hour and Minute dropdowns, avoiding inconsistent native AM/PM time-field states in Safari. Both choices are required; the page constructs an explicit 24-hour IST value before validating it. All minutes00–59 are available.
+
 `contact-config.js` contains three public destinations, all empty initially. Empty or invalid destinations do not create a Formspree send option or WhatsApp link. A valid booking URL replaces the call-email link with **Book a Google Meet**. Never put an API key, password, or account token in this file.
 
 ## Enable Formspree

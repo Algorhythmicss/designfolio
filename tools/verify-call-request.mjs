@@ -23,12 +23,12 @@ class Element{
 function harness({booking='mailto:ayushhhudd@gmail.com?subject=A%20Google%20Meet',now='2026-10-07T10:00:00Z',clipboardFails=false}={}){
  let clock=Date.parse(now),networkCalls=0,storageCalls=0;
  class ClockDate extends Date{constructor(...args){super(...(args.length?args:[clock]));}static now(){return clock;}}
- const ids=['call-dialog','contact-booking','call-form','call-result','call-name','call-email','call-date','call-time','call-context','call-draft','call-open-email','call-status','call-close','call-prepare','call-copy','call-edit','email-draft','enquiry-form'];
+ const ids=['call-dialog','contact-booking','call-form','call-result','call-name','call-email','call-date','call-hour','call-minute','call-context','call-draft','call-open-email','call-status','call-close','call-prepare','call-copy','call-edit','email-draft','enquiry-form'];
  const elements=Object.fromEntries(ids.map(id=>[id,new Element()]));
  elements['contact-booking'].href=booking;elements['contact-booking'].textContent='Arrange a Google Meet';elements['call-result'].hidden=true;elements['call-prepare'].disabled=true;
- for(const [id,value] of Object.entries({'call-name':'Sample Visitor','call-email':'visitor@example.com','call-date':'2026-10-08','call-time':'17:00','call-context':'A website for my business.'})){elements[id].value=value;elements[id].required=id!=='call-context';}
- elements['call-email'].emailField=true;elements['call-time'].min='17:00';
- elements['call-form'].reportValidity=()=>['call-name','call-email','call-date','call-time'].every(id=>elements[id].reportValidity());
+ for(const [id,value] of Object.entries({'call-name':'Sample Visitor','call-email':'visitor@example.com','call-date':'2026-10-08','call-hour':'17','call-minute':'00','call-context':'A website for my business.'})){elements[id].value=value;elements[id].required=id!=='call-context';}
+ elements['call-email'].emailField=true;
+ elements['call-form'].reportValidity=()=>['call-name','call-email','call-date','call-hour','call-minute'].every(id=>elements[id].reportValidity());
  elements['call-result'].children={'h3':new Element()};
  elements['email-draft'].value='An edited project draft, kept separately.';elements['enquiry-form'].hidden=true;
  const copied=[];
@@ -37,15 +37,22 @@ function harness({booking='mailto:ayushhhudd@gmail.com?subject=A%20Google%20Meet
  return {elements,context,copied,get networkCalls(){return networkCalls;},get storageCalls(){return storageCalls;},setClock:value=>{clock=Date.parse(value);},validate:(date,time,now=clock)=>context.validateMeetRequest(date,time,now),prepare:()=>elements['call-form'].dispatch('submit')};
 }
 
-check(html.indexOf('app.js?v=16.2')<html.indexOf('call-request.js?v=16.2'),'Call handler runs after the existing contact configuration handler.');
+check(html.indexOf('app.js?v=16.2')<html.indexOf('call-request.js?v=16.3'),'Call handler runs after the existing contact configuration handler.');
 check(/id="call-prepare"[^>]*type="submit" disabled/.test(html),'Call preparation stays disabled until its interception exists.');
-check(/id="call-time"[^>]*min="17:00"/.test(html),'Native time input advertises the same 5pm minimum.');
+check(!/<input[^>]*type="time"/.test(html),'Ambiguous native time segments are absent from the request form.');
+for(const id of ['call-hour','call-minute'])check(new RegExp(`<select[^>]*id="${id}"[^>]*required><option value="">`).test(html),`Explicit required ${id} selection starts empty.`);
+const optionValues=id=>[...html.match(new RegExp(`<select[^>]*id="${id}"[^>]*>(.*?)</select>`,'s'))[1].matchAll(/<option value="([^"]*)">/g)].map(match=>match[1]);
+check(JSON.stringify(optionValues('call-hour'))===JSON.stringify(['',...Array.from({length:7},(_,i)=>String(i+17))]),'Only the seven evening hours are selectable.');
+check(JSON.stringify(optionValues('call-minute'))===JSON.stringify(['',...Array.from({length:60},(_,i)=>String(i).padStart(2,'0'))]),'Every minute remains available without assuming an empty selection means 00.');
+check(/role="group" aria-labelledby="call-time-label"/.test(html)&&/for="call-hour">Hour/.test(html)&&/for="call-minute">Minute/.test(html),'Time group and both native selectors have explicit accessible labels.');
 check(/Need a time before 5pm\?[\s\S]*mailto:ayushhhudd@gmail.com\?subject=A%20Google%20Meet%20before/.test(html),'Earlier-time email fallback has the correct recipient.');
 check(/No slot is reserved here/.test(html),'The visible introduction distinguishes a request from a booking.');
 
 {
  const h=harness();
  check(!h.elements['call-prepare'].disabled&&h.elements['contact-booking'].textContent==='Request a Google Meet','Email fallback gets an enabled request panel.');
+ check(h.context.assembleMeetTime('21','30')==='21:30','Explicit 9pm and minute 30 assemble to exactly 21:30.');
+ for(const [hour,minute] of [['16','30'],['24','00'],['09','30'],['','30'],['21',''],['21','0'],['21','60'],['21','30:00'],['21',' 30'],[21,'30'],['21',30]])check(h.context.assembleMeetTime(hour,minute)==='',`Invalid or unselected time parts cannot assemble: ${hour} ${minute}`);
  check(!h.validate('2026-10-08','16:59').ok,'A request before 5pm IST is rejected.');
  check(h.validate('2026-10-08','17:00').ok,'A future request at 5pm IST is accepted.');
  check(h.validate('2026-10-08','23:59').ok,'No unrequested evening end time is imposed.');
@@ -95,9 +102,23 @@ check(/No slot is reserved here/.test(html),'The visible introduction distinguis
  h.setClock('2026-10-09T10:00:00Z');await h.prepare();
  check(!h.elements['call-form'].hidden&&!!h.elements['call-date'].validity,'Submission rechecks the current clock rather than trusting when the panel opened.');
 }
-for(const field of ['call-name','call-email','call-date','call-time']){
+for(const field of ['call-name','call-email','call-date','call-hour','call-minute']){
  const h=harness();h.elements[field].value=field==='call-name'?'   ':field==='call-email'?'not-an-email':'';await h.prepare();
  check(!h.elements['call-form'].hidden&&h.elements['call-result'].hidden,`Invalid required field never prepares a request: ${field}`);
+}
+{
+ const h=harness();h.elements['call-date'].value='2026-10-14';h.elements['call-hour'].value='21';h.elements['call-minute'].value='30';await h.prepare();
+ check(h.elements['call-form'].hidden&&h.elements['call-draft'].value.includes('14 October 2026 at 9:30 pm IST'),'The reported future 14 October 9:30pm request prepares the correctly timed draft.');
+ check(h.networkCalls===0&&h.storageCalls===0,'The regression request creates no message delivery or reserved appointment.');
+}
+for(const [hour,minute] of [['16','30'],['21',''],['21','60'],['21','3'],['21','30:00']]){
+ const h=harness();h.elements['call-hour'].value=hour;h.elements['call-minute'].value=minute;await h.prepare();
+ check(!h.elements['call-form'].hidden&&h.elements['call-result'].hidden&&!h.elements['call-draft'].value,`Tampered or incomplete choices cannot create a draft: ${hour} ${minute}`);
+ const field=hour==='16'?h.elements['call-hour']:h.elements['call-minute'];
+ check(!!field.validity,'The invalid selector receives a meaningful correction prompt.');
+ h.elements['call-hour'].value='21';h.elements['call-minute'].value='30';await field.dispatch('change');
+ check(!h.elements['call-hour'].validity&&!h.elements['call-minute'].validity,'A native change event clears the prior time error.');
+ await h.prepare();check(h.elements['call-form'].hidden&&h.elements['call-draft'].value.includes('9:30 pm IST'),'Correcting the selector recovers without closing or resetting the panel.');
 }
 {
  const h=harness({clipboardFails:true});await h.prepare();await h.elements['call-copy'].dispatch('click');
