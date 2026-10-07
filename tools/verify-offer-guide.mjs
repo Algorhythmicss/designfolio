@@ -68,7 +68,7 @@ for(const id of offerIds){
  });
  check(`${id} recommendation is provisional`,()=>assert.match(offer.fit,/possible|starting point|optional continuation/i));
  check(`${id} goal is a whitelisted token`,()=>assert.equal(offer.goal,id));
- check(`${id} query is fixed and cannot change destination`,()=>assert.equal(enquiryHref(id),`../?offer=${id}&guided=1#contact`));
+ check(`${id} query is fixed and cannot change destination`,()=>assert.equal(enquiryHref(id),`../contact/?offer=${id}&guided=1`));
  check(`${id} legacy hash is safely resolved`,()=>assert.equal(offerFromHash(`#${id}`),id==='conversation'?null:id));
  check(`${id} bare fragment is safely resolved`,()=>assert.equal(offerFromHash(id),id==='conversation'?null:id));
  check(`${id} data is deeply immutable`,()=>{
@@ -76,7 +76,7 @@ for(const id of offerIds){
   assert.throws(()=>{offer.price='Free';},TypeError);
  });
 }
-for(const audience of ['clinic','studio','cafe'])check(`Website context ${audience} retains correct price and safe enquiry`,()=>assert.equal(enquiryHref('website-week',audience),`../?offer=website-week&guided=1&audience=${audience}#contact`));
+for(const audience of ['clinic','studio','cafe'])check(`Website context ${audience} retains correct price and safe enquiry`,()=>assert.equal(enquiryHref('website-week',audience),`../contact/?offer=website-week&guided=1&audience=${audience}`));
 for(const audience of ['other','../','clinic&offer=first-product','<script>','',null,{},'https://example.com'])check(`Unrecognised audience ${String(audience)} rejects`,()=>assert.throws(()=>enquiryHref('website-week',audience),/Invalid website audience/));
 for(const id of offerIds.filter(id=>id!=='website-week'))check(`Website audience cannot leak into ${id}`,()=>assert.throws(()=>enquiryHref(id,'clinic'),/Invalid website audience/));
 for(const hash of ['#product-upgrade&offer=first-product','#%70roduct-upgrade','#conversation','#website-week?audience=clinic','#constructor','#//example.com','#product-upgrade#contact','javascript:alert(1)','https://example.com/#product-upgrade'])check(`Arbitrary hash ${hash} cannot become offer context`,()=>assert.equal(offerFromHash(hash),null));
@@ -127,7 +127,7 @@ check('Quarterly does not invent first-month eligibility',()=>{
 });
 check('Website price is visible before its context question',()=>assert.match(questions['website-kind'].hint,/₹60,000 \/ \$2,500/));
 check('Conversation does not fabricate an offer or price',()=>{
- assert.equal(enquiryHref('conversation'),'../?offer=conversation&guided=1#contact');assert.match(offers.conversation.essential,/not a paid product Check/);assert.equal(offers.conversation.price,'Scope first');
+ assert.equal(enquiryHref('conversation'),'../contact/?offer=conversation&guided=1');assert.match(offers.conversation.essential,/not a paid product Check/);assert.equal(offers.conversation.price,'Scope first');
 });
 check('Module does not revive the superseded design-led menu',()=>assert.doesNotMatch(JSON.stringify({questions,offers}),/Brand Lift|Brand Care|Brand Kit|Brand Lock|Brand & Launch Sprint/));
 check('Scope-page links are local and whitelisted',()=>assert.deepEqual([...new Set(Object.values(offers).map(offer=>offer.scopeHref).filter(Boolean))].sort(),['idea-to-launch/','launch-ready-sprint/']));

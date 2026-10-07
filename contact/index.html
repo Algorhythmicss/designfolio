@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <meta name="theme-color" content="#f3efdf">
+ <title>Start a project — Ayush Jain</title>
+ <meta name="description" content="Tell Ayush what you would like to make or improve. Start with two simple fields, add optional context, then review your editable email draft.">
+ <link rel="canonical" href="https://algorhythmicss.github.io/designfolio/contact/">
+ <meta property="og:title" content="Start a project — Ayush Jain">
+ <meta property="og:description" content="A few lines are enough to start. Design and engineering, by one person.">
+ <meta property="og:url" content="https://algorhythmicss.github.io/designfolio/contact/">
+ <meta property="og:type" content="website">
+ <meta property="og:image" content="https://algorhythmicss.github.io/designfolio/assets/og.jpg">
+ <meta name="twitter:card" content="summary_large_image">
+ <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+ <link rel="preload" as="font" type="font/woff2" crossorigin href="../assets/fonts/newsreader-latin-opsz-normal.woff2">
+ <link rel="preload" as="font" type="font/woff2" crossorigin href="../assets/fonts/schibsted-grotesk-latin-wght-normal.woff2">
+ <link rel="stylesheet" href="../styles.css?v=16.1">
+ <link rel="stylesheet" href="../contact.css?v=23">
+ <link rel="stylesheet" href="enquiry.css?v=23">
+ <script src="../contact-config.js?v=16.2" defer></script>
+ <script src="../app.js?v=23" defer></script>
+</head>
+<body class="enquiry-page">
+ <a class="skip" href="#enquiry-main">Skip to the enquiry</a>
+ <header class="enquiry-header"><a href="../">← Back to the portfolio</a><a href="mailto:ayushhhudd@gmail.com">Email me ↗</a></header>
+ <main id="enquiry-main" class="enquiry-main">
+  <img class="enquiry-art" src="../assets/making-connections.webp" srcset="../assets/responsive/making-connections-1024.webp 1024w, ../assets/making-connections.webp 1536w" sizes="100vw" width="1536" height="1024" alt="" aria-hidden="true">
+  <section class="enquiry-editor" aria-labelledby="enquiry-title">
+   <div class="enquiry-intro" id="enquiry-intro"><h1 id="enquiry-title">Start a project.</h1><p id="enquiry-intro-copy">Tell me what you’d like to make or improve. A few lines are enough.</p></div>
+   <div id="contact-details">
+    <div class="enquiry-context"><div><p class="context-label">Your starting point</p><p id="selected-offer-name">A first conversation</p><p id="enquiry-audience" class="enquiry-audience" hidden></p></div><a href="../pricing/" id="enquiry-guide-link">Change ↗</a></div>
+    <form id="enquiry-form" data-standalone="true" novalidate>
+     <fieldset hidden><legend id="enquiry-offer-title">Your starting point</legend><div class="choices">
+      <label><input type="radio" name="kind" value="3-Day Launch-Ready Check" required><span>3-Day Launch-Ready Check</span></label>
+      <label><input type="radio" name="kind" value="14-Day Launch-Ready Sprint"><span>14-Day Launch-Ready Sprint</span></label>
+      <label><input type="radio" name="kind" value="Ship Every Week"><span>Ship Every Week</span></label>
+      <label><input type="radio" name="kind" value="7-Day Website"><span>7-Day Website</span></label>
+      <label id="choice-first-impression" hidden><input type="radio" name="kind" value="Free first-impression video"><span>Free first-impression video</span></label>
+      <label id="first-product-choice" hidden><input type="radio" name="kind" value="Idea to Launch in 6 Weeks"><span>Idea to Launch in 6 Weeks</span></label>
+      <label id="choice-launch-grow" hidden><input type="radio" name="kind" value="Launch &amp; Grow"><span>Launch &amp; Grow</span></label>
+      <label id="choice-lockdown-week" hidden><input type="radio" name="kind" value="Lockdown Week"><span>Lockdown Week</span></label>
+      <label id="choice-look-week" hidden><input type="radio" name="kind" value="Look Week"><span>Look Week</span></label>
+      <label id="choice-quarterly-checkin" hidden><input type="radio" name="kind" value="Quarterly Check-in"><span>Quarterly Check-in</span></label>
+      <label><input type="radio" name="kind" value="Still figuring it out" checked><span>Not sure yet</span></label>
+     </div></fieldset>
+     <input type="hidden" name="audience" value="">
+     <p id="enquiry-guide-note" hidden>Your selected starting point. <a href="../pricing/">Change it in the guide ↗</a></p>
+     <p id="enquiry-error-summary" class="error-summary" role="alert" hidden></p>
+     <div id="enquiry-primary-fields">
+      <label class="enquiry-field" id="enquiry-name-field" for="enquiry-name"><span class="field-title">Your name</span><input id="enquiry-name" name="name" autocomplete="name" required maxlength="80" placeholder="What should I call you?" aria-describedby="enquiry-name-error"><span class="field-error" id="enquiry-name-error" hidden></span></label>
+      <label class="enquiry-field" id="enquiry-idea-field" for="enquiry-idea"><span class="field-title">What would you like to make or improve? <span id="enquiry-idea-note" hidden>(optional)</span></span><textarea id="enquiry-idea" name="idea" required minlength="10" maxlength="1800" rows="4" placeholder="What are you building, and where would you like a hand?" aria-describedby="enquiry-idea-help enquiry-idea-error"></textarea><span class="field-help" id="enquiry-idea-help">A sentence or two is plenty. No formal brief needed.</span><span class="field-error" id="enquiry-idea-error" hidden></span></label>
+     </div>
+     <details id="enquiry-extra" class="enquiry-extra"><summary>Add a few details <span>optional</span></summary><div id="enquiry-extra-fields">
+      <label class="enquiry-field" id="enquiry-homepage-field" for="enquiry-homepage"><span class="field-title">Product or website link <span id="enquiry-homepage-note">(optional)</span></span><input id="enquiry-homepage" name="homepage" type="url" inputmode="url" autocomplete="url" maxlength="1000" placeholder="your-product.com" aria-describedby="first-impression-note enquiry-homepage-error"><span id="first-impression-note" class="field-help" hidden>Use a public link I can open without an invitation.</span><span class="field-error" id="enquiry-homepage-error" hidden></span></label>
+      <div class="enquiry-pair" id="enquiry-budget-timing">
+       <label class="enquiry-field" for="enquiry-budget"><span class="field-title">Budget</span><select id="enquiry-budget" name="budget"><option value="">Leave it open for now</option><option value="₹20,000–₹60,000 / $500–$2,500">₹20k–60k / $500–2.5k</option><option value="₹60,000–₹3,00,000 / $2,500–$6,000">₹60k–3 lakh / $2.5k–6k</option><option value="₹3,00,000+ / $6,000+">₹3 lakh+ / $6k+</option><option value="Not sure yet">I’d like guidance</option></select></label>
+       <label class="enquiry-field" for="enquiry-timing"><span class="field-title">Timing</span><input id="enquiry-timing" name="timing" maxlength="100" placeholder="A date, or just exploring"></label>
+      </div>
+      <fieldset id="enquiry-business" class="business-context"><legend>Where the product is now</legend><div class="qualification-fields">
+       <label for="enquiry-users">Users<select id="enquiry-users" name="users"><option value="">Leave blank</option><option value="No users yet">No users yet</option><option value="Has users">Has users</option><option value="Prefer to discuss">Prefer to discuss</option></select></label>
+       <label for="enquiry-revenue">Revenue<select id="enquiry-revenue" name="revenue"><option value="">Leave blank</option><option value="Pre-revenue">Pre-revenue</option><option value="Revenue-generating">Revenue-generating</option><option value="Prefer to discuss">Prefer to discuss</option></select></label>
+       <label for="enquiry-funding">Funding<select id="enquiry-funding" name="funding"><option value="">Leave blank</option><option value="Bootstrapped">Bootstrapped</option><option value="Funded">Funded</option><option value="Prefer to discuss">Prefer to discuss</option></select></label>
+      </div><p class="field-help">Stages are enough; no figures needed.</p></fieldset>
+     </div></details>
+     <div class="enquiry-submit"><button class="send-button" type="submit" disabled>Review my message <span aria-hidden="true">↗</span></button><p class="form-note" id="prepare-note">You’ll review an email draft first.<br> Nothing is sent from this page.</p></div>
+    </form>
+    <noscript><p class="form-note">The email draft needs JavaScript. <a href="mailto:ayushhhudd@gmail.com">Email Ayush directly</a>.</p></noscript>
+    <div class="enquiry-result" id="enquiry-result" hidden>
+     <h3 tabindex="-1" aria-level="1">Review your message.</h3><p>You can change anything here before opening it in your email app.</p>
+     <p class="draft-recipient">To <a href="mailto:ayushhhudd@gmail.com">ayushhhudd@gmail.com</a></p>
+     <label for="email-draft">Your message</label><textarea id="email-draft" rows="11" maxlength="4000"></textarea>
+     <form id="direct-enquiry" class="direct-enquiry" hidden><label for="reply-email">Your email<input id="reply-email" name="email" type="email" autocomplete="email" maxlength="254" required></label><p class="form-note">Send this reviewed message through Formspree. Your email and message will be processed by Formspree so Ayush can reply.</p><button class="send-button" id="send-enquiry" type="submit" disabled>Send enquiry</button><p class="form-note" id="send-status" role="status" aria-live="polite"></p></form>
+     <div class="draft-actions"><a class="send-button" id="open-email" href="mailto:ayushhhudd@gmail.com">Open email draft <span aria-hidden="true">↗</span></a><button id="copy-brief" type="button">Copy message</button><button id="edit-brief" type="button">Back to details</button></div><p class="form-note" id="draft-status" role="status">Your draft is ready. It has not been sent.</p>
+    </div>
+   </div>
+  </section>
+ </main>
+ <footer class="enquiry-footer"><a href="../">Ayush Jain</a><a href="../#contact">Prefer a Google Meet? ↗</a></footer>
+</body>
+</html>

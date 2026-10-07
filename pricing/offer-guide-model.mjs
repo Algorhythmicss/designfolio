@@ -204,5 +204,5 @@ export function enquiryHref(id, audience) {
  if (audience !== undefined && (id !== 'website-week' || !audiences.has(audience))) throw new Error('Invalid website audience.');
  const query = new URLSearchParams({offer:id,guided:'1'});
  if (audience !== undefined) query.set('audience',audience);
- return `../?${query.toString()}#contact`;
+ return `../contact/?${query.toString()}`;
 }

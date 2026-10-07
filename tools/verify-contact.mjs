@@ -5,59 +5,185 @@ import {readFile} from 'node:fs/promises';
 import vm from 'node:vm';
 
 const source=await readFile(new URL('../app.js',import.meta.url),'utf8');
-const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
+const html=await readFile(new URL('../contact/index.html',import.meta.url),'utf8');
+const rootHTML=await readFile(new URL('../index.html',import.meta.url),'utf8');
 let checks=0;
 function check(condition,message){assert.ok(condition,message);checks++;}
 const offerLabels=Object.freeze({'first-impression':'Free first-impression video','product-review':'3-Day Launch-Ready Check','product-upgrade':'14-Day Launch-Ready Sprint','monthly-partner':'Ship Every Week','first-product':'Idea to Launch in 6 Weeks','website-week':'7-Day Website','launch-grow':'Launch & Grow','lockdown-week':'Lockdown Week','look-week':'Look Week','quarterly-checkin':'Quarterly Check-in'});
 const extraLabelIds=Object.freeze({'Free first-impression video':'choice-first-impression','Idea to Launch in 6 Weeks':'first-product-choice','Launch & Grow':'choice-launch-grow','Lockdown Week':'choice-lockdown-week','Look Week':'choice-look-week','Quarterly Check-in':'choice-quarterly-checkin'});
 class Element{
- constructor(value=''){this.value=value;this.hidden=false;this.disabled=false;this.textContent='';this.attributes={};this.listeners={};this.validity='';this.isConnected=true;}
+ constructor(value=''){this.value=value;this.hidden=false;this.disabled=false;this.textContent='';this.attributes={};this.listeners={};this.validity='';this.isConnected=true;this.childNodes=[];this.focuses=[];}
  addEventListener(name,listener){(this.listeners[name]??=[]).push(listener);}
  async dispatch(name){const event={target:this,currentTarget:this,preventDefault(){this.prevented=true;}};await Promise.all((this.listeners[name]||[]).map(listener=>listener(event)));return event;}
  setAttribute(name,value){this.attributes[name]=value;}
+ getAttribute(name){return this.attributes[name]??null;}
  removeAttribute(name){delete this.attributes[name];if(name==='target')this.target='';}
  setCustomValidity(message){this.validity=message;}
  reportValidity(){return !this.validity&&(!this.emailField||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.value));}
- focus(){} select(){} scrollIntoView(options){this.lastScroll=options;} close(){} showModal(){}
+ focus(options){this.focuses.push(options);} select(){} scrollIntoView(options){this.lastScroll=options;} close(){} showModal(){}
  getBoundingClientRect(){return {left:0,right:100,top:0,bottom:100};}
- querySelector(selector){return this.children[selector];}
- closest(selector){return selector==='label'?this.parentLabel:null;}
+ querySelector(selector){return this.children?.[selector]??null;}
+ closest(selector){if(selector==='label')return this.parentLabel||null;let node=this.parentElement;while(node){if(selector==='details'&&node.tagName==='DETAILS')return node;node=node.parentElement;}return null;}
+ appendChild(node){if(node.parentElement){const index=node.parentElement.childNodes.indexOf(node);if(index>=0)node.parentElement.childNodes.splice(index,1);}this.childNodes.push(node);node.parentElement=this;return node;}
+ append(...nodes){for(const node of nodes)this.appendChild(node);}
+ prepend(...nodes){for(const node of [...nodes].reverse()){this.appendChild(node);this.childNodes.pop();this.childNodes.unshift(node);}}
 }
 class Fields{
  constructor(form){this.values=new Map(form?Object.entries(form.elements).map(([name,input])=>[name,input.value]):[]);}
  get(name){return this.values.get(name);}
  append(name,value){this.values.set(name,value);}
 }
-function harness(config={},handler=async()=>({ok:true,status:200}),pageURL=''){
- const ids=['contact-options','contact-whatsapp','contact-booking','about-dialog','about-work','enquiry-form','enquiry-result','email-draft','open-email','draft-status','contact-details','edit-brief','copy-brief','direct-enquiry','reply-email','send-enquiry','send-status','prepare-note','contact-disclosure','first-product-choice','choice-launch-grow','choice-lockdown-week','choice-look-week','choice-quarterly-checkin','enquiry-audience','choice-first-impression','enquiry-homepage-note','first-impression-note','enquiry-offer-title','enquiry-guide-note'];
+function harness(config={},handler=async()=>({ok:true,status:200}),pageURL='',options={}){
+ const ids=['contact-options','contact-whatsapp','contact-booking','about-dialog','about-work','enquiry-form','enquiry-result','email-draft','open-email','draft-status','contact-details','edit-brief','copy-brief','direct-enquiry','reply-email','send-enquiry','send-status','prepare-note','contact-disclosure','first-product-choice','choice-launch-grow','choice-lockdown-week','choice-look-week','choice-quarterly-checkin','enquiry-audience','choice-first-impression','enquiry-homepage-note','first-impression-note','enquiry-offer-title','enquiry-guide-note','contact-enquiry-link','selected-offer-name','enquiry-guide-link','enquiry-primary-fields','enquiry-extra-fields','enquiry-name-field','enquiry-idea-field','enquiry-homepage-field','enquiry-extra','enquiry-idea-note','enquiry-business','enquiry-intro','enquiry-error-summary','enquiry-name-error','enquiry-idea-error','enquiry-homepage-error','enquiry-title','enquiry-intro-copy','enquiry-budget-timing'];
  const elements=Object.fromEntries(ids.map(id=>[id,new Element()]));
  for(const id of ['first-product-choice','choice-launch-grow','choice-lockdown-week','choice-look-week','choice-quarterly-checkin','enquiry-audience','choice-first-impression','first-impression-note'])elements[id].hidden=true;elements['contact-whatsapp'].hidden=true;elements['direct-enquiry'].hidden=true;elements['send-enquiry'].disabled=true;elements['enquiry-result'].hidden=true;
  elements['about-dialog'].children={'[data-close]':new Element()};
  elements['enquiry-result'].children={'h3':new Element()};
  const prepareButton=new Element();prepareButton.disabled=true;
  const form=elements['enquiry-form'];form.children={'[type="submit"]':prepareButton};
- form.elements=Object.fromEntries(Object.entries({name:'Sample Visitor',kind:'7-Day Website',idea:'A clear website for my small business.',budget:'Not sure yet',timing:'Just exploring',users:'',revenue:'',funding:'',audience:'',homepage:''}).map(([name,value])=>[name,new Element(value)]));
+ form.elements=Object.fromEntries(Object.entries({name:options.standalone?'':'Sample Visitor',kind:options.standalone?'Still figuring it out':'7-Day Website',idea:options.standalone?'':'A clear website for my small business.',budget:options.standalone?'':'Not sure yet',timing:options.standalone?'':'Just exploring',users:'',revenue:'',funding:'',audience:'',homepage:''}).map(([name,value])=>[name,new Element(value)]));
+ if(options.standalone)form.setAttribute('data-standalone','true');
  const kindRadios=[...Object.values(offerLabels),'Still figuring it out'].map(value=>{const radio=new Element(value);radio.parentLabel=extraLabelIds[value]?elements[extraLabelIds[value]]:new Element();return radio;});
  form.querySelectorAll=selector=>selector==='input[name="kind"]'?kindRadios:[];
  elements['enquiry-offer-title'].textContent='Which offer fits what you need?';elements['enquiry-guide-note'].hidden=true;
+ const primary=elements['enquiry-primary-fields'],extra=elements['enquiry-extra-fields'];elements['enquiry-extra'].tagName='DETAILS';elements['enquiry-extra'].open=false;elements['enquiry-extra'].append(extra);
+ for(const key of ['name','idea','homepage']){const label=elements[`enquiry-${key}-field`];label.append(form.elements[key]);form.elements[key].parentLabel=label;elements[`enquiry-${key}-error`].hidden=true;}
+ primary.append(elements['enquiry-name-field'],elements['enquiry-idea-field']);extra.append(elements['enquiry-homepage-field']);
+ const ideaTitle=new Element();ideaTitle.firstChild={nodeType:3,textContent:'What would you like to make or improve? '};elements['enquiry-idea-field'].children={'.field-title':ideaTitle};
+ extra.append(elements['enquiry-budget-timing']);
+ elements['enquiry-error-summary'].hidden=true;elements['enquiry-idea-note'].hidden=true;
  form.reportValidity=()=>Object.values(form.elements).every(input=>input.reportValidity());
  elements['reply-email'].value='visitor@example.com';elements['reply-email'].emailField=true;
  elements['direct-enquiry'].reportValidity=()=>elements['reply-email'].reportValidity();
- const calls=[],copied=[],timers=new Map();let nextTimer=0;
+ if(options.noAbout){delete elements['about-dialog'];delete elements['about-work'];}
+ if(options.noForm)for(const id of ids.filter(id=>!['contact-options','contact-whatsapp','contact-booking','about-dialog','about-work','contact-enquiry-link'].includes(id)))delete elements[id];
+ const calls=[],copied=[],redirects=[],timers=new Map();let nextTimer=0;
  const registeredTools=[];
- const document={getElementById:id=>elements[id],readyState:'interactive',modelContext:{registerTool:tool=>{registeredTools.push(tool);}}},windowListeners={};
- const window={location:pageURL?{href:pageURL}:undefined,AYUSH_CONTACT:config,matchMedia:()=>({matches:false}),addEventListener:(name,handler)=>{(windowListeners[name]??=[]).push(handler);},setTimeout:callback=>{const id=++nextTimer;timers.set(id,callback);return id;},clearTimeout:id=>timers.delete(id)};
- const context=vm.createContext({document,window,URL,FormData:Fields,AbortController,RadioNodeList:class{},navigator:{clipboard:{writeText:async message=>copied.push(message)}},fetch:async(url,options)=>{calls.push({url,options});return handler(url,options);}});
+ const document={getElementById:id=>elements[id],readyState:options.readyState||'interactive',modelContext:{registerTool:tool=>{registeredTools.push(tool);}}},windowListeners={};
+ const window={location:pageURL?{href:pageURL,replace:url=>redirects.push(String(url))}:undefined,AYUSH_CONTACT:config,matchMedia:()=>({matches:false}),addEventListener:(name,handler)=>{(windowListeners[name]??=[]).push(handler);},setTimeout:callback=>{const id=++nextTimer;timers.set(id,callback);return id;},clearTimeout:id=>timers.delete(id)};
+ const context=vm.createContext({document,window,URL,URLSearchParams,FormData:Fields,AbortController,RadioNodeList:class{},navigator:{clipboard:{writeText:async message=>copied.push(message)}},fetch:async(url,options)=>{calls.push({url,options});return handler(url,options);}});
  vm.runInContext(source,context);
- return {elements,kindRadios,prepareButton,calls,copied,timers,registeredTools,load:()=>{for(const handler of windowListeners.load||[])handler();},prepare:()=>form.dispatch('submit'),send:()=>elements['direct-enquiry'].dispatch('submit')};
+ return {elements,kindRadios,prepareButton,calls,copied,redirects,timers,registeredTools,load:()=>{for(const handler of windowListeners.load||[])handler();},prepare:()=>form.dispatch('submit'),send:()=>elements['direct-enquiry'].dispatch('submit')};
 }
 
 check(html.indexOf('contact-config.js')<html.indexOf('app.js'),'Config loads before the application.');
-check(/type="submit" disabled>Put it into an email/.test(html),'Main submit remains disabled without its handler.');
+const mainFormTag=html.match(/<form\b[^>]*id="enquiry-form"[^>]*>/)?.[0]||'',mainFormHTML=html.match(/<form\b[^>]*id="enquiry-form"[^>]*>[\s\S]*?<\/form>/)?.[0]||'';
+check(/<button\b(?=[^>]*type="submit")(?=[^>]*\sdisabled(?:\s|>))[^>]*>/.test(mainFormHTML),'Main submit remains disabled without its handler.');
 check(/id="send-enquiry" type="submit" disabled/.test(html),'Optional direct send stays disabled without its handler.');
 check(/<noscript>[\s\S]*Email Ayush directly/.test(html),'Email fallback exists without JavaScript.');
 check(JSON.stringify([...html.matchAll(/<input type="radio" name="kind" value="([^"]+)"/g)].map(match=>match[1].replace(/&amp;/g,'&')).sort())===JSON.stringify([...Object.values(offerLabels),'Still figuring it out'].sort()),'The harness radio labels match every real HTML offer and the honest unsure choice.');
-check(/id="enquiry-guide-note"[^>]*hidden>[\s\S]*?<a href="pricing\/">Change it in the guide/.test(html),'Guided contact includes an initially hidden, usable route back to the guide.');
+check(/id="enquiry-guide-note"[^>]*hidden>[\s\S]*?<a href="\.\.\/pricing\/">Change it in the guide/.test(html),'Guided contact includes an initially hidden, usable route back to the guide.');
+check(!rootHTML.includes('id="enquiry-form"'),'The portfolio does not retain a second, competing project form.');
+check(/data-standalone="true"/.test(mainFormTag)&&/\snovalidate(?:\s|>)/.test(mainFormTag),'The standalone form owns explicit validation before draft preparation.');
+check(/<h3\b(?=[^>]*tabindex="-1")(?=[^>]*aria-level="1")[^>]*>Review your message/.test(html),'The visible review heading is focusable and carries the primary heading level after the intro is hidden.');
+
+// Legacy portfolio links can migrate only public, whitelisted offer context.
+for(const id of [...Object.keys(offerLabels),'conversation']){
+ const url=`https://algorhythmicss.github.io/designfolio/?offer=${id}&guided=1&email=private%40example.com&homepage=https%3A%2F%2Fprivate.example&token=private-token#contact`,h=harness({},undefined,url,{noForm:true});
+ check(h.redirects.length===1,'An old valid offer link forwards once to the dedicated contact page: '+id);
+ const target=new URL(h.redirects[0],url);
+ check(target.origin==='https://algorhythmicss.github.io'&&target.pathname==='/designfolio/contact/'&&!target.hash,'Legacy forwarding stays on the contact page without a competing scroll fragment: '+id);
+ check(target.searchParams.get('offer')===id&&target.searchParams.get('guided')==='1'&&[...target.searchParams.keys()].sort().join()==='guided,offer','Only allowed offer context survives; private query values are dropped: '+id);
+ check(h.calls.length===0&&h.registeredTools.length===0&&h.prepareButton.disabled,'A root page without a form cannot prepare, send or register an unusable enquiry tool: '+id);
+}
+for(const audience of ['clinic','studio','cafe']){
+ const url=`https://algorhythmicss.github.io/designfolio/?offer=website-week&audience=${audience}&guided=1&name=Private#contact`,h=harness({},undefined,url,{noForm:true});
+ const target=new URL(h.redirects[0],url);
+ check(target.searchParams.get('audience')===audience&&[...target.searchParams.keys()].sort().join()==='audience,guided,offer','Legacy website context retains its known audience without forwarding personal data: '+audience);
+}
+for(const [offer,audience] of [['product-review','clinic'],['conversation','cafe'],['website-week','unknown'],['website-week','__proto__'],['website-week','clinic&email=private@example.com']]){
+ const url=`https://algorhythmicss.github.io/designfolio/?offer=${offer}&audience=${encodeURIComponent(audience)}#contact`,h=harness({},undefined,url,{noForm:true});
+ check(h.redirects.length===1&&!new URL(h.redirects[0],url).searchParams.has('audience'),'Irrelevant or untrusted audiences cannot leak into a migrated enquiry.');
+}
+for(const offer of ['unknown','constructor','__proto__','https://elsewhere.example/','<script>','']){
+ const url=`https://algorhythmicss.github.io/designfolio/?offer=${encodeURIComponent(offer)}&guided=1&email=private@example.com#contact`,h=harness({},undefined,url,{noForm:true,noAbout:true});
+ check(h.redirects.length===0&&h.calls.length===0&&h.registeredTools.length===0,'Unknown root offers neither redirect, leak query data nor initialize a nonexistent form.');
+}
+for(const guided of ['0','2','01','true','']){
+ const url=`https://algorhythmicss.github.io/designfolio/?offer=product-upgrade&guided=${guided}#contact`,h=harness({},undefined,url,{noForm:true});
+ check(!new URL(h.redirects[0],url).searchParams.has('guided'),'Only an exact guided=1 flag is forwarded to contact.');
+}
+{
+ const h=harness({formspreeEndpoint:'https://formspree.io/f/testform'},undefined,'https://algorhythmicss.github.io/designfolio/#contact',{noForm:true});
+ check(h.calls.length===0&&h.registeredTools.length===0&&h.redirects.length===0,'Ordinary root navigation leaves the preserved About and call features independent of form providers.');
+}
+
+// Standalone contact starts with the selected scope and two relevant fields.
+check(/<fieldset hidden>\s*<legend id="enquiry-offer-title"/.test(mainFormHTML),'The offer radio context stays hidden instead of asking visitors to choose again.');
+check(/name="kind" value="Still figuring it out" checked/.test(mainFormHTML),'Unselected enquiries start with an honest conversation rather than a paid package.');
+check(/<details id="enquiry-extra"[^>]*>\s*<summary>/.test(mainFormHTML)&&!/<details id="enquiry-extra"[^>]*\sopen(?:\s|>)/.test(mainFormHTML),'Extra context is an optional, initially closed native disclosure.');
+for(const [id,label] of Object.entries({...offerLabels,conversation:'Still figuring it out'})){
+ const h=harness({},undefined,`https://algorhythmicss.github.io/designfolio/contact/?offer=${id}&guided=1`,{standalone:true,noAbout:true}),fields=h.elements['enquiry-form'].elements,free=id==='first-impression';
+ check(fields.kind.value===label&&h.elements['selected-offer-name'].textContent===(id==='conversation'?'A first conversation':label),'Standalone contact displays the selected scope without a second offer decision: '+id);
+ check(h.elements['enquiry-primary-fields'].childNodes.map(node=>node===h.elements['enquiry-name-field']?'name':node===h.elements['enquiry-homepage-field']?'homepage':'idea').join()===(free?'name,homepage':'name,idea'),'Only the name and relevant brief-or-link stay in the primary fields: '+id);
+ check(h.elements[free?'enquiry-idea-field':'enquiry-homepage-field'].parentElement===h.elements['enquiry-extra-fields']&&!h.elements['enquiry-extra'].open,'Optional brief-or-link remains available without expanding extra fields: '+id);
+ check(fields.homepage.required===free&&fields.idea.required===!free,'Standalone field requirements match the selected offer: '+id);
+ check(h.elements['enquiry-business'].hidden===['first-impression','website-week','first-product','conversation'].includes(id),'Product-stage questions are shown only for relevant existing-product work: '+id);
+ check(h.elements['enquiry-budget-timing'].hidden===free,'Free-video enquiries avoid asking for project budget or timing: '+id);
+ check(h.elements['enquiry-title'].textContent===(free?'Get a first impression.':'Start a project.'),'The contact heading describes the actual free request or project: '+id);
+ check(free?/Your name and a public product link.*confirm availability/.test(h.elements['enquiry-intro-copy'].textContent):/make or improve/.test(h.elements['enquiry-intro-copy'].textContent),'The intro asks for relevant information without selling a paid project to a free-video visitor: '+id);
+ check(h.elements['enquiry-idea-field'].querySelector('.field-title').firstChild.textContent===(free?'Anything you’d like me to look at? ':'What would you like to make or improve? '),'The optional free-video message label describes the requested video rather than a build brief: '+id);
+ h.load();check(fields.name.focuses.length===0&&h.elements['enquiry-form'].lastScroll===undefined,'Opening standalone contact does not jump scroll or summon keyboard focus: '+id);
+ check(h.calls.length===0&&h.redirects.length===0&&h.elements['enquiry-result'].hidden&&h.elements['email-draft'].value==='','Standalone navigation neither prepares, forwards nor sends an enquiry: '+id);
+ fields.name.value='A Sample Founder';if(free)fields.homepage.value='https://example.com/app';else fields.idea.value='I would like a clearer first version of this project.';
+ await h.prepare();
+ check(h.calls.length===0&&!h.elements['enquiry-result'].hidden&&h.elements['enquiry-form'].hidden&&h.elements['enquiry-intro'].hidden,'Explicit standalone preparation reveals a reviewed draft, without delivery: '+id);
+ check(id==='conversation'?h.elements['email-draft'].value.includes('I’m still figuring out exactly what I need.'):h.elements['email-draft'].value.includes(`I’m interested in your ${label}.`),'The standalone reviewed draft carries the selected scope honestly: '+id);
+ check(!/\n(?:Budget|Timing|Users|Revenue|Funding):/.test(h.elements['email-draft'].value),'Blank optional fields do not invent qualifications or a budget: '+id);
+ await h.elements['edit-brief'].dispatch('click');
+ check(!h.elements['enquiry-form'].hidden&&!h.elements['enquiry-intro'].hidden&&fields.name.value==='A Sample Founder'&&fields.kind.value===label,'Back to details preserves the selected scope and entered values: '+id);
+}
+{
+ const h=harness({},undefined,'https://algorhythmicss.github.io/designfolio/contact/',{standalone:true,noAbout:true});
+ check(h.elements['enquiry-form'].elements.kind.value==='Still figuring it out'&&h.elements['selected-offer-name'].textContent==='A first conversation'&&h.elements['enquiry-guide-link'].textContent.includes('Find a scope'),'A direct contact visit starts with a conversation and a way to explore scope.');
+ await h.prepare();
+ const fields=h.elements['enquiry-form'].elements;
+ check(h.elements['enquiry-result'].hidden&&h.elements['enquiry-name-error'].hidden===false&&h.elements['enquiry-idea-error'].hidden===false&&!h.elements['enquiry-error-summary'].hidden,'Empty primary fields expose readable local errors instead of preparing a draft.');
+ check(fields.name.attributes['aria-invalid']==='true'&&fields.idea.attributes['aria-invalid']==='true'&&fields.name.focuses.length===1,'Primary errors are programmatically identified and focus the first invalid field.');
+ fields.name.value='New Founder';await fields.name.dispatch('input');
+ check(h.elements['enquiry-name-error'].hidden&&!fields.name.attributes['aria-invalid']&&fields.idea.validity,'Editing one field clears only its error without clearing another invalid field.');
+}
+{
+ const h=harness({},undefined,'https://algorhythmicss.github.io/designfolio/contact/?offer=product-review',{standalone:true,noAbout:true}),fields=h.elements['enquiry-form'].elements;
+ fields.name.value='Private Founder';fields.idea.value='Help me improve this onboarding flow.';fields.homepage.value='javascript:alert(1)';
+ await h.prepare();
+ check(h.elements['enquiry-extra'].open&&!h.elements['enquiry-homepage-error'].hidden&&fields.homepage.focuses.length===1,'An invalid optional URL opens its disclosure before focusing the error.');
+ check(fields.name.value==='Private Founder'&&fields.idea.value==='Help me improve this onboarding flow.'&&h.elements['enquiry-result'].hidden&&h.calls.length===0,'Optional-field validation preserves the primary brief and makes no requests.');
+ fields.homepage.value='example.com/app';await fields.homepage.dispatch('input');await h.prepare();
+ check(fields.homepage.value==='https://example.com/app'&&h.elements['email-draft'].value.includes('Product or website: https://example.com/app')&&h.calls.length===0,'A normal domain is normalized only in the standalone draft flow, without being fetched.');
+}
+{
+ const h=harness({},undefined,'https://algorhythmicss.github.io/designfolio/contact/?offer=first-impression',{standalone:true,noAbout:true}),fields=h.elements['enquiry-form'].elements;
+ check(fields.homepage.required&&h.elements['enquiry-homepage-note'].textContent==='(required)','The standalone free-video URL is visibly marked as required without the longer legacy explanation.');
+ fields.name.value='Curious Founder';fields.homepage.value='example.com';fields.idea.value='Hi';await h.prepare();
+ check(h.elements['enquiry-extra'].open&&!h.elements['enquiry-idea-error'].hidden&&fields.idea.focuses.length===1,'A supplied but invalid optional free-video message is exposed and focusable.');
+ fields.idea.value='';await fields.idea.dispatch('input');await h.prepare();
+ check(!h.elements['enquiry-result'].hidden&&h.elements['email-draft'].value.includes('https://example.com/')&&!h.elements['email-draft'].value.includes('\n\nHi\n\n'),'A free-video request accepts name and URL without an invented project brief.');
+}
+{
+ const h=harness({},undefined,'https://algorhythmicss.github.io/designfolio/contact/?offer=product-upgrade',{standalone:true,noAbout:true}),fields=h.elements['enquiry-form'].elements;
+ fields.name.value='App Founder';fields.idea.value='Improve the product I have already launched.';fields.homepage.value='https://example.com/';fields.budget.value='₹60,000–₹3,00,000 / $2,500–$6,000';fields.timing.value='In November';fields.users.value='Has users';fields.revenue.value='Pre-revenue';fields.funding.value='Bootstrapped';
+ h.elements['enquiry-extra'].open=true;await h.prepare();const original=h.elements['email-draft'].value;
+ check(original.includes('Timing: In November')&&original.includes('Users: Has users')&&original.includes('Funding: Bootstrapped'),'Explicit optional context is carried into the reviewed standalone draft.');
+ h.elements['email-draft'].value+='\nPlease keep this note.';await h.elements['email-draft'].dispatch('input');await h.elements['copy-brief'].dispatch('click');
+ check(h.copied.at(-1)===h.elements['email-draft'].value&&h.elements['open-email'].href.includes(encodeURIComponent(h.elements['email-draft'].value))&&h.calls.length===0,'Copy and mailto preserve edits to the reviewed standalone draft without delivery.');
+ await h.elements['edit-brief'].dispatch('click');
+ check(fields.homepage.value==='https://example.com/'&&fields.budget.value==='₹60,000–₹3,00,000 / $2,500–$6,000'&&fields.timing.value==='In November'&&fields.funding.value==='Bootstrapped'&&h.elements['enquiry-extra'].open,'Returning from review preserves optional answers and disclosure state.');
+ fields.kind.value='Free first-impression video';await h.elements['enquiry-form'].dispatch('change');
+ check(h.elements['enquiry-homepage-field'].parentElement===h.elements['enquiry-primary-fields']&&h.elements['enquiry-idea-field'].parentElement===h.elements['enquiry-extra-fields']&&fields.homepage.value==='https://example.com/'&&fields.idea.value==='Improve the product I have already launched.','Changing context moves existing label nodes without discarding their values.');
+ check(h.elements['enquiry-budget-timing'].hidden&&!h.elements['enquiry-idea-note'].hidden&&h.elements['enquiry-title'].textContent==='Get a first impression.','Changing from paid work to a free video updates the request wording and hides paid-project questions.');
+ fields.kind.value='14-Day Launch-Ready Sprint';await h.elements['enquiry-form'].dispatch('change');
+ check(!h.elements['enquiry-budget-timing'].hidden&&h.elements['enquiry-idea-note'].hidden&&h.elements['enquiry-title'].textContent==='Start a project.'&&h.elements['enquiry-idea-field'].querySelector('.field-title').firstChild.textContent==='What would you like to make or improve? ','Changing back to paid work restores project wording and optional budget/timing without stale free-copy.');
+}
+for(const id of ['unknown','constructor','__proto__','<script>']){
+ const h=harness({},undefined,`https://algorhythmicss.github.io/designfolio/contact/?offer=${encodeURIComponent(id)}&guided=1`,{standalone:true,noAbout:true});
+ check(h.elements['enquiry-form'].elements.kind.value==='Still figuring it out'&&h.elements['selected-offer-name'].textContent==='A first conversation'&&h.calls.length===0,'An untrusted standalone offer keeps the honest default conversation.');
+}
+for(const audience of ['clinic','studio','cafe']){
+ const h=harness({},undefined,`https://algorhythmicss.github.io/designfolio/contact/?offer=website-week&guided=1&audience=${audience}`,{standalone:true,noAbout:true}),fields=h.elements['enquiry-form'].elements;
+ fields.name.value='Business Owner';fields.idea.value='Create a clear website for my business.';await h.prepare();
+ check(fields.audience.value===audience&&h.elements['email-draft'].value.includes('Website package: ')&&h.elements['enquiry-business'].hidden,'Standalone website context retains its niche without exposing app-stage questions: '+audience);
+}
 
 {
  const h=harness();
@@ -233,6 +359,7 @@ for(const id of ['constructor','<script>','unknown']){
 // The free-video request needs a URL, while paid enquiries retain their brief.
 {
  const h=harness({},undefined,'https://algorhythmicss.github.io/designfolio/?offer=first-impression#contact'),fields=h.elements['enquiry-form'].elements;
+ check(h.elements['enquiry-homepage-note'].textContent==='(required for the video)','Legacy form mode preserves its required-video marker.');
  check(!h.elements['choice-first-impression'].hidden&&fields.homepage.required&&!fields.idea.required,'The free video reveals its choice and asks for a URL rather than a compulsory brief.');
  check(!h.elements['first-impression-note'].hidden,'The free request explains the deliverable and availability.');
  fields.idea.value='';fields.homepage.value='';await h.prepare();

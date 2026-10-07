@@ -1,4 +1,4 @@
-import {questions,offers,route,offerFromHash,enquiryHref} from './offer-guide-model.mjs?v=21';
+import {questions,offers,route,offerFromHash,enquiryHref} from './offer-guide-model.mjs?v=23';
 
 const byId=id=>document.getElementById(id);
 const app=byId('guide-app'),catalog=byId('all-offers');
