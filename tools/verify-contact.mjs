@@ -8,6 +8,8 @@ const source=await readFile(new URL('../app.js',import.meta.url),'utf8');
 const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
 let checks=0;
 function check(condition,message){assert.ok(condition,message);checks++;}
+const offerLabels=Object.freeze({'first-impression':'Free first-impression video','product-review':'3-Day Launch-Ready Check','product-upgrade':'14-Day Launch-Ready Sprint','monthly-partner':'Ship Every Week','first-product':'Idea to Launch in 6 Weeks','website-week':'7-Day Website','launch-grow':'Launch & Grow','lockdown-week':'Lockdown Week','look-week':'Look Week','quarterly-checkin':'Quarterly Check-in'});
+const extraLabelIds=Object.freeze({'Free first-impression video':'choice-first-impression','Idea to Launch in 6 Weeks':'first-product-choice','Launch & Grow':'choice-launch-grow','Lockdown Week':'choice-lockdown-week','Look Week':'choice-look-week','Quarterly Check-in':'choice-quarterly-checkin'});
 class Element{
  constructor(value=''){this.value=value;this.hidden=false;this.disabled=false;this.textContent='';this.attributes={};this.listeners={};this.validity='';this.isConnected=true;}
  addEventListener(name,listener){(this.listeners[name]??=[]).push(listener);}
@@ -19,6 +21,7 @@ class Element{
  focus(){} select(){} scrollIntoView(options){this.lastScroll=options;} close(){} showModal(){}
  getBoundingClientRect(){return {left:0,right:100,top:0,bottom:100};}
  querySelector(selector){return this.children[selector];}
+ closest(selector){return selector==='label'?this.parentLabel:null;}
 }
 class Fields{
  constructor(form){this.values=new Map(form?Object.entries(form.elements).map(([name,input])=>[name,input.value]):[]);}
@@ -26,7 +29,7 @@ class Fields{
  append(name,value){this.values.set(name,value);}
 }
 function harness(config={},handler=async()=>({ok:true,status:200}),pageURL=''){
- const ids=['contact-options','contact-whatsapp','contact-booking','about-dialog','about-work','enquiry-form','enquiry-result','email-draft','open-email','draft-status','contact-details','edit-brief','copy-brief','direct-enquiry','reply-email','send-enquiry','send-status','prepare-note','contact-disclosure','first-product-choice','choice-launch-grow','choice-lockdown-week','choice-look-week','choice-quarterly-checkin','enquiry-audience','choice-first-impression','enquiry-homepage-note','first-impression-note'];
+ const ids=['contact-options','contact-whatsapp','contact-booking','about-dialog','about-work','enquiry-form','enquiry-result','email-draft','open-email','draft-status','contact-details','edit-brief','copy-brief','direct-enquiry','reply-email','send-enquiry','send-status','prepare-note','contact-disclosure','first-product-choice','choice-launch-grow','choice-lockdown-week','choice-look-week','choice-quarterly-checkin','enquiry-audience','choice-first-impression','enquiry-homepage-note','first-impression-note','enquiry-offer-title','enquiry-guide-note'];
  const elements=Object.fromEntries(ids.map(id=>[id,new Element()]));
  for(const id of ['first-product-choice','choice-launch-grow','choice-lockdown-week','choice-look-week','choice-quarterly-checkin','enquiry-audience','choice-first-impression','first-impression-note'])elements[id].hidden=true;elements['contact-whatsapp'].hidden=true;elements['direct-enquiry'].hidden=true;elements['send-enquiry'].disabled=true;elements['enquiry-result'].hidden=true;
  elements['about-dialog'].children={'[data-close]':new Element()};
@@ -34,6 +37,9 @@ function harness(config={},handler=async()=>({ok:true,status:200}),pageURL=''){
  const prepareButton=new Element();prepareButton.disabled=true;
  const form=elements['enquiry-form'];form.children={'[type="submit"]':prepareButton};
  form.elements=Object.fromEntries(Object.entries({name:'Sample Visitor',kind:'7-Day Website',idea:'A clear website for my small business.',budget:'Not sure yet',timing:'Just exploring',users:'',revenue:'',funding:'',audience:'',homepage:''}).map(([name,value])=>[name,new Element(value)]));
+ const kindRadios=[...Object.values(offerLabels),'Still figuring it out'].map(value=>{const radio=new Element(value);radio.parentLabel=extraLabelIds[value]?elements[extraLabelIds[value]]:new Element();return radio;});
+ form.querySelectorAll=selector=>selector==='input[name="kind"]'?kindRadios:[];
+ elements['enquiry-offer-title'].textContent='Which offer fits what you need?';elements['enquiry-guide-note'].hidden=true;
  form.reportValidity=()=>Object.values(form.elements).every(input=>input.reportValidity());
  elements['reply-email'].value='visitor@example.com';elements['reply-email'].emailField=true;
  elements['direct-enquiry'].reportValidity=()=>elements['reply-email'].reportValidity();
@@ -43,13 +49,15 @@ function harness(config={},handler=async()=>({ok:true,status:200}),pageURL=''){
  const window={location:pageURL?{href:pageURL}:undefined,AYUSH_CONTACT:config,matchMedia:()=>({matches:false}),addEventListener:(name,handler)=>{(windowListeners[name]??=[]).push(handler);},setTimeout:callback=>{const id=++nextTimer;timers.set(id,callback);return id;},clearTimeout:id=>timers.delete(id)};
  const context=vm.createContext({document,window,URL,FormData:Fields,AbortController,RadioNodeList:class{},navigator:{clipboard:{writeText:async message=>copied.push(message)}},fetch:async(url,options)=>{calls.push({url,options});return handler(url,options);}});
  vm.runInContext(source,context);
- return {elements,prepareButton,calls,copied,timers,registeredTools,load:()=>{for(const handler of windowListeners.load||[])handler();},prepare:()=>form.dispatch('submit'),send:()=>elements['direct-enquiry'].dispatch('submit')};
+ return {elements,kindRadios,prepareButton,calls,copied,timers,registeredTools,load:()=>{for(const handler of windowListeners.load||[])handler();},prepare:()=>form.dispatch('submit'),send:()=>elements['direct-enquiry'].dispatch('submit')};
 }
 
 check(html.indexOf('contact-config.js')<html.indexOf('app.js'),'Config loads before the application.');
 check(/type="submit" disabled>Put it into an email/.test(html),'Main submit remains disabled without its handler.');
 check(/id="send-enquiry" type="submit" disabled/.test(html),'Optional direct send stays disabled without its handler.');
 check(/<noscript>[\s\S]*Email Ayush directly/.test(html),'Email fallback exists without JavaScript.');
+check(JSON.stringify([...html.matchAll(/<input type="radio" name="kind" value="([^"]+)"/g)].map(match=>match[1].replace(/&amp;/g,'&')).sort())===JSON.stringify([...Object.values(offerLabels),'Still figuring it out'].sort()),'The harness radio labels match every real HTML offer and the honest unsure choice.');
+check(/id="enquiry-guide-note"[^>]*hidden>[\s\S]*?<a href="pricing\/">Change it in the guide/.test(html),'Guided contact includes an initially hidden, usable route back to the guide.');
 
 {
  const h=harness();
@@ -134,7 +142,7 @@ for(const httpStatus of [400,429,500]){
 }
 
 // Offer links must select only known offers and cannot send or replace an enquiry.
-for(const [id,label] of Object.entries({'first-impression':'Free first-impression video','product-review':'3-Day Launch-Ready Check','product-upgrade':'14-Day Launch-Ready Sprint','monthly-partner':'Ship Every Week','first-product':'Idea to Launch in 6 Weeks','website-week':'7-Day Website','launch-grow':'Launch & Grow','lockdown-week':'Lockdown Week','look-week':'Look Week','quarterly-checkin':'Quarterly Check-in'})){
+for(const [id,label] of Object.entries(offerLabels)){
  const h=harness({},undefined,`https://algorhythmicss.github.io/designfolio/?offer=${id}#contact`);
  check(h.elements['enquiry-form'].elements.kind.value===label&&h.elements['contact-details'].open,'Known pricing link selects its offer and opens the enquiry.');
  h.load();check(h.elements['enquiry-form'].lastScroll?.behavior==='instant'&&h.elements['enquiry-form'].lastScroll?.block==='start','After initial hash navigation, the selected enquiry is brought into view without a long page animation.');
@@ -143,6 +151,43 @@ for(const [id,label] of Object.entries({'first-impression':'Free first-impressio
  if(id==='first-impression')h.elements['enquiry-form'].elements.homepage.value='https://example.com/app';
  await h.prepare();
  check(h.elements['email-draft'].value.includes(`I’m interested in your ${label}.`),'Reviewed email preserves the selected offer name.');
+}
+// A guided recommendation keeps its chosen scope visible without reopening the menu.
+for(const [id,label] of Object.entries({...offerLabels,conversation:'Still figuring it out'})){
+ const h=harness({},undefined,`https://algorhythmicss.github.io/designfolio/?offer=${id}&guided=1#contact`),fields=h.elements['enquiry-form'].elements;
+ const visible=h.kindRadios.filter(radio=>!radio.closest('label').hidden);
+ check(fields.kind.value===label&&h.elements['contact-details'].open,'Guided recommendation selects a known offer or the honest unsure choice: '+id);
+ check(visible.length===1&&visible[0].value===label,'Only the chosen offer label is shown after the guide: '+id);
+ check(h.elements['enquiry-offer-title'].textContent==='Your starting point'&&!h.elements['enquiry-guide-note'].hidden,'Guided contact labels the starting point and reveals the way back: '+id);
+ check(h.calls.length===0&&h.elements['enquiry-result'].hidden&&h.elements['email-draft'].value==='','Guided navigation does not prepare or send a draft: '+id);
+ if(id==='first-impression')fields.homepage.value='https://example.com/app';
+ await h.prepare();
+ check(h.calls.length===0&&!h.elements['enquiry-result'].hidden,'Only explicit preparation creates the reviewed draft, without network requests: '+id);
+ check(id==='conversation'?h.elements['email-draft'].value.includes('I’m still figuring out exactly what I need.')&&!h.elements['email-draft'].value.includes('interested in your'):h.elements['email-draft'].value.includes(`I’m interested in your ${label}.`),'Guided email preserves the chosen scope without inventing a paid conversation offer: '+id);
+ await h.elements['edit-brief'].dispatch('click');
+ check(!h.elements['enquiry-form'].hidden&&h.kindRadios.filter(radio=>!radio.closest('label').hidden).length===1&&fields.kind.value===label,'Returning to edit keeps the guided starting point and supplied details: '+id);
+}
+for(const [audience,label] of Object.entries({clinic:'7-Day Clinic Website',studio:'7-Day Studio Website',cafe:'7-Day Café Website'})){
+ const h=harness({},undefined,`https://algorhythmicss.github.io/designfolio/?offer=website-week&guided=1&audience=${audience}#contact`);
+ check(h.elements['enquiry-form'].elements.audience.value===audience&&!h.elements['enquiry-audience'].hidden&&h.elements['enquiry-audience'].textContent===label,'Guided website retains its whitelisted business context: '+audience);
+ check(h.kindRadios.filter(radio=>!radio.closest('label').hidden).map(radio=>radio.value).join()==='7-Day Website'&&h.calls.length===0,'Website context does not reopen other offers or send information: '+audience);
+ await h.prepare();check(h.elements['email-draft'].value.includes('Website package: '+label)&&h.calls.length===0,'Guided website context is present only in the explicitly reviewed draft: '+audience);
+}
+for(const id of ['unknown','constructor','__proto__','<script>alert(1)</script>','']){
+ const h=harness({},undefined,`https://algorhythmicss.github.io/designfolio/?offer=${encodeURIComponent(id)}&guided=1#contact`);
+ check(h.elements['enquiry-form'].elements.kind.value==='7-Day Website'&&h.kindRadios.filter(radio=>!radio.closest('label').hidden).length===5,'Unknown guided values do not change the default selection or hide the normal menu.');
+ check(h.elements['enquiry-offer-title'].textContent==='Which offer fits what you need?'&&h.elements['enquiry-guide-note'].hidden,'An untrusted guided offer does not activate recommendation presentation.');
+ check(h.calls.length===0&&h.elements['enquiry-result'].hidden&&h.elements['email-draft'].value==='','Unknown guided values neither prepare nor send an enquiry.');
+}
+for(const guided of [undefined,'','0','2','01','true']){
+ const query=guided===undefined?'':`&guided=${encodeURIComponent(guided)}`,h=harness({},undefined,`https://algorhythmicss.github.io/designfolio/?offer=product-upgrade${query}#contact`);
+ check(h.elements['enquiry-form'].elements.kind.value==='14-Day Launch-Ready Sprint'&&h.kindRadios.filter(radio=>!radio.closest('label').hidden).length===5,'Non-guided pricing links retain the normal offer menu.');
+ check(h.elements['enquiry-offer-title'].textContent==='Which offer fits what you need?'&&h.elements['enquiry-guide-note'].hidden&&h.calls.length===0,'Only an exact guided=1 flag activates the focused presentation.');
+}
+{
+ const h=harness({formspreeEndpoint:'https://formspree.io/f/testform'},undefined,'https://algorhythmicss.github.io/designfolio/?offer=product-upgrade&guided=1#contact');
+ check(h.calls.length===0&&h.elements['enquiry-result'].hidden,'A configured endpoint does not automatically send or prepare a guided enquiry.');
+ await h.prepare();check(h.calls.length===0&&!h.elements['enquiry-result'].hidden,'Guided draft preparation still requires a separate explicit delivery action.');
 }
 for(const id of ['unknown','constructor','__proto__','<script>alert(1)</script>']){
  const h=harness({},undefined,`https://algorhythmicss.github.io/designfolio/?offer=${encodeURIComponent(id)}#contact`);

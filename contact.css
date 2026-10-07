@@ -61,3 +61,5 @@
 .making-bio>p.making-free{margin:12px auto 0;text-align:center;text-align-last:center;font:500 13px/1.4 var(--sans);hyphens:none}
 .making-free a{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:5px 0;color:var(--ink)}
 #first-impression-note{margin:-10px 0 25px;max-width:100%}
+#enquiry-guide-note{margin:0 0 26px}
+#enquiry-guide-note a{display:flex;align-items:center;width:max-content;max-width:100%;min-height:44px;text-decoration:underline;text-underline-offset:4px}

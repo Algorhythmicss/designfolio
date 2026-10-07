@@ -43,12 +43,14 @@ for(const dialog of [aboutDialog]){
 document.getElementById('about-work').addEventListener('click',event=>{returnFocus=event.currentTarget;aboutDialog.showModal();});
 const motionPreference=window.matchMedia('(prefers-reduced-motion: reduce)');
 const form=document.getElementById('enquiry-form'),result=document.getElementById('enquiry-result'),draft=document.getElementById('email-draft'),openEmail=document.getElementById('open-email'),status=document.getElementById('draft-status');
+let guidedEnquiry=false;
 function updateOfferContext(){
  const free=form.elements.kind.value===offerNames['first-impression'];
  form.elements.homepage.required=free;form.elements.idea.required=!free;
  const note=document.getElementById('enquiry-homepage-note');if(note)note.textContent=free?'(required for the video)':'(optional)';
  const freeNote=document.getElementById('first-impression-note');if(freeNote)freeNote.hidden=!free;
  const audienceNote=document.getElementById('enquiry-audience');if(audienceNote)audienceNote.hidden=!(form.elements.kind.value===offerNames['website-week']&&Object.hasOwn(websiteAudiences,form.elements.audience.value));
+ if(guidedEnquiry)for(const radio of form.querySelectorAll('input[name="kind"]'))radio.closest('label').hidden=radio.value!==form.elements.kind.value;
  form.elements.idea.setCustomValidity('');form.elements.homepage.setCustomValidity('');
 }
 const directForm=document.getElementById('direct-enquiry'),replyEmail=document.getElementById('reply-email'),sendEnquiry=document.getElementById('send-enquiry'),sendStatus=document.getElementById('send-status'),editBrief=document.getElementById('edit-brief');
@@ -77,12 +79,20 @@ form.addEventListener('submit',event=>{event.preventDefault();const free=form.el
 form.querySelector('[type="submit"]').disabled=false;
 // A pricing-page choice opens the enquiry, never prepares or sends it automatically.
 const requestedOffer=window.location?new URL(window.location.href).searchParams.get('offer'):null;
-if(Object.hasOwn(offerNames,requestedOffer)){
- const kind=offerNames[requestedOffer];
+const requestedKind=Object.hasOwn(offerNames,requestedOffer)?offerNames[requestedOffer]:requestedOffer==='conversation'?'Still figuring it out':null;
+if(requestedKind){
+ const kind=requestedKind;
  revealOfferChoice(kind);
  form.elements.kind.value=kind;document.getElementById('contact-details').open=true;
  const audience=new URL(window.location.href).searchParams.get('audience');
  if(kind===offerNames['website-week']&&Object.hasOwn(websiteAudiences,audience)){form.elements.audience.value=audience;const note=document.getElementById('enquiry-audience');if(note){note.textContent=websiteAudiences[audience];note.hidden=false;}}
+ // A guided visitor has already chosen a relevant scope; do not ask them to
+ // scan the entire service menu again. They can return to the guide to change it.
+ if(new URL(window.location.href).searchParams.get('guided')==='1'){
+  guidedEnquiry=true;
+  const title=document.getElementById('enquiry-offer-title');if(title)title.textContent='Your starting point';
+  const note=document.getElementById('enquiry-guide-note');if(note)note.hidden=false;
+ }
 
  // Initial #contact scrolling otherwise wins after deferred scripts and leaves the form below the artwork.
  const focusOffer=()=>{form.scrollIntoView({behavior:'instant',block:'start'});form.elements.name.focus({preventScroll:true});};

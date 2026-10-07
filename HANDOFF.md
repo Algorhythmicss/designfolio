@@ -375,3 +375,17 @@ The free first-impression enquiry route requires an absolute HTTP(S) product URL
 The earlier `before-after.css`, `before-after.js` and `assets/downloads/anti-default-style-guide.md` are held local assets, not linked or staged for this release. They are not part of the newly selected menu.
 
 Verification and publication are recorded separately in the workspace journal. Current network-free checks: 154 contact and 93 call checks; local links/assets/fragments across relevant pages pass. Source cache versions: app.js/contact.css and new pricing styles v20; unchanged call-request.js remains v18.
+
+## Needs-led offer guide — 7 October 2026, v21
+
+Ayush requested research into Alex Hormozi's offer tactics and a flow that reveals information according to the visitor's needs instead of listing every package. The latest Launch-Ready menu, prices, artwork and commercial limits remain. Research and the route matrix are in workspace `work/offer-journey-v21.md`; this is our progressive-disclosure application of the official offer/value checklists and the bonus chapters' warning about qualification friction, not a quiz prescribed by Hormozi.
+
+`pricing/index.html` now opens a short guide: existing app, new idea or business website. Paths take two or three choices and show one provisional starting point, its price, three outcomes and material limits. Look/security work and regular/occasional support have distinct routes. A Sprint scope check routes whole-app rebuilds and regulated-data needs to a scope conversation. New ideas never route to a paid existing-product Check. Launch & Grow appears only after someone asks about support after a Sprint. Smaller scopes, commitments and the complete menu are revealed on request.
+
+Keep the native `all-offers` details as an escape route and no-JavaScript fallback. Existing pricing fragments open their exact recommendation without requiring the guide; close the catalog explicitly because browser fragment navigation otherwise opens the containing details. Back/reset controls retain local answer history. No cookies, storage, automatic network requests or contact-data gate are introduced.
+
+Model/routing is in `pricing/offer-guide-model.mjs`; the DOM controller is `pricing/offer-guide.mjs` and layout is `pricing/offer-guide.css`. The static catalog preserves complete terms. When changing an offer later, update both the model and catalog and check the dedicated scope page. Dynamic text uses textContent/DOM nodes; IDs and query values are whitelisted.
+
+Named-offer CTAs include `guided=1`; the main enquiry then shows only that selected offer and a return-to-guide link. `offer=conversation` selects the honest "Still figuring it out" choice. Unknown queries stay ignored; non-guided links keep the original menu. A later browser-tool change updates the visible chosen label. Email review/copy and the separate Google Meet request are preserved; no direct-send service or phone number is enabled.
+
+Cache versions: app.js/contact.css and the new guide assets v21; the complete catalog stylesheet and separate scope pages' styles remain unchanged. Network-free checks: 237 routing, 271 contact and 93 call. Browser/publication evidence is recorded separately in the workspace journal.
