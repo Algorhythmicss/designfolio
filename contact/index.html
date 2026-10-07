@@ -17,10 +17,11 @@
  <link rel="preload" as="font" type="font/woff2" crossorigin href="../assets/fonts/newsreader-latin-opsz-normal.woff2">
  <link rel="preload" as="font" type="font/woff2" crossorigin href="../assets/fonts/schibsted-grotesk-latin-wght-normal.woff2">
  <link rel="stylesheet" href="../styles.css?v=16.1">
- <link rel="stylesheet" href="../contact.css?v=23">
- <link rel="stylesheet" href="enquiry.css?v=23">
+ <link rel="stylesheet" href="../contact.css?v=24">
+ <link rel="stylesheet" href="enquiry.css?v=24">
  <script src="../contact-config.js?v=16.2" defer></script>
- <script src="../app.js?v=23" defer></script>
+ <script src="../call-request.js?v=18" defer></script>
+ <script src="../app.js?v=24" defer></script>
 </head>
 <body class="enquiry-page">
  <a class="skip" href="#enquiry-main">Skip to the enquiry</a>
@@ -64,6 +65,15 @@
        <label for="enquiry-funding">Funding<select id="enquiry-funding" name="funding"><option value="">Leave blank</option><option value="Bootstrapped">Bootstrapped</option><option value="Funded">Funded</option><option value="Prefer to discuss">Prefer to discuss</option></select></label>
       </div><p class="field-help">Stages are enough; no figures needed.</p></fieldset>
      </div></details>
+     <details id="enquiry-callback" class="enquiry-extra enquiry-callback"><summary>Prefer a phone call? <span>optional</span></summary><div class="callback-content">
+      <label class="callback-consent" for="enquiry-callback-requested"><input id="enquiry-callback-requested" name="callbackRequested" type="checkbox" value="yes" aria-controls="enquiry-callback-fields"><span>I’d like Ayush to call me.</span></label>
+      <fieldset id="enquiry-callback-fields" hidden disabled><legend class="sr-only">Your phone call request</legend>
+       <label class="enquiry-field" for="enquiry-callback-phone"><span class="field-title">Your number <span>with country code</span></span><input id="enquiry-callback-phone" name="callbackPhone" type="tel" inputmode="tel" autocomplete="tel" maxlength="40" placeholder="+91 98765 43210" aria-describedby="enquiry-callback-phone-help enquiry-callback-phone-error"><span id="enquiry-callback-phone-help" class="field-help">The number is included only when you request a call.</span><span class="field-error" id="enquiry-callback-phone-error" hidden></span></label>
+       <div class="enquiry-pair callback-slot"><label class="enquiry-field" for="enquiry-callback-date"><span class="field-title">Preferred date</span><input id="enquiry-callback-date" name="callbackDate" type="date" aria-describedby="enquiry-callback-date-error"><span class="field-error" id="enquiry-callback-date-error" hidden></span></label><fieldset class="callback-time"><legend class="field-title">Time <span>IST · UTC+5:30</span></legend><div class="callback-time-parts"><label for="enquiry-callback-hour">Hour<select id="enquiry-callback-hour" name="callbackHour" aria-describedby="enquiry-callback-hour-error"><option value="">Choose</option><option value="17">5 pm</option><option value="18">6 pm</option><option value="19">7 pm</option><option value="20">8 pm</option><option value="21">9 pm</option><option value="22">10 pm</option><option value="23">11 pm</option></select></label><label for="enquiry-callback-minute">Minute<select id="enquiry-callback-minute" name="callbackMinute" aria-describedby="enquiry-callback-minute-error"><option value="">Choose</option><option value="00">00</option><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option><option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option><option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option><option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option></select></label></div><span class="field-error" id="enquiry-callback-hour-error" hidden></span><span class="field-error" id="enquiry-callback-minute-error" hidden></span></fieldset></div>
+       <p class="field-help callback-earlier">After 5pm IST. Need an earlier time? <a href="mailto:ayushhhudd@gmail.com?subject=A%20phone%20call%20before%205pm%20IST">Email me ↗</a></p>
+       <p class="field-help">This is a request. I’ll confirm by email before calling; no time is reserved here.</p>
+      </fieldset>
+     </div></details>
      <div class="enquiry-submit"><button class="send-button" type="submit" disabled>Review my message <span aria-hidden="true">↗</span></button><p class="form-note" id="prepare-note">You’ll review an email draft first.<br> Nothing is sent from this page.</p></div>
     </form>
     <noscript><p class="form-note">The email draft needs JavaScript. <a href="mailto:ayushhhudd@gmail.com">Email Ayush directly</a>.</p></noscript>
@@ -77,6 +87,6 @@
    </div>
   </section>
  </main>
- <footer class="enquiry-footer"><a href="../">Ayush Jain</a><a href="../#contact">Prefer a Google Meet? ↗</a></footer>
+ <footer class="enquiry-footer"><a href="../">Ayush Jain</a><a href="../#contact" id="enquiry-booking">Prefer a Google Meet? ↗</a></footer>
 </body>
 </html>

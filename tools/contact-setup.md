@@ -43,3 +43,14 @@ A separate published Google Form is possible, but would move the visitor out of 
 ## Verification boundary
 
 Local stub checks cover endpoint validation, no network request on draft creation, acceptance, HTTP rejection, rate limiting, server/network/timeout uncertainty, duplicate prevention while busy, and editable preserved drafts. Real Formspree receipt, inbox delivery, a WhatsApp destination, and an appointment schedule require the owner’s values and a deliberate live test.
+
+
+## Optional callback and Calendar booking connection — 7 October 2026, v24
+
+Ayush requested actual Google Meet booking and optional visitor phone callbacks. He selected 30-minute Meet calls every day, 5–9pm IST (Asia/Kolkata) on ayushhhudd@gmail.com. The connected Calendar profile was verified, and the signed-in account was confirmed in Safari and Chrome. The appointment editor did not render under the available controls in either browser. No public booking schedule was saved or enabled. Ayush was asked to save and share the public appointment link if the editor works for him. The config remains blank; no fake booking or reusable room link is substituted.
+
+The contact page now has an optional 'Prefer a phone call?' disclosure, with explicit opt-in and a country-code number, future date and evening hour/minute in IST. Only opt-in activates validation or includes those details in the reviewed email. Back preserves values; opting out excludes stale values. Call-time validation reuses call-request.js v18; no Meet dialog exists on the contact page, so its initializer exits. New callback fields in WebMCP require explicit callbackRequested:true and are validated before replacing a draft. No URL query sets consent, no phone number is stored by the page, and no call, email or reservation is triggered automatically.
+
+Both the root closing section and /contact/ provide access to the phone request; Ayush's own number remains unpublished. The contact footer can become a real 'Book a Google Meet' link when a validated public schedule URL is configured. It currently keeps the existing honest Meet-request fallback. When the schedule is enabled, test its public slots, owner account, conferencing and booking confirmation; a link/availability check alone cannot verify inbox delivery or a finished Meet invite.
+
+Network-free checks: 596 contact + 361 guide + 93 Meet-request checks pass. A read-only audit resolves 219 page/asset targets and seven CSS/module references with valid labels/ARIA/IDs. Phone browser review prepared a correct future 6:30pm IST callback draft and did not send it. Publication and any later Calendar setup are recorded separately in workspace evidence.

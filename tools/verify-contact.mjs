@@ -5,6 +5,7 @@ import {readFile} from 'node:fs/promises';
 import vm from 'node:vm';
 
 const source=await readFile(new URL('../app.js',import.meta.url),'utf8');
+const callSource=await readFile(new URL('../call-request.js',import.meta.url),'utf8');
 const html=await readFile(new URL('../contact/index.html',import.meta.url),'utf8');
 const rootHTML=await readFile(new URL('../index.html',import.meta.url),'utf8');
 let checks=0;
@@ -12,14 +13,14 @@ function check(condition,message){assert.ok(condition,message);checks++;}
 const offerLabels=Object.freeze({'first-impression':'Free first-impression video','product-review':'3-Day Launch-Ready Check','product-upgrade':'14-Day Launch-Ready Sprint','monthly-partner':'Ship Every Week','first-product':'Idea to Launch in 6 Weeks','website-week':'7-Day Website','launch-grow':'Launch & Grow','lockdown-week':'Lockdown Week','look-week':'Look Week','quarterly-checkin':'Quarterly Check-in'});
 const extraLabelIds=Object.freeze({'Free first-impression video':'choice-first-impression','Idea to Launch in 6 Weeks':'first-product-choice','Launch & Grow':'choice-launch-grow','Lockdown Week':'choice-lockdown-week','Look Week':'choice-look-week','Quarterly Check-in':'choice-quarterly-checkin'});
 class Element{
- constructor(value=''){this.value=value;this.hidden=false;this.disabled=false;this.textContent='';this.attributes={};this.listeners={};this.validity='';this.isConnected=true;this.childNodes=[];this.focuses=[];}
+ constructor(value=''){this.value=value;this.checked=false;this.hidden=false;this.disabled=false;this.textContent='';this.attributes={};this.listeners={};this.validity='';this.isConnected=true;this.childNodes=[];this.focuses=[];}
  addEventListener(name,listener){(this.listeners[name]??=[]).push(listener);}
  async dispatch(name){const event={target:this,currentTarget:this,preventDefault(){this.prevented=true;}};await Promise.all((this.listeners[name]||[]).map(listener=>listener(event)));return event;}
  setAttribute(name,value){this.attributes[name]=value;}
  getAttribute(name){return this.attributes[name]??null;}
  removeAttribute(name){delete this.attributes[name];if(name==='target')this.target='';}
  setCustomValidity(message){this.validity=message;}
- reportValidity(){return !this.validity&&(!this.emailField||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.value));}
+ reportValidity(){return this.disabled||!this.validity&&(!this.emailField||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.value));}
  focus(options){this.focuses.push(options);} select(){} scrollIntoView(options){this.lastScroll=options;} close(){} showModal(){}
  getBoundingClientRect(){return {left:0,right:100,top:0,bottom:100};}
  querySelector(selector){return this.children?.[selector]??null;}
@@ -29,19 +30,21 @@ class Element{
  prepend(...nodes){for(const node of [...nodes].reverse()){this.appendChild(node);this.childNodes.pop();this.childNodes.unshift(node);}}
 }
 class Fields{
- constructor(form){this.values=new Map(form?Object.entries(form.elements).map(([name,input])=>[name,input.value]):[]);}
+ constructor(form){this.values=new Map(form?Object.entries(form.elements).filter(([,input])=>!input.disabled&&(input.type!=='checkbox'||input.checked)).map(([name,input])=>[name,input.value]):[]);}
  get(name){return this.values.get(name);}
  append(name,value){this.values.set(name,value);}
 }
 function harness(config={},handler=async()=>({ok:true,status:200}),pageURL='',options={}){
  const ids=['contact-options','contact-whatsapp','contact-booking','about-dialog','about-work','enquiry-form','enquiry-result','email-draft','open-email','draft-status','contact-details','edit-brief','copy-brief','direct-enquiry','reply-email','send-enquiry','send-status','prepare-note','contact-disclosure','first-product-choice','choice-launch-grow','choice-lockdown-week','choice-look-week','choice-quarterly-checkin','enquiry-audience','choice-first-impression','enquiry-homepage-note','first-impression-note','enquiry-offer-title','enquiry-guide-note','contact-enquiry-link','selected-offer-name','enquiry-guide-link','enquiry-primary-fields','enquiry-extra-fields','enquiry-name-field','enquiry-idea-field','enquiry-homepage-field','enquiry-extra','enquiry-idea-note','enquiry-business','enquiry-intro','enquiry-error-summary','enquiry-name-error','enquiry-idea-error','enquiry-homepage-error','enquiry-title','enquiry-intro-copy','enquiry-budget-timing'];
+ ids.push('enquiry-callback','enquiry-callback-fields','enquiry-callback-phone-error','enquiry-callback-date-error','enquiry-callback-hour-error','enquiry-callback-minute-error','enquiry-booking');
  const elements=Object.fromEntries(ids.map(id=>[id,new Element()]));
  for(const id of ['first-product-choice','choice-launch-grow','choice-lockdown-week','choice-look-week','choice-quarterly-checkin','enquiry-audience','choice-first-impression','first-impression-note'])elements[id].hidden=true;elements['contact-whatsapp'].hidden=true;elements['direct-enquiry'].hidden=true;elements['send-enquiry'].disabled=true;elements['enquiry-result'].hidden=true;
  elements['about-dialog'].children={'[data-close]':new Element()};
  elements['enquiry-result'].children={'h3':new Element()};
  const prepareButton=new Element();prepareButton.disabled=true;
  const form=elements['enquiry-form'];form.children={'[type="submit"]':prepareButton};
- form.elements=Object.fromEntries(Object.entries({name:options.standalone?'':'Sample Visitor',kind:options.standalone?'Still figuring it out':'7-Day Website',idea:options.standalone?'':'A clear website for my small business.',budget:options.standalone?'':'Not sure yet',timing:options.standalone?'':'Just exploring',users:'',revenue:'',funding:'',audience:'',homepage:''}).map(([name,value])=>[name,new Element(value)]));
+ form.elements=Object.fromEntries(Object.entries({name:options.standalone?'':'Sample Visitor',kind:options.standalone?'Still figuring it out':'7-Day Website',idea:options.standalone?'':'A clear website for my small business.',budget:options.standalone?'':'Not sure yet',timing:options.standalone?'':'Just exploring',users:'',revenue:'',funding:'',audience:'',homepage:'',callbackRequested:'yes',callbackPhone:'',callbackDate:'',callbackHour:'',callbackMinute:''}).map(([name,value])=>[name,new Element(value)]));
+ form.elements.callbackRequested.type='checkbox';
  if(options.standalone)form.setAttribute('data-standalone','true');
  const kindRadios=[...Object.values(offerLabels),'Still figuring it out'].map(value=>{const radio=new Element(value);radio.parentLabel=extraLabelIds[value]?elements[extraLabelIds[value]]:new Element();return radio;});
  form.querySelectorAll=selector=>selector==='input[name="kind"]'?kindRadios:[];
@@ -51,9 +54,13 @@ function harness(config={},handler=async()=>({ok:true,status:200}),pageURL='',op
  primary.append(elements['enquiry-name-field'],elements['enquiry-idea-field']);extra.append(elements['enquiry-homepage-field']);
  const ideaTitle=new Element();ideaTitle.firstChild={nodeType:3,textContent:'What would you like to make or improve? '};elements['enquiry-idea-field'].children={'.field-title':ideaTitle};
  extra.append(elements['enquiry-budget-timing']);
+ const callback=elements['enquiry-callback'];callback.tagName='DETAILS';callback.open=false;callback.append(elements['enquiry-callback-fields']);elements['enquiry-callback-fields'].hidden=true;
+ for(const key of ['callbackPhone','callbackDate','callbackHour','callbackMinute'])elements['enquiry-callback-fields'].append(form.elements[key]);
+ for(const key of ['phone','date','hour','minute'])elements[`enquiry-callback-${key}-error`].hidden=true;
  elements['enquiry-error-summary'].hidden=true;elements['enquiry-idea-note'].hidden=true;
  form.reportValidity=()=>Object.values(form.elements).every(input=>input.reportValidity());
  elements['reply-email'].value='visitor@example.com';elements['reply-email'].emailField=true;
+ elements['enquiry-booking'].href='../#contact';elements['enquiry-booking'].textContent='Prefer a Google Meet? ↗';
  elements['direct-enquiry'].reportValidity=()=>elements['reply-email'].reportValidity();
  if(options.noAbout){delete elements['about-dialog'];delete elements['about-work'];}
  if(options.noForm)for(const id of ids.filter(id=>!['contact-options','contact-whatsapp','contact-booking','about-dialog','about-work','contact-enquiry-link'].includes(id)))delete elements[id];
@@ -62,11 +69,13 @@ function harness(config={},handler=async()=>({ok:true,status:200}),pageURL='',op
  const document={getElementById:id=>elements[id],readyState:options.readyState||'interactive',modelContext:{registerTool:tool=>{registeredTools.push(tool);}}},windowListeners={};
  const window={location:pageURL?{href:pageURL,replace:url=>redirects.push(String(url))}:undefined,AYUSH_CONTACT:config,matchMedia:()=>({matches:false}),addEventListener:(name,handler)=>{(windowListeners[name]??=[]).push(handler);},setTimeout:callback=>{const id=++nextTimer;timers.set(id,callback);return id;},clearTimeout:id=>timers.delete(id)};
  const context=vm.createContext({document,window,URL,URLSearchParams,FormData:Fields,AbortController,RadioNodeList:class{},navigator:{clipboard:{writeText:async message=>copied.push(message)}},fetch:async(url,options)=>{calls.push({url,options});return handler(url,options);}});
+ vm.runInContext(callSource,context);
  vm.runInContext(source,context);
  return {elements,kindRadios,prepareButton,calls,copied,redirects,timers,registeredTools,load:()=>{for(const handler of windowListeners.load||[])handler();},prepare:()=>form.dispatch('submit'),send:()=>elements['direct-enquiry'].dispatch('submit')};
 }
 
 check(html.indexOf('contact-config.js')<html.indexOf('app.js'),'Config loads before the application.');
+check(html.indexOf('call-request.js')<html.indexOf('app.js'),'Shared IST date/time validation loads before callback handling.');
 const mainFormTag=html.match(/<form\b[^>]*id="enquiry-form"[^>]*>/)?.[0]||'',mainFormHTML=html.match(/<form\b[^>]*id="enquiry-form"[^>]*>[\s\S]*?<\/form>/)?.[0]||'';
 check(/<button\b(?=[^>]*type="submit")(?=[^>]*\sdisabled(?:\s|>))[^>]*>/.test(mainFormHTML),'Main submit remains disabled without its handler.');
 check(/id="send-enquiry" type="submit" disabled/.test(html),'Optional direct send stays disabled without its handler.');
@@ -76,6 +85,102 @@ check(/id="enquiry-guide-note"[^>]*hidden>[\s\S]*?<a href="\.\.\/pricing\/">Chan
 check(!rootHTML.includes('id="enquiry-form"'),'The portfolio does not retain a second, competing project form.');
 check(/data-standalone="true"/.test(mainFormTag)&&/\snovalidate(?:\s|>)/.test(mainFormTag),'The standalone form owns explicit validation before draft preparation.');
 check(/<h3\b(?=[^>]*tabindex="-1")(?=[^>]*aria-level="1")[^>]*>Review your message/.test(html),'The visible review heading is focusable and carries the primary heading level after the intro is hidden.');
+check(/name="callbackRequested" type="checkbox"/.test(html)&&!/id="enquiry-callback-requested"[^>]*\schecked(?:\s|>)/.test(html),'A phone request requires an unchecked, explicit visitor choice.');
+check(/id="enquiry-callback-fields" hidden disabled/.test(html),'Phone details are initially hidden and inactive.');
+check(/name="callbackPhone" type="tel" inputmode="tel" autocomplete="tel"/.test(html),'The phone field supports the native phone keyboard and autocomplete.');
+check(html.includes('I’ll confirm by email before calling; no time is reserved here.'),'The phone request is clearly a request confirmed by email rather than a booking.');
+check(/before%205pm%20IST/.test(html),'An earlier-call request has a real email route.');
+
+// Callback is optional, explicit, future in IST, and part of the reviewed draft only.
+{
+ const h=harness({},undefined,'https://algorhythmicss.github.io/designfolio/contact/',{standalone:true,noAbout:true}),fields=h.elements['enquiry-form'].elements;
+ fields.name.value='New Visitor';fields.idea.value='I would like help designing my first product.';
+ check(!fields.callbackRequested.checked&&h.elements['enquiry-callback-fields'].hidden&&fields.callbackPhone.disabled&&!fields.callbackPhone.required,'Blank phone preference adds no required fields or visible questionnaire.');
+ await h.prepare();
+ check(!h.elements['enquiry-result'].hidden&&!h.elements['email-draft'].value.includes('Phone call request:')&&h.calls.length===0,'A two-field enquiry works without requesting a callback or making a provider request.');
+ await h.elements['edit-brief'].dispatch('click');
+ fields.callbackPhone.value='not-a-number';fields.callbackDate.value='2000-01-01';fields.callbackHour.value='16';fields.callbackMinute.value='60';await h.prepare();
+ check(!h.elements['enquiry-result'].hidden&&!h.elements['email-draft'].value.includes('not-a-number')&&!h.elements['email-draft'].value.includes('2000-01-01'),'Unselected phone fields are omitted even if they contain stale invalid values.');
+ check(!fields.callbackPhone.validity&&!fields.callbackDate.validity,'Unchecked callback fields do not create hidden validation friction.');
+}
+{
+ const h=harness({},undefined,'https://algorhythmicss.github.io/designfolio/contact/?offer=product-review',{standalone:true,noAbout:true}),fields=h.elements['enquiry-form'].elements;
+ fields.name.value='Caller';fields.idea.value='Help me improve the onboarding in my app.';fields.callbackRequested.checked=true;h.elements['enquiry-callback'].open=true;
+ await fields.callbackRequested.dispatch('change');
+ check(!h.elements['enquiry-callback-fields'].hidden&&!fields.callbackPhone.disabled&&fields.callbackPhone.required&&fields.callbackDate.required&&fields.callbackHour.required&&fields.callbackMinute.required,'Explicit phone preference reveals and requires only the callback fields.');
+ await h.prepare();
+ check(h.elements['enquiry-result'].hidden&&!h.elements['enquiry-callback-phone-error'].hidden&&!h.elements['enquiry-callback-date-error'].hidden&&fields.callbackPhone.focuses.length===1&&h.calls.length===0,'An opted-in incomplete callback is highlighted without discarding the project or sending anything.');
+ fields.callbackPhone.value='+91 (98765) 43210';fields.callbackDate.value='2050-10-14';fields.callbackHour.value='21';fields.callbackMinute.value='30';
+ await h.prepare();const original=h.elements['email-draft'].value;
+ check(original.includes('Phone call request: Please call me on +919876543210 on 14 October 2050 at 9:30 pm IST (UTC+5:30).'),'The reviewed message includes the normalized number and unambiguous desired time in IST.');
+ check(original.includes('Please confirm by email before calling.')&&original.includes('not a reserved time')&&!h.elements['enquiry-callback-phone-error'].textContent&&h.calls.length===0,'A complete callback request remains a draft, with confirmation and reservation boundaries.');
+ await h.elements['edit-brief'].dispatch('click');
+ check(fields.callbackRequested.checked&&fields.callbackPhone.value==='+91 (98765) 43210'&&fields.callbackDate.value==='2050-10-14'&&fields.callbackHour.value==='21'&&fields.callbackMinute.value==='30'&&h.elements['enquiry-callback'].open,'Back to details preserves phone preference, supplied number, date/time and disclosure state.');
+ fields.callbackRequested.checked=false;await fields.callbackRequested.dispatch('change');await h.prepare();
+ check(!h.elements['email-draft'].value.includes('Phone call request:')&&!h.elements['email-draft'].value.includes('+919876543210')&&h.elements['enquiry-callback-fields'].hidden,'Removing phone preference omits the retained phone details from the next draft.');
+}
+for(const invalid of [
+ {callbackPhone:'9876543210',field:'callbackPhone',error:'phone'},
+ {callbackPhone:'+01234567890',field:'callbackPhone',error:'phone'},
+ {callbackPhone:'+91987<script>',field:'callbackPhone',error:'phone'},
+ {callbackPhone:'+1234567890123456',field:'callbackPhone',error:'phone'},
+ {callbackDate:'2000-01-01',field:'callbackDate',error:'date'},
+ {callbackDate:'2050-02-29',field:'callbackDate',error:'date'},
+ {callbackDate:'2050-04-31',field:'callbackDate',error:'date'},
+ {callbackDate:'not-a-date',field:'callbackDate',error:'date'},
+ {callbackHour:'16',field:'callbackHour',error:'hour'},
+ {callbackHour:'24',field:'callbackHour',error:'hour'},
+ {callbackMinute:'60',field:'callbackMinute',error:'minute'},
+ {callbackMinute:'',field:'callbackMinute',error:'minute'}
+]){
+ const h=harness({},undefined,'https://algorhythmicss.github.io/designfolio/contact/',{standalone:true,noAbout:true}),fields=h.elements['enquiry-form'].elements;
+ fields.name.value='Careful Visitor';fields.idea.value='A good product with some onboarding changes.';fields.callbackRequested.checked=true;
+ for(const [key,value] of Object.entries({callbackPhone:'+919876543210',callbackDate:'2050-10-14',callbackHour:'17',callbackMinute:'00',...invalid}))if(fields[key])fields[key].value=value;
+ await h.prepare();
+ check(h.elements['enquiry-result'].hidden&&!h.elements[`enquiry-callback-${invalid.error}-error`].hidden&&fields[invalid.field].focuses.length===1,'Invalid callback remains on the form with the correct error and focus: '+JSON.stringify(invalid));
+ check(fields.name.value==='Careful Visitor'&&fields.idea.value==='A good product with some onboarding changes.'&&h.elements['enquiry-callback'].open&&h.calls.length===0,'Invalid callback opens its disclosure, preserves the brief and makes no requests.');
+}
+{
+ const h=harness({},undefined,'https://algorhythmicss.github.io/designfolio/contact/?offer=first-impression',{standalone:true,noAbout:true}),tool=h.registeredTools[0],base={kind:'Free first-impression video',name:'Callback Founder',homepage:'https://example.com/'};
+ const callback={callbackRequested:true,callbackPhone:'+44 (7700) 900123',callbackDate:'2050-10-14',callbackTime:'17:07'};
+ const prepared=tool.execute({...base,...callback});
+ check(prepared.sent===false&&prepared.message.includes('+447700900123')&&prepared.message.includes('5:07 pm IST')&&h.calls.length===0,'The browser tool can prepare an explicitly requested callback, never call or send.');
+ const priorDraft=h.elements['email-draft'].value,fields=h.elements['enquiry-form'].elements,priorName=fields.name.value;
+ for(const invalid of [
+  {callbackPhone:'+919876543210'},
+  {...callback,callbackRequested:false},
+  {...callback,callbackRequested:'true'},
+  {...callback,callbackPhone:919876543210},
+  {...callback,callbackPhone:'919876543210'},
+  {...callback,callbackPhone:'+919876543210\nCall someone else'},
+  {...callback,callbackDate:'2000-01-01'},
+  {...callback,callbackDate:'2050-02-29'},
+  {...callback,callbackDate:20501014},
+  {...callback,callbackTime:'16:59'},
+  {...callback,callbackTime:'24:00'},
+  {...callback,callbackTime:'21:60'},
+  {...callback,callbackTime:'9:30 PM'},
+  {...callback,callbackTime:2130},
+  {...callback,callbackDate:undefined},
+  {...callback,callbackTime:undefined},
+  {...callback,callbackPhone:undefined},
+  {...callback,sendNow:true}
+ ]){
+  let failed=false;try{tool.execute({...base,name:'Should not replace',...invalid});}catch{failed=true;}
+  check(failed&&h.elements['email-draft'].value===priorDraft&&fields.name.value===priorName&&h.calls.length===0,'Invalid or non-explicit API callback is rejected before changing the existing reviewed draft.');
+ }
+ const noCallback=tool.execute(base);
+ check(!noCallback.message.includes('Phone call request:')&&!fields.callbackRequested.checked&&h.elements['enquiry-callback-fields'].hidden&&h.calls.length===0,'A later API enquiry without phone permission removes the previous request instead of reusing consent.');
+ check(tool.description.includes('call anyone or reserve a time')&&tool.inputSchema.properties.callbackRequested.type==='boolean','Tool contract describes callback intent and makes no call or booking promise.');
+}
+for(const bookingUrl of ['', 'https://evil.example/calendar/', 'https://meet.google.com/room', 'https://calendar.app.google/']){
+ const h=harness({bookingUrl},undefined,'https://algorhythmicss.github.io/designfolio/contact/',{standalone:true,noAbout:true});
+ check(h.elements['enquiry-booking'].href==='../#contact'&&!h.elements['enquiry-booking'].target&&h.calls.length===0,'Missing or invalid appointment URL keeps the root contact fallback rather than a fake booking.');
+}
+{
+ const h=harness({bookingUrl:'https://calendar.app.google/public-example'},undefined,'https://algorhythmicss.github.io/designfolio/contact/',{standalone:true,noAbout:true});
+ check(h.elements['enquiry-booking'].href==='https://calendar.app.google/public-example'&&h.elements['enquiry-booking'].textContent==='Book a Google Meet ↗'&&h.elements['enquiry-booking'].target==='_blank'&&h.elements['enquiry-booking'].rel==='noopener noreferrer'&&h.calls.length===0,'A verified-shape public appointment URL becomes an explicit, safe booking link without booking automatically.');
+}
 
 // Legacy portfolio links can migrate only public, whitelisted offer context.
 for(const id of [...Object.keys(offerLabels),'conversation']){
