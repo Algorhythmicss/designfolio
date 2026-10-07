@@ -17,8 +17,8 @@
  <link rel="preload" as="font" type="font/woff2" crossorigin href="../assets/fonts/schibsted-grotesk-latin-wght-normal.woff2">
  <link rel="stylesheet" href="../styles.css?v=16.1">
  <link rel="stylesheet" href="pricing.css?v=20">
- <link rel="stylesheet" href="offer-guide.css?v=21">
- <script type="module" src="offer-guide.mjs?v=21"></script>
+ <link rel="stylesheet" href="offer-guide.css?v=22">
+ <script type="module" src="offer-guide.mjs?v=22"></script>
  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
 </head>
 <body class="pricing-page">
@@ -40,7 +40,8 @@
      <p id="guide-trail"></p>
      <button type="button" id="guide-reset" hidden>Start again</button>
     </div>
-    <img class="guide-art" src="assets/workbench.webp" width="2172" height="724" alt="" aria-hidden="true">
+    <div class="guide-stage">
+    <div class="guide-content">
     <div class="guide-heading">
      <p id="guide-time" class="guide-time" hidden></p>
      <h1 id="guide-title" tabindex="-1"></h1>
@@ -52,7 +53,6 @@
       <div class="guide-price-side">
        <p id="guide-price" class="guide-price"></p>
        <p id="guide-international" class="guide-international"></p>
-       <p id="guide-essential" class="guide-essential"></p>
        <a id="guide-enquiry" class="guide-enquiry" href="../#contact"></a>
       </div>
       <div class="guide-included-side">
@@ -60,20 +60,28 @@
        <ul id="guide-includes"></ul>
       </div>
      </div>
-     <p id="guide-proof" class="guide-proof"></p>
+     <p id="guide-essential" class="guide-essential"></p>
      <details id="guide-detail" class="guide-detail">
-      <summary>Scope, delivery and the promise</summary>
+      <summary>Scope &amp; promises</summary>
       <div id="guide-detail-copy"></div>
       <a id="guide-scope-link" class="guide-text-link" hidden></a>
+      <p class="guide-fit-note">We agree fit, scope and availability before any work is booked.</p>
      </details>
      <div id="guide-followups" class="guide-followups"></div>
-     <p class="guide-fit-note">A starting point, based on your answers. We agree fit, scope and availability before any work is booked.</p>
     </article>
-    <p class="guide-privacy">No contact details needed to explore. Your choices stay on this page.</p>
+    </div>
+    <figure class="guide-illustration">
+     <img class="guide-art" src="../assets/process-v13/idea-to-product.webp" srcset="../assets/responsive/idea-to-product-420.webp 420w, ../assets/responsive/idea-to-product-768.webp 768w, ../assets/process-v13/idea-to-product.webp 1024w" sizes="(max-width: 760px) 160px, 440px" width="1024" height="1536" alt="" aria-hidden="true">
+     <figcaption id="guide-proof" class="guide-proof" hidden></figcaption>
+    </figure>
+    </div>
    </div>
-   <div class="guide-exits">
-    <a href="#all-offers" id="guide-all-offers">I’d rather see all offers <span aria-hidden="true">↓</span></a>
-    <a href="../#contact">I’d rather talk about it <span aria-hidden="true">↗</span></a>
+   <div class="guide-utility">
+    <p class="guide-privacy">No email needed.<br> Your choices stay on this page.</p>
+    <div class="guide-exits">
+     <a href="#all-offers" id="guide-all-offers">See all offers <span aria-hidden="true">↓</span></a>
+     <a href="../#contact">Let’s talk instead <span aria-hidden="true">↗</span></a>
+    </div>
    </div>
   </section>
   <details id="all-offers" class="offer-catalog">
@@ -87,21 +95,21 @@
   </section>
   <nav class="pricing-path" aria-label="Explore the product offers">
    <ol>
-    <li><a href="#product-review">Review <span aria-hidden="true">↘</span></a></li>
-    <li><a href="#product-upgrade">Sprint <span aria-hidden="true">↘</span></a></li>
-    <li><a href="#monthly-partner">Ship Every Week <span aria-hidden="true">↘</span></a></li>
+    <li><a href="#catalog-product-review">Review <span aria-hidden="true">↘</span></a></li>
+    <li><a href="#catalog-product-upgrade">Sprint <span aria-hidden="true">↘</span></a></li>
+    <li><a href="#catalog-monthly-partner">Ship Every Week <span aria-hidden="true">↘</span></a></li>
    </ol>
    <p>For an existing product. Start with the part you need.</p>
   </nav>
 
-  <section id="first-impression" class="first-impression-offer" aria-labelledby="first-impression-title">
+  <section id="catalog-first-impression" class="first-impression-offer" aria-labelledby="first-impression-title">
    <div><p class="offer-time">Three minutes · free</p><h2 id="first-impression-title">What does a new user<br><em>see first?</em></h2></div>
    <div><p>Send me a link. I’ll record a three-minute first-impression video: what I understand, where I hesitate and the first thing I’d change.</p><a class="offer-cta" href="../?offer=first-impression&amp;guided=1#contact">Request a free first impression <span aria-hidden="true">↗</span></a><p class="small-note">One focused look at a public product. I confirm fit and availability before taking it on.</p></div>
   </section>
   <p class="pricing-proof">See the work behind the offer: <a href="../leetify/">Leetify, a product I designed, built and shipped</a>. The other portfolio projects are self-initiated brand and website concepts.</p>
 
   <div class="product-offers">
-   <article id="product-review" class="pricing-offer offer-review" aria-labelledby="review-title">
+   <article id="catalog-product-review" class="pricing-offer offer-review" aria-labelledby="review-title">
     <div class="offer-story">
      <p class="offer-time">Three days · understand what needs to change</p>
      <h2 id="review-title">Launch-Ready<br>Check.</h2>
@@ -120,7 +128,7 @@
     <details class="offer-detail"><summary>Scope of the Check</summary><p>The screen rebuild is a review prototype; full integration is scoped separately. Code and data checks are limited to agreed access and obvious risks, not a security audit or certification. The Check does not promise a conversion increase or complete security.</p></details>
    </article>
 
-   <article id="product-upgrade" class="pricing-offer offer-upgrade" aria-labelledby="upgrade-title">
+   <article id="catalog-product-upgrade" class="pricing-offer offer-upgrade" aria-labelledby="upgrade-title">
     <div class="upgrade-heading"><p class="offer-time">Fourteen days · up to three flows and around twelve screens</p><h2 id="upgrade-title">Launch-Ready<br><em>Sprint.</em></h2><p class="offer-copy">An app you’re proud to show users and investors, with its own look, clearer journeys and the agreed launch risks addressed.</p></div>
     <div class="offer-rate"><p class="rate-amount">₹2.5 lakh</p><p class="rate-other">International <span>$6,000</span></p><a class="offer-cta" href="../?offer=product-upgrade&amp;guided=1#contact">Plan my Launch-Ready Sprint <span aria-hidden="true">↗</span></a></div>
     <div class="sprint-inclusions">
@@ -135,7 +143,7 @@
     <details class="offer-detail"><summary>Included extras, after launch and scope limits</summary><p><strong>User Voice:</strong> a short report from the arranged user conversations. <strong>Distribution plan:</strong> a one-page plan for your product, drawing on my experience launching Leetify; audience growth is not promised. The Launch Kit is the seven-day Check-to-Sprint booking bonus, not a standard inclusion. <strong>30-day fix warranty:</strong> defects in the delivered, agreed scope are fixed for 30 days after launch. New features, later scope changes, client changes to the delivered code and third-party failures are excluded. This improves an existing app; it is not a full rewrite. Regulated medical or financial systems are outside this offer. Lockdown is scoped remediation, not a security audit or certification, and no complete-security or growth outcome is promised.</p></details>
    </article>
 
-   <article id="monthly-partner" class="pricing-offer offer-monthly" aria-labelledby="monthly-title">
+   <article id="catalog-monthly-partner" class="pricing-offer offer-monthly" aria-labelledby="monthly-title">
     <div class="offer-story"><p class="offer-time">Monthly · design and engineering, in one place</p><h2 id="monthly-title">Ship<br>Every Week.</h2><p class="offer-copy">Keep improving the product with someone who can design it and ship it.</p><p class="offer-description">Up to 30 hours a month across a prioritised backlog: new flows, interface improvements, frontend and backend work. One request and workstream at a time, with a weekly call and a working update at the agreed weekly checkpoint. Scope and priorities fit the reserved hours.</p></div>
     <div class="offer-rate"><p class="rate-amount">₹1.5 lakh</p><p class="rate-period">per month</p><p class="rate-other">International <span>$3,500 / month</span></p><a class="offer-cta" href="../?offer=monthly-partner&amp;guided=1#contact">Keep shipping together <span aria-hidden="true">↗</span></a></div>
     <p class="monthly-note">Continue after a Sprint or bring an existing product. Billed monthly in advance; two weeks’ notice stops renewal. We reserve capacity and agree priorities before each month begins.</p>
@@ -146,17 +154,17 @@
 
   <section class="further-offers" aria-labelledby="further-title">
    <div class="other-heading"><h2 id="further-title">More room to grow.<br><em>Or a smaller start.</em></h2><p>Choose a longer partnership or one focused piece of work.</p></div>
-   <article id="launch-grow" class="further-offer bundle-offer" aria-labelledby="launch-grow-title"><div><p class="offer-time">One Sprint + three following months</p><h3 id="launch-grow-title">Launch &amp; Grow.</h3><p class="offer-description">Upgrade now, with capacity reserved to keep shipping after launch.</p></div><div class="further-rate"><p class="focused-price">₹6.5 lakh <span>International $15,000 · paid up front</span></p><a class="offer-cta" href="../?offer=launch-grow&amp;guided=1#contact">Plan launch and what follows <span aria-hidden="true">↗</span></a></div><details class="offer-detail"><summary>What the bundle includes</summary><p>The Launch-Ready Sprint followed by three months of Ship Every Week: 90 hours across three months, separate from the Sprint’s fixed scope. One prioritised workstream, monthly analytics reviews and no onboarding fee after the Sprint. Separately, with monthly billing: ₹7 lakh / $16,500. The quarter-prepayment and founding discounts do not stack with the bundle. Its quote itemises the Sprint and monthly service fees, so their guarantees use the agreed component fees.</p></details></article>
-   <article id="lockdown-week" class="further-offer" aria-labelledby="lockdown-title"><div><p class="offer-time">One week · focused technical fixes</p><h3 id="lockdown-title">Lockdown Week.</h3><p class="offer-description">Agreed authentication and data-access fixes, tested account separation where relevant, and error tracking.</p></div><div class="further-rate"><p class="focused-price">₹1 lakh <span>International $2,500</span></p><a class="offer-cta" href="../?offer=lockdown-week&amp;guided=1#contact">Fix the foundations <span aria-hidden="true">↗</span></a></div><details class="offer-detail"><summary>Scope and handover</summary><p>One agreed remediation scope with a written list of what changed and what remains. The week starts with access ready. This is a focused set of fixes, not a security audit, certification or a promise to close every vulnerability.</p></details></article>
-   <article id="look-week" class="further-offer" aria-labelledby="look-title"><div><p class="offer-time">One week · one agreed existing flow</p><h3 id="look-title">Look Week.</h3><p class="offer-description">A visual direction of your own, with one existing flow redesigned and rebuilt in code.</p></div><div class="further-rate"><p class="focused-price">₹1.25 lakh <span>International $3,000</span></p><a class="offer-cta" href="../?offer=look-week&amp;guided=1#contact">Give it its own look <span aria-hidden="true">↗</span></a></div><details class="offer-detail"><summary>The direction and one redo</summary><p>Type, colour and interface style applied to the agreed flow. If the first direction misses the mark, I redo that visual direction once within the same scope at no extra charge. It does not include the complete Sprint, a full brand identity or new product features. Code access and consolidated feedback are ready at the agreed checkpoints.</p></details></article>
-   <article id="quarterly-checkin" class="further-offer" aria-labelledby="quarterly-title"><div><p class="offer-time">Once a quarter · a light ongoing review</p><h3 id="quarterly-title">Quarterly Check-in.</h3><p class="offer-description">One scoped product review and one small, agreed fix per quarter.</p></div><div class="further-rate"><p class="focused-price">₹40,000 <span>International $1,000 / quarter</span></p><a class="offer-cta" href="../?offer=quarterly-checkin&amp;guided=1#contact">Plan a quarterly check-in <span aria-hidden="true">↗</span></a></div></article>
+   <article id="catalog-launch-grow" class="further-offer bundle-offer" aria-labelledby="launch-grow-title"><div><p class="offer-time">One Sprint + three following months</p><h3 id="launch-grow-title">Launch &amp; Grow.</h3><p class="offer-description">Upgrade now, with capacity reserved to keep shipping after launch.</p></div><div class="further-rate"><p class="focused-price">₹6.5 lakh <span>International $15,000 · paid up front</span></p><a class="offer-cta" href="../?offer=launch-grow&amp;guided=1#contact">Plan launch and what follows <span aria-hidden="true">↗</span></a></div><details class="offer-detail"><summary>What the bundle includes</summary><p>The Launch-Ready Sprint followed by three months of Ship Every Week: 90 hours across three months, separate from the Sprint’s fixed scope. One prioritised workstream, monthly analytics reviews and no onboarding fee after the Sprint. Separately, with monthly billing: ₹7 lakh / $16,500. The quarter-prepayment and founding discounts do not stack with the bundle. Its quote itemises the Sprint and monthly service fees, so their guarantees use the agreed component fees.</p></details></article>
+   <article id="catalog-lockdown-week" class="further-offer" aria-labelledby="lockdown-title"><div><p class="offer-time">One week · focused technical fixes</p><h3 id="lockdown-title">Lockdown Week.</h3><p class="offer-description">Agreed authentication and data-access fixes, tested account separation where relevant, and error tracking.</p></div><div class="further-rate"><p class="focused-price">₹1 lakh <span>International $2,500</span></p><a class="offer-cta" href="../?offer=lockdown-week&amp;guided=1#contact">Fix the foundations <span aria-hidden="true">↗</span></a></div><details class="offer-detail"><summary>Scope and handover</summary><p>One agreed remediation scope with a written list of what changed and what remains. The week starts with access ready. This is a focused set of fixes, not a security audit, certification or a promise to close every vulnerability.</p></details></article>
+   <article id="catalog-look-week" class="further-offer" aria-labelledby="look-title"><div><p class="offer-time">One week · one agreed existing flow</p><h3 id="look-title">Look Week.</h3><p class="offer-description">A visual direction of your own, with one existing flow redesigned and rebuilt in code.</p></div><div class="further-rate"><p class="focused-price">₹1.25 lakh <span>International $3,000</span></p><a class="offer-cta" href="../?offer=look-week&amp;guided=1#contact">Give it its own look <span aria-hidden="true">↗</span></a></div><details class="offer-detail"><summary>The direction and one redo</summary><p>Type, colour and interface style applied to the agreed flow. If the first direction misses the mark, I redo that visual direction once within the same scope at no extra charge. It does not include the complete Sprint, a full brand identity or new product features. Code access and consolidated feedback are ready at the agreed checkpoints.</p></details></article>
+   <article id="catalog-quarterly-checkin" class="further-offer" aria-labelledby="quarterly-title"><div><p class="offer-time">Once a quarter · a light ongoing review</p><h3 id="quarterly-title">Quarterly Check-in.</h3><p class="offer-description">One scoped product review and one small, agreed fix per quarter.</p></div><div class="further-rate"><p class="focused-price">₹40,000 <span>International $1,000 / quarter</span></p><a class="offer-cta" href="../?offer=quarterly-checkin&amp;guided=1#contact">Plan a quarterly check-in <span aria-hidden="true">↗</span></a></div></article>
   </section>
 
   <section class="other-starts" aria-labelledby="other-title">
    <div class="other-heading"><h2 id="other-title">A new idea?<br><em>A business website?</em></h2><p>Two different starting points, with their own scope.</p></div>
    <div class="other-links">
-    <div id="first-product"><h3><a href="idea-to-launch/">Idea to Launch in 6 Weeks <span aria-hidden="true">↗</span></a></h3><p>Flows, interface and a working first release, designed and built end to end.</p><p class="other-price">From ₹6 lakh <span>International from $12,000</span></p></div>
-    <div id="website-week"><h3>7-Day Website.</h3><p>A business-specific look, up to five pages and a clear booking or enquiry route.</p><p class="other-price">₹60,000 <span>International $2,500</span></p><nav class="website-versions" aria-label="Website packages by business"><a href="clinic/">For clinics ↗</a><a href="studio/">For studios ↗</a><a href="cafe/">For cafés ↗</a></nav></div>
+    <div id="catalog-first-product"><h3><a href="idea-to-launch/">Idea to Launch in 6 Weeks <span aria-hidden="true">↗</span></a></h3><p>Flows, interface and a working first release, designed and built end to end.</p><p class="other-price">From ₹6 lakh <span>International from $12,000</span></p></div>
+    <div id="catalog-website-week"><h3>7-Day Website.</h3><p>A business-specific look, up to five pages and a clear booking or enquiry route.</p><p class="other-price">₹60,000 <span>International $2,500</span></p><nav class="website-versions" aria-label="Website packages by business"><a href="clinic/">For clinics ↗</a><a href="studio/">For studios ↗</a><a href="cafe/">For cafés ↗</a></nav></div>
    </div>
   </section>
 

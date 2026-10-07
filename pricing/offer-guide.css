@@ -1,94 +1,131 @@
-/* One decision on open paper. The existing complete menu is a deliberate escape. */
-.offer-guide{max-width:1010px;margin:auto;padding:18px 0 45px;min-width:0}
-.guide-navigation{display:flex;align-items:center;gap:20px;min-height:44px;margin-bottom:16px;font:500 12px/1.5 var(--sans)}
-.guide-navigation button{min-height:44px;padding:0;text-decoration:underline;text-underline-offset:5px;flex:none}
-.guide-navigation #guide-reset{margin-left:auto}
-.guide-navigation #guide-trail{font:400 12px/1.5 var(--sans);color:var(--muted);text-wrap:pretty}
-.guide-art{width:300px;max-width:78%;height:auto;margin:0 auto 28px;mix-blend-mode:multiply}
-.guide-heading,.guide-fallback{text-align:center;max-width:770px;margin:0 auto}
-.guide-heading h1,.guide-fallback h1{font:400 clamp(43px,5vw,66px)/1.08 var(--serif);letter-spacing:-.025em;font-optical-sizing:auto;margin:0 auto 22px;text-wrap:balance;outline:none}
-.guide-heading>p:not(.guide-time),.guide-fallback>p{font:400 23px/1.4 var(--serif);max-width:620px;margin:0 auto;text-wrap:pretty}
-.guide-time{font:500 12px/1.5 var(--sans);color:var(--muted);margin:0 auto 14px}
+/* One open-paper composition: artwork, a decision, then the detail requested. */
+.pricing-header,.pricing-footer{font-size:16px}
+.offer-guide{max-width:1140px;margin:auto;padding:30px 0 24px;min-width:0}
+.guide-navigation{display:flex;align-items:center;gap:24px;min-height:44px;margin-bottom:30px;font:500 16px/1.4 var(--sans)}
+.guide-navigation button{min-height:44px;padding:0;flex:none}
+.guide-navigation #guide-reset{margin-left:auto;text-decoration:underline;text-underline-offset:5px}
+.guide-navigation #guide-trail{font:400 16px/1.4 var(--sans);color:var(--muted);text-wrap:pretty}
+.guide-navigation:has(#guide-back[hidden]){min-height:0;margin-bottom:0}
+.guide-stage{display:grid;grid-template-columns:minmax(0,.72fr) minmax(0,1fr);gap:65px;align-items:start}
+.guide-illustration{grid-column:1;grid-row:1;margin:0;position:sticky;top:32px;min-width:0}
+.guide-art{width:100%;height:auto;margin:0;max-width:100%}
+.guide-content{grid-column:2;grid-row:1;min-width:0;padding-top:20px}
+.guide-heading{text-align:left;margin:0}
+.guide-heading h1,.guide-fallback h1{font:400 clamp(50px,4.7vw,68px)/1.04 var(--serif);letter-spacing:-.03em;font-optical-sizing:auto;margin:0 0 25px;text-wrap:balance;outline:none}
+.guide-heading>p:not(.guide-time),.guide-fallback>p{font:400 24px/1.4 var(--serif);max-width:590px;margin:0;text-wrap:pretty}
+.guide-time{font:500 16px/1.5 var(--sans);color:var(--muted);margin:0 0 19px}
 .guide-heading .keep-together{white-space:nowrap}
-#guide-app:has(#guide-result:not([hidden])) .guide-art{width:235px;margin-bottom:19px}
-#guide-app:has(#guide-result:not([hidden])) .guide-heading h1{font-size:clamp(42px,4.1vw,58px)}
-.guide-choices{max-width:620px;margin:35px auto 0}
-.guide-choice{display:flex;align-items:center;justify-content:space-between;gap:30px;width:100%;min-height:72px;padding:18px 0;text-align:left;border-bottom:1px solid var(--line)}
+#guide-app[data-view=result] .guide-heading h1{font-size:clamp(47px,4.3vw,62px)}
+.guide-choices{margin:36px 0 0}
+.guide-choice{display:flex;align-items:center;justify-content:space-between;gap:24px;width:100%;min-height:112px;padding:24px 0;text-align:left;border-bottom:1px solid var(--line)}
 .guide-choice:first-child{border-top:1px solid var(--line)}
-.guide-choice .choice-label{display:block;font:500 20px/1.25 var(--sans);letter-spacing:-.025em}
-.guide-choice .choice-description{display:block;font:400 17px/1.5 var(--serif);color:var(--muted);margin-top:7px;text-wrap:pretty}
-.guide-choice .choice-arrow{font:400 24px/1 var(--serif);color:var(--blue);flex:none;padding-right:2px}
+.guide-choice .choice-label{display:block;font:500 29px/1.15 var(--serif);letter-spacing:-.02em}
+.guide-choice .choice-description{display:block;font:400 17px/1.5 var(--sans);color:var(--muted);margin-top:10px;max-width:470px;text-wrap:pretty}
+.guide-choice .choice-arrow{font:400 29px/1 var(--serif);color:var(--blue);flex:none;padding-right:3px}
 .guide-choice:hover .choice-label,.guide-navigation button:hover,.guide-exits a:hover{color:var(--red)}
-.guide-result{margin:36px auto 0;max-width:900px}
-.guide-result-core{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:65px;align-items:start;border-top:1px solid var(--line);padding-top:29px}
-.guide-price{font:400 48px/1.15 var(--serif);letter-spacing:-.03em;font-optical-sizing:auto;font-variant-numeric:lining-nums;text-wrap:balance}
-.guide-international{font:400 13px/1.5 var(--sans);color:var(--muted);margin-top:8px}
-.guide-essential{font:400 15px/1.55 var(--sans);color:var(--muted);margin:21px 0 8px;text-wrap:pretty}
-.guide-enquiry{display:inline-flex;align-items:center;gap:12px;min-height:44px;max-width:100%;font:500 14px/1.45 var(--sans);text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:1px;padding:8px 0}
-.guide-enquiry:hover,.guide-text-link:hover,.guide-followups button:hover{color:var(--red)}
-.guide-included-side h2{font:500 23px/1.25 var(--serif);letter-spacing:-.015em;margin-bottom:16px}
+.guide-result{margin:36px 0 0;min-width:0}
+.guide-result-core{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1fr);gap:32px;align-items:start;border-top:1px solid var(--line);padding-top:30px}
+.guide-price-side{min-width:0}
+.guide-price{font:400 53px/1.08 var(--serif);letter-spacing:-.035em;font-optical-sizing:auto;font-variant-numeric:lining-nums;text-wrap:balance}
+.guide-price .price-period{display:block;font:400 18px/1.4 var(--sans);letter-spacing:0;margin-top:10px}
+#guide-app[data-offer=conversation] .guide-price{font-size:32px;letter-spacing:-.02em}
+.guide-international{font:400 17px/1.45 var(--sans);color:var(--muted);margin-top:12px}
+.guide-enquiry{display:inline-flex;align-items:center;justify-content:space-between;gap:18px;min-height:55px;max-width:100%;font:500 17px/1.4 var(--sans);background:var(--ink);color:var(--paper);padding:15px 19px;margin-top:27px}
+.guide-enquiry:hover{background:var(--blue)}
+.guide-enquiry .action-arrow{flex:none}
+.guide-included-side h2{font:500 25px/1.2 var(--serif);letter-spacing:-.02em;margin-bottom:20px}
 .guide-included-side ul{list-style:none;margin:0;padding:0}
-.guide-included-side li{font:400 20px/1.4 var(--serif);padding:0 0 18px;text-wrap:pretty}
+.guide-included-side li{font:400 22px/1.35 var(--serif);padding:0 0 18px;text-wrap:pretty}
+.guide-included-side li+li{border-top:1px solid color-mix(in srgb,var(--line) 45%,transparent);padding-top:18px}
 .guide-included-side li:last-child{padding-bottom:0}
-.guide-proof{font:400 13px/1.6 var(--sans);color:var(--muted);margin:27px 0 10px;text-wrap:pretty}
-.guide-proof a{text-decoration:underline;text-underline-offset:4px;display:inline-flex;align-items:center;min-height:44px;max-width:100%;color:var(--ink)}
-.guide-detail{margin-top:4px}
-.guide-detail>summary,.guide-followups summary{display:flex;align-items:center;gap:12px;min-height:44px;width:max-content;max-width:100%;list-style:none;cursor:pointer;font:500 13px/1.5 var(--sans);text-decoration:underline;text-underline-offset:5px}
+.guide-essential{font:400 17px/1.5 var(--sans);color:var(--muted);margin:28px 0;text-wrap:pretty}
+.guide-proof{margin:20px auto 0;max-width:310px;font:400 16px/1.5 var(--sans);color:var(--muted)}
+.guide-proof a{display:block;color:var(--ink);font:500 18px/1.35 var(--sans);padding:10px 0;min-height:44px;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px}
+.guide-proof span{display:block;margin-top:2px}
+.guide-detail,.guide-followups details{border-top:1px solid var(--line)}
+.guide-detail>summary,.guide-followups summary{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:74px;width:100%;padding:20px 0;list-style:none;cursor:pointer;font:500 24px/1.2 var(--serif);letter-spacing:-.015em}
 .guide-detail>summary::-webkit-details-marker,.guide-followups summary::-webkit-details-marker{display:none}
-.guide-detail>summary:after,.guide-followups summary:after{content:'+';color:var(--blue);font:400 20px/1 var(--sans);flex:none}
+.guide-detail>summary:after,.guide-followups summary:after{content:'+';color:var(--blue);font:400 27px/1 var(--sans);flex:none}
 .guide-detail[open]>summary:after,.guide-followups details[open]>summary:after{content:'−'}
-.guide-detail p,.guide-followups details>p{font:400 19px/1.5 var(--serif);max-width:790px;margin:15px 0 0;text-wrap:pretty}
-.guide-text-link,.guide-followups button{display:inline-flex;align-items:center;gap:9px;min-height:44px;max-width:100%;font:500 13px/1.5 var(--sans);text-decoration:underline;text-underline-offset:5px;padding:8px 0;text-align:left}
-.guide-text-link{margin-top:13px}
-.guide-followups{margin-top:20px;padding-top:14px;border-top:1px solid var(--line);display:flex;flex-direction:column;align-items:flex-start;gap:4px}
-.guide-followups details{width:100%}
-.guide-followups details>div{display:flex;flex-wrap:wrap;gap:7px 25px;padding-top:10px}
-.guide-fit-note{font:400 12px/1.6 var(--sans);color:var(--muted);max-width:750px;margin-top:22px;text-wrap:pretty}
-.guide-privacy{font:400 12px/1.5 var(--sans);color:var(--muted);text-align:center;margin-top:30px}
-.guide-exits{display:flex;justify-content:center;flex-wrap:wrap;gap:3px 28px;font:400 12px/1.5 var(--sans);margin-top:14px}
-.guide-exits a{display:inline-flex;align-items:center;gap:8px;min-height:44px;text-decoration:underline;text-underline-offset:5px}
+.guide-detail>summary:hover,.guide-followups summary:hover{color:var(--red)}
+.guide-term{padding:10px 0 24px}
+.guide-term h3{font:500 18px/1.4 var(--sans);margin-bottom:10px}
+.guide-detail p,.guide-followups details>p{font:400 22px/1.5 var(--serif);margin:0;text-wrap:pretty}
+.guide-text-link,.guide-followups button{display:inline-flex;align-items:center;gap:9px;min-height:48px;max-width:100%;font:500 17px/1.4 var(--sans);text-decoration:underline;text-underline-offset:5px;padding:12px 0;text-align:left}
+.guide-text-link:hover,.guide-followups button:hover{color:var(--red)}
+.guide-followups{display:flex;flex-direction:column;align-items:stretch;border-bottom:1px solid var(--line)}
+.guide-followups details>div{display:flex;flex-wrap:wrap;gap:0 25px;padding:14px 0 23px}
+.guide-followups details>p{padding:0 0 5px}
+.guide-detail:has(+.guide-followups[hidden]){border-bottom:1px solid var(--line)}
+.guide-detail .guide-fit-note{font:400 16px/1.5 var(--sans);color:var(--muted);margin:12px 0 26px}
+.guide-utility{display:grid;grid-template-columns:minmax(0,.72fr) minmax(0,1fr);gap:65px;align-items:center;border-top:1px solid var(--line);margin-top:55px;padding:25px 0}
+.guide-privacy{font:400 16px/1.5 var(--sans);color:var(--muted);margin:0}
+.guide-exits{display:flex;align-items:center;flex-wrap:wrap;gap:10px 30px;font:500 17px/1.4 var(--sans)}
+.guide-exits a{display:inline-flex;align-items:center;gap:12px;min-height:44px;text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:1px}
 .guide-exits a span{color:var(--blue)}
-.guide-fallback{padding:30px 0}
-.offer-catalog{margin:10px auto 40px;max-width:1090px;scroll-margin-top:25px}
-.offer-catalog>summary{display:flex;align-items:center;justify-content:space-between;gap:15px;min-height:60px;padding:15px 0;border-top:1px solid var(--line);list-style:none;cursor:pointer;font:500 14px/1.5 var(--sans)}
+.guide-fallback{max-width:720px;margin:0 auto;padding:30px 0;text-align:center}
+.guide-fallback .guide-art{width:370px;margin:0 auto 30px;mix-blend-mode:multiply}
+.guide-fallback>p{margin:auto}
+.offer-catalog{margin:20px auto 55px;max-width:1140px;scroll-margin-top:25px}
+.pricing-page:has(#guide-app:not([hidden])) .offer-catalog:not([open]){display:none}
+.offer-catalog>summary{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:75px;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);list-style:none;cursor:pointer;font:500 25px/1.2 var(--serif)}
 .offer-catalog>summary::-webkit-details-marker{display:none}
-.offer-catalog>summary span{font-size:22px;color:var(--blue);flex:none}
+.offer-catalog>summary span{font:400 27px/1 var(--sans);color:var(--blue);flex:none}
 .offer-catalog[open]>summary span{transform:rotate(45deg)}
 .offer-catalog .pricing-opening h2{font:400 clamp(44px,5vw,64px)/1.08 var(--serif);letter-spacing:-.025em;margin:0 0 25px;text-wrap:balance}
-.offer-catalog .pricing-opening{padding-top:38px}
-.pricing-footer{margin-top:18px}
-@media(max-width:900px){.guide-result-core{gap:40px}.guide-price{font-size:42px}.guide-heading{max-width:720px}.guide-result{max-width:790px}}
-@media(max-width:650px){
- .offer-guide{padding:4px 0 30px}
- .guide-navigation{gap:13px;margin-bottom:17px;flex-wrap:wrap}
- .guide-navigation #guide-trail{order:3;width:100%;font-size:11px}
- .guide-navigation:has(#guide-back[hidden]){min-height:0;margin:0}
- .guide-art{width:270px;max-width:100%;margin-bottom:25px}
- .guide-heading h1,.guide-fallback h1{font-size:clamp(39px,10.8vw,52px);line-height:1.08;margin-bottom:19px}
- #guide-app:has(#guide-result:not([hidden])) .guide-art{width:220px}
- #guide-app:has(#guide-result:not([hidden])) .guide-heading h1{font-size:clamp(37px,10vw,45px)}
- .guide-heading>p:not(.guide-time),.guide-fallback>p{font-size:21px;line-height:1.4}
- .guide-time{font-size:11px;margin-bottom:13px}
- .guide-choices{margin-top:28px}
- .guide-choice{min-height:75px;padding:18px 0;gap:18px}
- .guide-choice .choice-label{font-size:19px;line-height:1.3}
- .guide-choice .choice-description{font-size:17px;line-height:1.4}
- .guide-choice .choice-arrow{font-size:22px}
- .guide-result{margin-top:28px}
- .guide-result-core{grid-template-columns:minmax(0,1fr);gap:29px;padding-top:24px}
- .guide-price{font-size:43px}
- .guide-essential{font-size:14px;margin-top:16px}
- .guide-enquiry{font-size:14px}
- .guide-included-side h2{font-size:24px;margin-bottom:15px}
- .guide-included-side li{font-size:20px;padding-bottom:17px}
- .guide-proof{margin-top:20px;font-size:12px}
- .guide-detail p,.guide-followups details>p{font-size:20px}
- .guide-followups details>div{flex-direction:column;gap:3px}
- .guide-fit-note{font-size:12px}
- .guide-privacy{font-size:11px;margin-top:23px}
- .guide-exits{gap:0 16px;font-size:12px}
- .offer-catalog{margin-top:5px;margin-bottom:20px}
+.offer-catalog .pricing-opening{padding-top:45px}
+.offer-catalog .offer-cta,.offer-catalog .pricing-path a,.offer-catalog .website-versions a{font-size:17px}
+.offer-catalog .offer-time,.offer-catalog .rate-other,.offer-catalog .rate-period,.offer-catalog .small-note{font-size:16px}
+.offer-catalog .offer-detail summary,.offer-catalog .terms-detail summary{justify-content:space-between;width:100%;min-height:70px;font:500 23px/1.3 var(--serif);text-decoration:none;gap:22px}
+.offer-catalog .offer-detail summary:after,.offer-catalog .terms-detail summary:after{font:400 25px/1 var(--sans)}
+.offer-catalog .offer-detail p,.offer-catalog .terms-detail p{font-size:21px}
+.pricing-footer{margin-top:0}
+@media(max-width:1100px){
+ .guide-stage,.guide-utility{grid-template-columns:minmax(0,.63fr) minmax(0,1fr);gap:40px}
+ .guide-heading h1{font-size:56px}
+ #guide-app[data-view=result] .guide-heading h1{font-size:52px}
+ .guide-result-core{grid-template-columns:minmax(0,1fr);gap:30px}
+ .guide-price{font-size:52px}
+}
+@media(max-width:760px){
+ .pricing-header,.pricing-footer{font-size:14px}
+ .offer-guide{padding:12px 0 10px}
+ .guide-navigation{margin-bottom:20px;gap:15px;font-size:15px}
+ .guide-navigation #guide-trail{font-size:14px;max-width:42%}
+ .guide-navigation #guide-reset{font-size:14px}
+ .guide-stage{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
+ .guide-illustration{display:contents}
+ .guide-art{grid-column:1;grid-row:2;width:165px;max-height:248px;object-fit:contain;justify-self:center;margin-top:36px}
+ .guide-content{grid-column:1;grid-row:1;padding-top:0}
+ .guide-heading h1,#guide-app[data-view=result] .guide-heading h1{font-size:clamp(42px,9.5vw,58px);line-height:1.06;margin-bottom:22px;text-wrap:balance}
+ .guide-heading>p:not(.guide-time),.guide-fallback>p{font-size:23px;line-height:1.4}
+ .guide-time{font-size:15px;margin-bottom:16px}
+ .guide-choices{margin-top:30px}
+ .guide-choice{padding:23px 0;gap:18px;min-height:108px}
+ .guide-choice .choice-label{font-size:28px}
+ .guide-choice .choice-description{font-size:17px;margin-top:9px}
+ .guide-choice .choice-arrow{font-size:27px}
+ .guide-proof{grid-column:1;grid-row:3;width:100%;max-width:310px;margin:13px auto 0}
+ #guide-app[data-view=result] .guide-art{width:145px;max-height:218px}
+ .guide-result{margin-top:29px}
+ .guide-result-core{display:block;padding-top:27px}
+ .guide-price{font-size:51px}
+ .guide-enquiry{margin-top:23px;font-size:17px;min-height:56px}
+ .guide-included-side{margin-top:32px}
+ .guide-included-side h2{font-size:26px;margin-bottom:19px}
+ .guide-included-side ul{display:block}
+ .guide-included-side li{font-size:23px;padding:0 0 18px}
+ .guide-included-side li+li{padding:18px 0;border-top:1px solid color-mix(in srgb,var(--line) 45%,transparent)}
+ .guide-essential{font-size:17px;line-height:1.5;margin:25px 0}
+ .guide-detail>summary,.guide-followups summary{font-size:23px;min-height:74px;gap:20px}
+ .guide-detail p,.guide-followups details>p{font-size:22px}
+ .guide-followups details>div{flex-direction:column;gap:0;padding:12px 0 20px}
+ .guide-utility{grid-template-columns:minmax(0,1fr);gap:17px;margin-top:35px;padding:23px 0}
+ .guide-privacy{font-size:15px}
+ .guide-privacy br{display:none}
+ .guide-exits{font-size:17px;gap:3px 25px}
+ .offer-catalog{margin-bottom:30px}
+ .offer-catalog>summary{font-size:25px}
  .offer-catalog .pricing-opening h2{font-size:43px}
- .offer-catalog>summary{font-size:13px}
 }
 @media(prefers-reduced-motion:no-preference){.guide-choice .choice-arrow{transition:transform .16s ease}.guide-choice:hover .choice-arrow{transform:translateX(4px)}}

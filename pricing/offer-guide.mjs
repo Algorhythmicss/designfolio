@@ -6,6 +6,28 @@ const title=byId('guide-title'),hint=byId('guide-hint'),choices=byId('guide-choi
 const result=byId('guide-result'),back=byId('guide-back'),reset=byId('guide-reset');
 let view={question:'start'},trail=[],history=[];
 
+// Preserve complete terms, with useful headings when someone asks for detail.
+const detailHeadings={
+ 'first-impression':['What the video covers','How to request it'],
+ 'product-review':['The review','If you continue to a Sprint','Payment','Founding clients'],
+ 'product-upgrade':['The look and user journeys','Technical fixes','The late-launch credit','What I need from you','Handover and support','The Check credit','Payment','Founding clients'],
+ 'monthly-partner':['Reserved time','The monthly promise','Three months at a time','Founding clients'],
+ 'first-product':['Your first release','The weekly-demo promise','What I need from you','Payment','Founding clients'],
+ 'website-week':['The website scope','The seven-day promise','What I need from you','Payment','Founding clients'],
+ 'launch-grow':['The combined scope','Price and payment','The promises','What I need from you','The Check credit','Costs and availability'],
+ 'lockdown-week':['The technical scope','What I need from you','Payment','Founding clients'],
+ 'look-week':['The visual direction','What I need from you','Payment','Founding clients'],
+ 'quarterly-checkin':['The review and fix','Price and eligibility'],
+ conversation:['Establishing the scope','The next step']
+};
+const actionLabels={
+ 'first-impression':'Request the video','product-review':'Start with a Check',
+ 'product-upgrade':'Plan the Sprint','monthly-partner':'Talk about monthly work',
+ 'first-product':'Plan a first release','website-week':'Plan my website',
+ 'launch-grow':'Plan Launch & Grow','lockdown-week':'Fix the foundations',
+ 'look-week':'Plan a Look Week','quarterly-checkin':'Plan a check-in',conversation:'Let’s talk'
+};
+
 function element(tag,text,className){const node=document.createElement(tag);if(text!==undefined)node.textContent=text;if(className)node.className=className;return node;}
 function setTitle(text){title.replaceChildren();for(const part of text.split(/(Launch-Ready)/))title.append(part==='Launch-Ready'?element('span',part,'keep-together'):document.createTextNode(part));}
 function saveView(){history.push({view:{...view},trail:[...trail]});}
@@ -38,31 +60,43 @@ function renderResult(){
  setTitle(offer.name);hint.textContent=offer.summary;
  byId('guide-time').textContent=offer.time;byId('guide-time').hidden=false;
  choices.hidden=true;result.hidden=false;
- byId('guide-price').textContent=offer.price;
+ const [amount,period]=offer.price.split(' / ');
+ byId('guide-price').replaceChildren(element('span',amount,'price-amount'));
+ if(period)byId('guide-price').append(element('span',` / ${period}`,'price-period'));
  byId('guide-international').textContent=view.offer==='first-impression'?'':view.offer==='conversation'?'Price agreed after we understand the work.':`International ${offer.international}`;
  byId('guide-essential').textContent=offer.essential;
- const enquiry=byId('guide-enquiry');enquiry.textContent=`${offer.cta} ↗`;enquiry.href=enquiryHref(view.offer,view.audience);
+ const enquiry=byId('guide-enquiry');
+ const arrow=element('span','↗','action-arrow');arrow.setAttribute('aria-hidden','true');
+ enquiry.replaceChildren(element('span',actionLabels[view.offer]||offer.cta),arrow);enquiry.href=enquiryHref(view.offer,view.audience);
  const list=byId('guide-includes');list.replaceChildren(...offer.includes.map(text=>element('li',text)));
  const detail=byId('guide-detail');detail.open=false;
- byId('guide-detail-copy').replaceChildren(...offer.detail.map(text=>element('p',text)));
+ byId('guide-detail-copy').replaceChildren(...offer.detail.map((text,index)=>{
+  const section=element('section',undefined,'guide-term');
+  const heading=detailHeadings[view.offer]?.[index];
+  if(heading)section.append(element('h3',heading));
+  section.append(element('p',text));return section;
+ }));
  const scope=byId('guide-scope-link');scope.hidden=!offer.scopeHref;
  if(offer.scopeHref){scope.href=offer.scopeHref;scope.textContent=view.offer==='launch-grow'?'Read the Sprint plan ↗':'Read the complete plan ↗';}else scope.removeAttribute('href');
  const proof=byId('guide-proof');proof.replaceChildren();
  const website=view.offer==='website-week';
- const example=element('a',website?'See a business-website concept ↗':'See Leetify, designed and built solo ↗');
+ const example=element('a',website?'See a website concept ↗':'Leetify, designed & built solo ↗');
  example.href=website?(view.audience==='cafe'?'../work/side-note/':'../work/second-nature/'):'../leetify/';
- proof.append(example,element('span',website?' Self-initiated work for a fictional business.':' A real, shipped product.'));
+ proof.append(example,element('span',website?'Self-initiated work for a fictional business.':'A real, shipped product.'));proof.hidden=false;
  followups(view.offer);
 }
 
 function render(focus=false){
  back.hidden=!history.length&&!view.offer;reset.hidden=!history.length&&!view.offer;
- byId('guide-trail').textContent=trail.join(' / ');
+ app.dataset.view=view.offer?'result':'question';
+ app.dataset.offer=view.offer||'';
+ byId('guide-trail').textContent=trail.at(-1)||'';
  if(view.offer)renderResult();
  else{
   const question=questions[view.question];
   setTitle(question.prompt);hint.textContent=question.hint;
   byId('guide-time').hidden=true;result.hidden=true;choices.hidden=false;choices.replaceChildren();
+  byId('guide-proof').hidden=true;
   for(const choice of question.choices){
    const button=element('button',undefined,'guide-choice');button.type='button';button.dataset.choice=choice.id;
    const text=element('span');text.append(element('span',choice.label,'choice-label'),element('span',choice.description,'choice-description'));
@@ -87,5 +121,7 @@ render();app.hidden=false;byId('guide-fallback').hidden=true;
 if(offerFromHash(location.hash)){
  if(document.readyState==='complete')openDirectOffer();else window.addEventListener('load',openDirectOffer,{once:true});
 }
-window.addEventListener('hashchange',()=>{if(!catalog.open)openDirectOffer();});
+// Native catalog anchors have their own namespace. Legacy offer hashes belong
+// to the guide even if the browser has opened a containing details element.
+window.addEventListener('hashchange',openDirectOffer);
 if(location.hash==='#all-offers')catalog.open=true;
