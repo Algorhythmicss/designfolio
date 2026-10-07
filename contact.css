@@ -56,3 +56,8 @@
 .call-dialog .business-context label{font-size:13px;margin:0;}
 .call-dialog .business-context .form-note{font-size:12px;line-height:1.5;margin-top:14px;}
 @media(max-width:600px){.qualification-fields{grid-template-columns:1fr;gap:20px;}.business-context{margin-bottom:26px;}}
+
+/* The acquisition offer fits inside the existing opening, without moving art. */
+.making-bio>p.making-free{margin:12px auto 0;text-align:center;text-align-last:center;font:500 13px/1.4 var(--sans);hyphens:none}
+.making-free a{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:5px 0;color:var(--ink)}
+#first-impression-note{margin:-10px 0 25px;max-width:100%}

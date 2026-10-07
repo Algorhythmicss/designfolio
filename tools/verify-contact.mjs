@@ -26,14 +26,14 @@ class Fields{
  append(name,value){this.values.set(name,value);}
 }
 function harness(config={},handler=async()=>({ok:true,status:200}),pageURL=''){
- const ids=['contact-options','contact-whatsapp','contact-booking','about-dialog','about-work','enquiry-form','enquiry-result','email-draft','open-email','draft-status','contact-details','edit-brief','copy-brief','direct-enquiry','reply-email','send-enquiry','send-status','prepare-note','contact-disclosure','first-product-choice','choice-launch-grow','choice-lockdown-week','choice-look-week','choice-quarterly-checkin','enquiry-audience'];
+ const ids=['contact-options','contact-whatsapp','contact-booking','about-dialog','about-work','enquiry-form','enquiry-result','email-draft','open-email','draft-status','contact-details','edit-brief','copy-brief','direct-enquiry','reply-email','send-enquiry','send-status','prepare-note','contact-disclosure','first-product-choice','choice-launch-grow','choice-lockdown-week','choice-look-week','choice-quarterly-checkin','enquiry-audience','choice-first-impression','enquiry-homepage-note','first-impression-note'];
  const elements=Object.fromEntries(ids.map(id=>[id,new Element()]));
- for(const id of ['first-product-choice','choice-launch-grow','choice-lockdown-week','choice-look-week','choice-quarterly-checkin','enquiry-audience'])elements[id].hidden=true;elements['contact-whatsapp'].hidden=true;elements['direct-enquiry'].hidden=true;elements['send-enquiry'].disabled=true;elements['enquiry-result'].hidden=true;
+ for(const id of ['first-product-choice','choice-launch-grow','choice-lockdown-week','choice-look-week','choice-quarterly-checkin','enquiry-audience','choice-first-impression','first-impression-note'])elements[id].hidden=true;elements['contact-whatsapp'].hidden=true;elements['direct-enquiry'].hidden=true;elements['send-enquiry'].disabled=true;elements['enquiry-result'].hidden=true;
  elements['about-dialog'].children={'[data-close]':new Element()};
  elements['enquiry-result'].children={'h3':new Element()};
  const prepareButton=new Element();prepareButton.disabled=true;
  const form=elements['enquiry-form'];form.children={'[type="submit"]':prepareButton};
- form.elements=Object.fromEntries(Object.entries({name:'Sample Visitor',kind:'Website in a Week',idea:'A clear website for my small business.',budget:'Not sure yet',timing:'Just exploring',users:'',revenue:'',funding:'',audience:''}).map(([name,value])=>[name,new Element(value)]));
+ form.elements=Object.fromEntries(Object.entries({name:'Sample Visitor',kind:'7-Day Website',idea:'A clear website for my small business.',budget:'Not sure yet',timing:'Just exploring',users:'',revenue:'',funding:'',audience:'',homepage:''}).map(([name,value])=>[name,new Element(value)]));
  form.reportValidity=()=>Object.values(form.elements).every(input=>input.reportValidity());
  elements['reply-email'].value='visitor@example.com';elements['reply-email'].emailField=true;
  elements['direct-enquiry'].reportValidity=()=>elements['reply-email'].reportValidity();
@@ -134,18 +134,19 @@ for(const httpStatus of [400,429,500]){
 }
 
 // Offer links must select only known offers and cannot send or replace an enquiry.
-for(const [id,label] of Object.entries({'product-review':'Product Review','product-upgrade':'Product Upgrade Sprint','monthly-partner':'Monthly Product Partner','first-product':'Idea to Launch in 6 Weeks','website-week':'Website in a Week','launch-grow':'Launch & Grow','lockdown-week':'Lockdown Week','look-week':'Look Week','quarterly-checkin':'Quarterly Check-in'})){
+for(const [id,label] of Object.entries({'first-impression':'Free first-impression video','product-review':'3-Day Launch-Ready Check','product-upgrade':'14-Day Launch-Ready Sprint','monthly-partner':'Ship Every Week','first-product':'Idea to Launch in 6 Weeks','website-week':'7-Day Website','launch-grow':'Launch & Grow','lockdown-week':'Lockdown Week','look-week':'Look Week','quarterly-checkin':'Quarterly Check-in'})){
  const h=harness({},undefined,`https://algorhythmicss.github.io/designfolio/?offer=${id}#contact`);
  check(h.elements['enquiry-form'].elements.kind.value===label&&h.elements['contact-details'].open,'Known pricing link selects its offer and opens the enquiry.');
  h.load();check(h.elements['enquiry-form'].lastScroll?.behavior==='instant'&&h.elements['enquiry-form'].lastScroll?.block==='start','After initial hash navigation, the selected enquiry is brought into view without a long page animation.');
  check(h.calls.length===0&&h.elements['enquiry-result'].hidden&&h.elements['email-draft'].value==='','Pricing navigation neither prepares a draft nor sends an enquiry.');
  check(h.elements['first-product-choice'].hidden===(id!=='first-product'),'First Product Build stays outside the homepage offer choices until requested.');
+ if(id==='first-impression')h.elements['enquiry-form'].elements.homepage.value='https://example.com/app';
  await h.prepare();
  check(h.elements['email-draft'].value.includes(`I’m interested in your ${label}.`),'Reviewed email preserves the selected offer name.');
 }
 for(const id of ['unknown','constructor','__proto__','<script>alert(1)</script>']){
  const h=harness({},undefined,`https://algorhythmicss.github.io/designfolio/?offer=${encodeURIComponent(id)}#contact`);
- check(h.elements['enquiry-form'].elements.kind.value==='Website in a Week'&&h.calls.length===0&&h.elements['first-product-choice'].hidden,'Unknown or untrusted offer parameters do not select or expose an offer.');
+ check(h.elements['enquiry-form'].elements.kind.value==='7-Day Website'&&h.calls.length===0&&h.elements['first-product-choice'].hidden,'Unknown or untrusted offer parameters do not select or expose an offer.');
 }
 // Qualification stays optional; only explicit choices reach a reviewed draft.
 {
@@ -162,7 +163,7 @@ for(const [id,label] of Object.entries({clinic:'7-Day Clinic Website',studio:'7-
  const h=harness({},undefined,`https://algorhythmicss.github.io/designfolio/?offer=website-week&audience=${id}#contact`);
  check(h.elements['enquiry-form'].elements.audience.value===id&&!h.elements['enquiry-audience'].hidden&&h.elements['enquiry-audience'].textContent===label,'Audience links carry a whitelisted package context.');
  await h.prepare();check(h.elements['email-draft'].value.includes('Website package: '+label),'The reviewed website draft includes its audience package.');
- h.elements['enquiry-form'].elements.kind.value='Product Review';await h.prepare();
+ h.elements['enquiry-form'].elements.kind.value='3-Day Launch-Ready Check';await h.prepare();
  check(!h.elements['email-draft'].value.includes('Website package:'),'Changing to another offer omits irrelevant website context.');
 }
 for(const id of ['constructor','<script>','unknown']){
@@ -171,7 +172,7 @@ for(const id of ['constructor','<script>','unknown']){
 }
 {
  const h=harness(),tool=h.registeredTools[0];
- const base={kind:'Product Review',name:'Demo Founder',idea:'Improve onboarding in our live app.'};
+ const base={kind:'3-Day Launch-Ready Check',name:'Demo Founder',idea:'Improve onboarding in our live app.'};
  const result=tool.execute({...base,users:'Has users',revenue:'Pre-revenue',funding:'Bootstrapped'});
  check(result.sent===false&&result.message.includes('Funding: Bootstrapped')&&h.calls.length===0,'The browser tool preserves qualification without sending.');
  for(const field of ['users','revenue','funding']){
@@ -182,7 +183,38 @@ for(const id of ['constructor','<script>','unknown']){
  check(failed,'Audience context cannot be assigned to an unrelated offer.');
  const build=tool.execute({...base,kind:'Idea to Launch in 6 Weeks'});
  check(!h.elements['first-product-choice'].hidden&&build.message.includes('Idea to Launch in 6 Weeks'),'The first-build browser tool reveals the renamed form choice.');
- check(tool.inputSchema.properties.kind.enum.length===10,'All nine offers and the unsure choice are available in the browser tool.');
+ check(tool.inputSchema.properties.kind.enum.length===11,'All ten offers and the unsure choice are available in the browser tool.');
+}
+// The free-video request needs a URL, while paid enquiries retain their brief.
+{
+ const h=harness({},undefined,'https://algorhythmicss.github.io/designfolio/?offer=first-impression#contact'),fields=h.elements['enquiry-form'].elements;
+ check(!h.elements['choice-first-impression'].hidden&&fields.homepage.required&&!fields.idea.required,'The free video reveals its choice and asks for a URL rather than a compulsory brief.');
+ check(!h.elements['first-impression-note'].hidden,'The free request explains the deliverable and availability.');
+ fields.idea.value='';fields.homepage.value='';await h.prepare();
+ check(h.elements['enquiry-result'].hidden&&fields.homepage.validity,'A missing app URL cannot prepare a free request.');
+ for(const link of ['javascript:alert(1)','/relative-app','https://user:secret@example.com']){
+  fields.homepage.value=link;await h.prepare();
+  check(h.elements['enquiry-result'].hidden&&h.calls.length===0,'Invalid or credential-bearing app links never prepare a free request.');
+ }
+ fields.homepage.value=' https://example.com/app ';await h.prepare();
+ check(h.elements['email-draft'].value.includes('Product or website: https://example.com/app')&&h.calls.length===0,'The free draft carries the normalized URL without fetching it.');
+ await h.elements['edit-brief'].dispatch('click');fields.kind.value='3-Day Launch-Ready Check';await h.elements['enquiry-form'].dispatch('change');
+ check(!fields.homepage.required&&fields.idea.required&&h.elements['first-impression-note'].hidden,'Changing to a paid offer restores the required project brief.');
+ fields.homepage.value='';fields.idea.value='';await h.prepare();
+ check(h.elements['enquiry-result'].hidden&&fields.idea.validity,'A paid enquiry still requires its project description.');
+}
+{
+ const h=harness(),tool=h.registeredTools[0],base={kind:'Free first-impression video',name:'Demo Founder'};
+ let failed=false;try{tool.execute(base);}catch{failed=true;}
+ check(failed,'The browser tool also requires the free-video URL.');
+ const draft=tool.execute({...base,homepage:'https://example.com/app'});
+ check(draft.sent===false&&draft.message.includes('https://example.com/app')&&h.calls.length===0,'The browser tool prepares a free request with a URL and no invented brief.');
+ for(const homepage of ['javascript:alert(1)','https://user:secret@example.com',42]){
+  failed=false;try{tool.execute({...base,homepage});}catch{failed=true;}
+  check(failed,'The browser tool rejects invalid URLs before altering the draft.');
+ }
+ failed=false;try{tool.execute({kind:'14-Day Launch-Ready Sprint',name:'Demo Founder'});}catch{failed=true;}
+ check(failed,'The browser tool still requires a brief for a paid Sprint.');
 }
 check(!html.includes('Under ₹50,000'),'The retired low-budget option is absent.');
 console.log(`${checks} contact boundary checks passed. All requests were stubbed; no email, WhatsApp message, or appointment was sent.`);
